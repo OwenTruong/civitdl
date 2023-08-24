@@ -1,11 +1,10 @@
 import sys
 import functools
 
-from lib.get_lora_api import download_model
-from custom.tags import create_dir_path_by_tag
+from lib.get_model import download_model
 
-# download_model(dst_dir_path='manuel-test',
-#                model_id=sys.argv[1], version_id=115273)
+# Have python scan for import-ables
+from custom.tags import create_dir_path_by_tag
 
 
 def format_model(src_dir_path, dst_dir_path):

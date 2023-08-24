@@ -3,7 +3,7 @@ import requests
 import os
 from typing import Callable, Dict
 
-from utils.utils import write_to_file
+from lib.utils.utils import write_to_file
 
 
 def get_metadata_json(id: str):
@@ -16,7 +16,11 @@ def get_metadata_json(id: str):
         return meta_res.json()
 
 
-def download_model(create_dir_path: Callable[[Dict], str], model_id: str, version_id: int = None):
+def download_model(create_dir_path: Callable[[Dict, Dict], str], model_id: str, version_id: int = None):
+    """
+        Downloads the model's safetensors and json metadata files.
+        create_dir_path is a callback function that takes in the whole metadata and the specific model's metadata as a dict.
+    """
     def create_model_url(version):
         return f'https://civitai.com/api/download/models/{version}'
 
@@ -46,10 +50,10 @@ def download_model(create_dir_path: Callable[[Dict], str], model_id: str, versio
     )[0]
 
     # Write metadata and model data to files
-    dst_dir_path = create_dir_path(model_obj)
+    dst_dir_path = create_dir_path(meta_json, model_obj)
     if not os.path.exists(dst_dir_path):
         os.makedirs(dst_dir_path)
     write_to_file(
-        os.path.join(dst_dir_path, f'{filename}.json'), dumps(meta_json))
+        os.path.join(dst_dir_path, f'{filename}-{model_id}.json'), dumps(meta_json))
     write_to_file(
-        os.path.join(dst_dir_path, f'{filename}.safetensors'), model_res.content, 'wb')
+        os.path.join(dst_dir_path, f'{filename}-{model_id}.safetensors'), model_res.content, 'wb')

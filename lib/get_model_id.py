@@ -12,7 +12,3 @@ def get_lora_ids(paths, regex_str):
 def getLoraIdsFromDirPath(dirpath):
     filepaths = list(dirpath.glob('**/*.safetensors'))
     return get_lora_ids(filepaths, r'\d*(?=\.safetensors$)')
-
-
-lora_path = Path(
-    '/home/dekomoon/Documents/mnt/data/general/StableDiffusion/stable-diffusion-webui/models/Lora/unfiltered')
