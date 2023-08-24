@@ -1,6 +1,7 @@
 from json import dumps
 import requests
 import os
+from typing import Callable, Dict
 
 from utils.utils import write_to_file
 
@@ -15,7 +16,7 @@ def get_metadata_json(id: str):
         return meta_res.json()
 
 
-def download_model(dst_dir_path: str, model_id: str, version_id: int = None):
+def download_model(create_dir_path: Callable[[Dict], str], model_id: str, version_id: int = None):
     def create_model_url(version):
         return f'https://civitai.com/api/download/models/{version}'
 
@@ -29,8 +30,7 @@ def download_model(dst_dir_path: str, model_id: str, version_id: int = None):
     model_obj = models_obj[0] if version_id == None else next(
         (obj for obj in models_obj if obj['id'] == version_id), None)
     if (model_obj == None):
-        # return print('Error: The version id provided does not exist for this model')
-        return print([obj['id'] for obj in models_obj])
+        return print(f'Error: The version id provided does not exist for this model. Available models: {[obj["id"] for obj in models_obj]}')
 
     # Fetch model data
     model_res = requests.get(create_model_url(model_obj['id']))
@@ -46,6 +46,7 @@ def download_model(dst_dir_path: str, model_id: str, version_id: int = None):
     )[0]
 
     # Write metadata and model data to files
+    dst_dir_path = create_dir_path(model_obj)
     if not os.path.exists(dst_dir_path):
         os.makedirs(dst_dir_path)
     write_to_file(
