@@ -1,8 +1,5 @@
 from json import dumps
-from pathlib import Path
 import requests
-import urllib.request
-import sys
 import os
 
 from utils.utils import write_to_file
@@ -18,8 +15,8 @@ def get_metadata_json(id: str):
         return meta_res.json()
 
 
-def get_model(model_id: str, version_id: str = None):
-    def get_model_url(version):
+def download_model(dst_dir_path: str, model_id: str, version_id: int = None):
+    def create_model_url(version):
         return f'https://civitai.com/api/download/models/{version}'
 
     # Fetch model metadata
@@ -30,12 +27,13 @@ def get_model(model_id: str, version_id: str = None):
     # Find the specific version of the model
     models_obj: list = meta_json['modelVersions']
     model_obj = models_obj[0] if version_id == None else next(
-        (obj for obj in models_obj if obj['id' == version_id]), None)
+        (obj for obj in models_obj if obj['id'] == version_id), None)
     if (model_obj == None):
-        return print('Error: The version id provided does not exist for this model')
+        # return print('Error: The version id provided does not exist for this model')
+        return print([obj['id'] for obj in models_obj])
 
     # Fetch model data
-    model_res = requests.get(get_model_url(model_obj['id']))
+    model_res = requests.get(create_model_url(model_obj['id']))
     if model_res.status_code != 200:
         return print(f"Error: Fetching model failed ({model_res.status_code})")
 
@@ -48,6 +46,9 @@ def get_model(model_id: str, version_id: str = None):
     )[0]
 
     # Write metadata and model data to files
-    write_to_file(f'manual-test/{filename}.json', dumps(meta_json))
+    if not os.path.exists(dst_dir_path):
+        os.makedirs(dst_dir_path)
     write_to_file(
-        f'manual-test/{filename}.safetensors', model_res.content, 'wb')
+        os.path.join(dst_dir_path, f'{filename}.json'), dumps(meta_json))
+    write_to_file(
+        os.path.join(dst_dir_path, f'{filename}.safetensors'), model_res.content, 'wb')

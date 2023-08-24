@@ -1,5 +1,6 @@
 import sys
-from get_lora_api import get_model
+from get_lora_api import download_model
 
 
-get_model(sys.argv[1])
+download_model(dst_dir_path='manuel-test',
+               model_id=sys.argv[1], version_id=115273)
