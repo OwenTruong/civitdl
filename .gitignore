@@ -2,3 +2,4 @@ test.json
 test.txt
 manual-test
 custom/*
+**/__pycache__

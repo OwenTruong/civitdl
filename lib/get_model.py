@@ -37,10 +37,10 @@ def _download_image(dirpath: str, images: list[Dict], nsfw: bool, max_img_count)
                 dirpath, os.path.basename(url)), image_res.content, 'wb')
 
 
-def download_model(model_id: str, create_dir_path: Callable[[Dict, Dict], str], version_id: int = None, download_image: bool = True, max_img_count: int = 3):
+def download_model(model_id: str, create_dir_path: Callable[[Dict, Dict, str, str], str], dst_root_path: str, version_id: int = None, download_image: bool = True, max_img_count: int = 3):
     """
         Downloads the model's safetensors and json metadata files.
-        create_dir_path is a callback function that takes in the whole metadata and the specific model's metadata as a dict.
+        create_dir_path is a callback function that takes in the following: metadata dict, specific model's data as dict, filename, and root path.
     """
     def create_model_url(version):
         return f'https://civitai.com/api/download/models/{version}'
@@ -71,7 +71,8 @@ def download_model(model_id: str, create_dir_path: Callable[[Dict, Dict], str], 
     )[0]
 
     # Write metadata and model data to files
-    dst_dir_path = create_dir_path(meta_json, model_dict)
+    dst_dir_path = create_dir_path(
+        meta_json, model_dict, filename, dst_root_path)
     if not os.path.exists(dst_dir_path):
         os.makedirs(dst_dir_path)
     write_to_file(

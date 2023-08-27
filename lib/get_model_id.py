@@ -2,13 +2,13 @@ from pathlib import Path
 import re
 
 
-def get_lora_ids(paths, regex_str):
+def _get_model_id_paths(paths, regex_str):
     li = []
     for path in paths:
         li += [re.search(regex_str, str(path)).group(0)]
     return li
 
 
-def getLoraIdsFromDirPath(dirpath):
-    filepaths = list(dirpath.glob('**/*.safetensors'))
-    return get_lora_ids(filepaths, r'\d*(?=\.safetensors$)')
+def get_model_ids_from_dir_path(dirpath):
+    filepaths = list(Path(dirpath).glob('**/*.safetensors'))
+    return _get_model_id_paths(filepaths, r'\d*(?=\.safetensors$)')
