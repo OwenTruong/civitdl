@@ -75,7 +75,7 @@ def download_model(model_id: str, create_dir_path: Callable[[Dict, Dict], str], 
     if not os.path.exists(dst_dir_path):
         os.makedirs(dst_dir_path)
     write_to_file(
-        os.path.join(dst_dir_path, f'{filename}-{model_id}.json'), dumps(meta_json))
+        os.path.join(dst_dir_path, f'{filename}-{model_id}.json'), dumps(meta_json, indent=2))
     write_to_file(
         os.path.join(dst_dir_path, f'{filename}-{model_id}.safetensors'), model_res.content, 'wb')
     if download_image:
