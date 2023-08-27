@@ -55,7 +55,7 @@ def download_model(model_id: str, create_dir_path: Callable[[Dict, Dict], str], 
     model_dict = model_dict_list[0] if version_id == None else next(
         (obj for obj in model_dict_list if obj['id'] == version_id), None)
     if (model_dict == None):
-        return print(f'Error: The version id provided does not exist for this model. Available models: {[obj["id"] for obj in models_obj]}')
+        return print(f'Error: The version id provided does not exist for this model. Available models: {[obj["id"] for obj in model_dict]}')
 
     # Fetch model data
     model_res = requests.get(create_model_url(model_dict['id']))
