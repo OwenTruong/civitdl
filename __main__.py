@@ -17,5 +17,8 @@ if (sys.argv[1] == None or sys.argv[2] == None):
     print(
         f'Error: Missing arguments. Arguments are the following: {args_format}')
 
-download_model(functools.partial(create_dir_path_by_tag,
-               root_path=sys.argv[1]), model_id=sys.argv[2])
+download_model(
+    model_id=sys.argv[2],
+    create_dir_path=functools.partial(
+        create_dir_path_by_tag, root_path=sys.argv[1])
+)
