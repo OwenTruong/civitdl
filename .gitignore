@@ -1,6 +1,6 @@
 test.json
 test.txt
 manual-test
-custom/*
+custom/
+__pycache__/
 **/__pycache__
-__pycache__

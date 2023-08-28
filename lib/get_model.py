@@ -37,7 +37,7 @@ def _download_image(dirpath: str, images: list[Dict], nsfw: bool, max_img_count)
                 dirpath, os.path.basename(url)), image_res.content, 'wb')
 
 
-def download_model(model_id: str, create_dir_path: Callable[[Dict, Dict, str, str], str], dst_root_path: str, version_id: int = None, download_image: bool = True, max_img_count: int = 3):
+def download_model(model_id: str, create_dir_path: Callable[[Dict, Dict, str, str], str], dst_root_path: str, version_id: str = None, download_image: bool = True, max_img_count: int = 3):
     """
         Downloads the model's safetensors and json metadata files.
         create_dir_path is a callback function that takes in the following: metadata dict, specific model's data as dict, filename, and root path.
@@ -53,9 +53,9 @@ def download_model(model_id: str, create_dir_path: Callable[[Dict, Dict, str, st
     # Find the specific version of the model
     model_dict_list: list = meta_json['modelVersions']
     model_dict = model_dict_list[0] if version_id == None else next(
-        (obj for obj in model_dict_list if obj['id'] == version_id), None)
+        (obj for obj in model_dict_list if str(obj['id']) == version_id), None)
     if (model_dict == None):
-        return print(f'Error: The version id provided does not exist for this model. Available models: {[obj["id"] for obj in model_dict]}')
+        return print(f'Error: The version id provided does not exist for this model. Available models: {[dict["id"] for dict in model_dict_list]}')
 
     # Fetch model data
     model_res = requests.get(create_model_url(model_dict['id']))
