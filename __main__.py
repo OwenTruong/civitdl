@@ -35,7 +35,7 @@ def choose_filter_helper(kwargs: Dict[str, str]):
 
 
 def batch_download_by_dir(argv: list[str]):
-    args_format = '<Source Path> <Destination Path> --custom-filter=<Path to a python file (optional)> --filter=<Choose between the two implemented filters<optional>>'
+    args_format = '<Source Path> <Destination Path> --custom-filter=<Path to a python file (optional)> --filter=<Choose between the two implemented filters (optional)> --max-images=<Default is 3 per model (optional)>'
     example = '~/unorganized_lora ~/organized_lora --filter=tags'
 
     kwargs, args = parse_args(argv)
@@ -53,13 +53,18 @@ def batch_download_by_dir(argv: list[str]):
 
     for id in ids:
         download_model(model_id=id, create_dir_path=filter_model,
-                       dst_root_path=args[1], max_img_count=10)
-        time.sleep(5)
+                       dst_root_path=args[1], max_img_count=(3 if kwargs['max-images'] == None else kwargs['max-images']))
+        time.sleep(2)
+
+# TODO: Enable the ability to specify max images
+# TODO: Add an example of a custom filter
+# TODO: Write a README.md guide that 1) talks about how to use the commands, 2) talks about how to write a custom script
+# TODO: Figure out something with the Makefile or something. Should I make my script global?
 
 
 def batch_download_by_file(argv: list[str]):
     """Given path to a comma separated file, """
-    args_format = '<Comma Separated File> <Destination Path> --custom-filter=<Path to a python file (optional)> --filter=<Choose between the two implemented filters<optional>>'
+    args_format = '<Comma Separated File> <Destination Path> --custom-filter=<Path to a python file (optional)> --filter=<Choose between the two implemented filters (optional)> --max-images=<Default is 3 per model (optional)>'
     example = '~/lora-to-download.txt ~/organized_lora --custom-filter=example.py'
 
     kwargs, args = parse_args(argv)
@@ -80,8 +85,8 @@ def batch_download_by_file(argv: list[str]):
         model_id = id[0]
         version_id = id[1] if len(id) == 2 else None
         download_model(model_id=model_id, create_dir_path=filter_model,
-                       dst_root_path=args[1], max_img_count=10, version_id=version_id)
-        time.sleep(5)
+                       dst_root_path=args[1], max_img_count=(3 if kwargs['max-images'] == None else kwargs['max-images']), version_id=version_id)
+        time.sleep(2)
 
 
 def main():
