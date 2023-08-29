@@ -1,6 +1,9 @@
 test.json
 test.txt
 manual-test
-custom/
+custom/*
+!custom/example.py
+!custom/metadata-example.json
+!custom/model_data-example.json
 __pycache__/
 **/__pycache__

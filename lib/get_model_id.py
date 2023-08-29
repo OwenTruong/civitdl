@@ -24,3 +24,12 @@ def get_model_ids_from_comma_file(filepath):
         ids = [re.findall(r'\d+', id) for id in ids]
         ids = [id for id in ids if len(id) > 0]
     return ids
+
+
+def get_model_ids_from_comma_str(str):
+    """Given a string where id and url are separated by commas, extract the model id and optionally the version id as a list of list."""
+    ids = None
+    ids = str.split(',')
+    ids = [re.findall(r'\d+', id) for id in ids]
+    ids = [id for id in ids if len(id) > 0]
+    return ids
