@@ -14,7 +14,7 @@ from lib.utils.utils import parse_args
 
 def choose_filter_helper(kwargs: Dict[str, str]):
     filter_model = None
-    if kwargs['custom-filter'] != None:
+    if 'custom-filter' in kwargs:
         if not os.path.exists(kwargs['custom-filter']):
             return print('Error: Custom filter python file does not exist')
         spec = importlib.util.spec_from_file_location(
@@ -22,7 +22,7 @@ def choose_filter_helper(kwargs: Dict[str, str]):
         plugin = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(plugin)
         filter_model = plugin.filter_model
-    elif kwargs['filter'] != None:
+    elif 'filter' in kwargs:
         if kwargs['filter'] == 'tags':
             filter_model = create_path_by_tags
         elif kwargs['filter'] == 'basic':
@@ -57,7 +57,6 @@ def batch_download_by_dir(argv: list[str]):
         time.sleep(5)
 
 # TODO: Write a README.md guide that 1) talks about how to use the commands, 2) talks about how to write a custom script
-# TODO: Do I need a makefile?
 
 
 def batch_download_by_file(argv: list[str]):

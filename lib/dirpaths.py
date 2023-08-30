@@ -11,8 +11,8 @@ def create_path_by_tags(metadata: Dict, model_data: Dict, filename: str, root_pa
     """Create nested directories with info about the specific model given root path and the model dict. If no tag is found in the model's json, the default dir path name used will be the last element of twodim_tags' inner list."""
     twodim_tags = [
         ['anime', 'non-anime'],
-        ['style', 'character',
-         'celebrity', 'clothings', 'poses', 'concept', 'unknown']
+        ['style', 'poses', 'clothings', 'character',
+         'celebrity', 'concept', 'unknown']
     ]
 
     model_tags = metadata['tags']
