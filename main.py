@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import re
 import sys
@@ -28,7 +30,7 @@ def choose_filter_helper(kwargs: Dict[str, str]):
         elif kwargs['filter'] == 'basic':
             filter_model = create_basic_path
         else:
-            return print(f'Error: Unknown filter specified. {kwargs["filter"]}')
+            return print(f'Error: Unknown filter specified. The available built-in filters are {["tags", "basic"]} (basic is the default filter)')
     else:
         filter_model = create_basic_path
     return filter_model

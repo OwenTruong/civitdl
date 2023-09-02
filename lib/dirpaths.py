@@ -3,7 +3,7 @@ import os
 
 
 def create_basic_path(metadata: Dict, model_data: Dict, filename: str, root_path: str):
-    """ This is useful when you only just want all of the lora in the same parent folder."""
+    """This is useful when you only just want all of the lora in the same parent folder."""
     return os.path.join(root_path, filename)
 
 
