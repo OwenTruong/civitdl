@@ -84,7 +84,7 @@ def batch_download_by_file(argv: list[str]):
         version_id = id[1] if len(id) == 2 else None
         download_model(model_id=model_id, create_dir_path=filter_model,
                        dst_root_path=args[1], max_img_count=(kwargs['max-images'] if 'max-images' in kwargs else 3), version_id=version_id)
-        time.sleep(5)
+        time.sleep(2)
 
 
 def batch_download_by_str(argv: list[str]):

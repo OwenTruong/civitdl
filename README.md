@@ -67,6 +67,7 @@ Please create an issue if you encounter any problem, bugs or if you have a featu
 
 ## Features to Implement
 * Save bandwidth by enabling the option to move safetensors file instead of downloading a fresh new copy in batchdir.
+* Turn it into a python package so it can be installed globally.
 
 ## License
 
