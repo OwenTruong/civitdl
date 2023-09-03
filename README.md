@@ -13,7 +13,8 @@ There are three ways to batch download using this script:
 ## Getting Started
 
 ### Dependencies
-Requires Python 3.10 or later.
+1. Requires Python 3.10 or later.
+
 
 ### Installing
 * Git clone project
@@ -63,6 +64,9 @@ Requires Python 3.10 or later.
 ## Help
 
 Please create an issue if you encounter any problem, bugs or if you have a feature request.
+
+## Features to Implement
+* Save bandwidth by enabling the option to move safetensors file instead of downloading a fresh new copy in batchdir.
 
 ## License
 
