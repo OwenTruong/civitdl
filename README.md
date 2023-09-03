@@ -14,6 +14,7 @@ There are three ways to batch download using this script:
 
 ### Dependencies
 1. Requires Python 3.10 or later.
+2. Requires request package. Run "pip3 install -r requirements.txt" if request package is not installed.
 
 
 ### Installing
