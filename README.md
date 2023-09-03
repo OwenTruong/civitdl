@@ -47,10 +47,10 @@ Requires Python 3.10 or later.
 #### Filters
 * Beyond downloading models, it is possible to specify some filters, or rules, on how to organize the model folders when batch downloading multiple models.
 * There are two built-in filters: tags and basic.
-    * tags filters the models by the model type (i.e. if lora is trained on a 1.5 or 2.0 or SDXL base model) and tags associated with them on CivitAI. 
+    * "tags" filters the models by the model type (i.e. if lora is trained on a 1.5 or 2.0 or SDXL base model) and tags associated with them on CivitAI. 
         * Example, if a model was trained on 1.5, and has tags - Anime, Character -, it would be filtered as so: /SD_1.5/Anime/Character/yaemiko-lora-nochekaiser/yaemiko-lora-nochekaiser-123456.safetensors
         * See [dirpaths.py](./lib/dirpaths.py?plain=1#L13) for available tags in the filter.
-    * basic does not filter anything. It just downloads all of the models' data inside destination path folder specified in the arguments.
+    * "basic" does not filter anything. It just downloads all of the models' data inside destination path folder specified in the arguments. It is also the default filter function used.
         * Example: 
             * Running script: ./main.py batchstr "123456" ~/models
             * The model for 123456 is a Yae Miko character lora by coincidence. The folder that includes the models folder, json and example images are stored in the following path: ~/models/yaemiko-lora-nochekaiser
