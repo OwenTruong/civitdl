@@ -23,6 +23,7 @@ There are three ways to batch download using this script:
 ### Executing program
 
 #### batchdir
+* Args: ./main.py batchdir <source model folder path> <destination model folder path>
 * Make sure model id is the last number in the text file. 
     * Example, some times, model makers like to include their epoch count in their safetensors filename so make sure that is not the last number. Suppose the model id is 123456: amazing_lora-00020-123456.safetensors.
 * Examples:
@@ -32,6 +33,7 @@ There are three ways to batch download using this script:
 
 
 #### batchfile 
+* Args: ./main.py batchfile <txt file path> <destination model folder path>
 * Make sure everything is comma separated. txt files are recommended. 
 * The list can be made out of model id or civitai.com urls. 
 * If you need a specific version of a model, copy paste the url of the specific version in the txt file, and it would download the correct one.
@@ -42,6 +44,7 @@ There are three ways to batch download using this script:
 
 
 #### batchstr
+* Args: ./main.py batchstr <comma separated string of model id / url> <destination model folder path>
 * Accepts model id or urls separated by commas as an argument.
 * Examples:
     * ./main.py batchstr "https://civitai.com/models/7808/easynegative, 79326" ~/Downloads/ComfyUI/models/loras
