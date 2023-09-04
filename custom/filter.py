@@ -6,7 +6,7 @@ import os
 
 
 def filter_model(metadata: Dict, model_data: Dict, filename: str, root_path: str):
-    """This example will filter models based on alphabetical order. There are going to be four directories: A-F, G-L, M-R, S-Z, unidentified"""
+    """This example will filter models based on alphabetical order. There are going to be five directories: A-F, G-L, M-R, S-Z, unidentified"""
     dirs = [('A', 'F'), ('G', 'L'), ('M', 'R'), ('S', 'Z')]
     chosen = 'unidentified'
 
