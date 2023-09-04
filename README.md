@@ -1,6 +1,6 @@
 # civitai-batch-download
 
-Uses CLI to batch download models, metadatas (including description of model, author, base model, example prompts and etc.) and example images of checkpoint and lora models.
+Uses CLI to batch download models, metadatas (including description of model, author, base model, example prompts and etc.) and example images (default is 3) of checkpoint and lora models. One thing to note is that for **sfw models**, currently, the program is set to only **download sfw images**.
 
 ## Description
 
