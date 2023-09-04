@@ -24,7 +24,7 @@ There are three ways to batch download using this script:
 
 #### batchdir
 * Make sure model id is the last number in the text file. 
-    * Example, some times, model makers like to include their epoch count in their safetensors filename: amazing_lora-00020.safetensors.
+    * Example, some times, model makers like to include their epoch count in their safetensors filename so make sure that is not the last number. Suppose the model id is 123456: amazing_lora-00020-123456.safetensors.
 * Examples:
     * ./main.py batchdir ~/loras ~/sorted-loras
         * Will get the model id from all of your safetensors' filename in ~/loras recursively
