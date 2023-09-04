@@ -58,7 +58,7 @@ There are three ways to batch download using this script:
             * The model for 123456 is a Yae Miko character lora by coincidence. The folder that includes the models folder, json and example images are stored in the following path: ~/models/yaemiko-lora-nochekaiser
 
 #### Creating Custom Filters
-* To create a custom filter, please create a python file with any name. The only thing that is important is that the python file must contain a function called filter_model that has the following signatures: filter_model(Dict,Dict,str,str) -> str
+* To create a custom filter, please create a python file with any filename. The only thing that is important is that the python file must contain a function called filter_model that has the following signatures: filter_model(Dict,Dict,str,str) -> str
 * Please see [filter.py](./custom/filter.py) in custom folder for an example.
 
 
