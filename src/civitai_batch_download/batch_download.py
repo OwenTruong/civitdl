@@ -1,10 +1,10 @@
 import os
 import time
 
-from lib.get_model import download_model
-from lib.get_model_id import get_model_ids_from_comma_file, get_model_ids_from_comma_str, get_model_ids_from_dir_path
-from lib.filters import choose_filter_helper
-from lib.utils.utils import parse_args
+from get_model import download_model
+from utils.get_model_id import get_model_ids_from_comma_file, get_model_ids_from_comma_str, get_model_ids_from_dir_path
+from utils.filters import choose_filter_helper
+from utils.utils import parse_args
 
 
 def batch_download_by_dir(argv: list[str]):

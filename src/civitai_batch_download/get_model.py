@@ -2,9 +2,9 @@ from json import dumps
 import requests
 import os
 import re
-from typing import Callable, Dict, List
+from typing import Callable, Dict
 
-from lib.utils.utils import write_to_file
+from utils.utils import write_to_file
 
 
 def _get_metadata_json(id: str):

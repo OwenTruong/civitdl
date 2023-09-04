@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
-from lib.batch_download import batch_download_by_dir, batch_download_by_file, batch_download_by_str
+from civitai_batch_download.batch_download import batch_download_by_dir, batch_download_by_file, batch_download_by_str
 
 
 def main():
