@@ -9,7 +9,7 @@ import time
 
 from lib.get_model import download_model
 from lib.get_model_id import get_model_ids_from_comma_file, get_model_ids_from_comma_str, get_model_ids_from_dir_path
-from lib.dirpaths import create_basic_path, create_path_by_tags
+from lib.filters import create_basic_path, create_path_by_tags
 from lib.utils.utils import parse_args
 # from custom.tags import create_dir_path_by_tag
 
