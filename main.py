@@ -58,8 +58,6 @@ def batch_download_by_dir(argv: list[str]):
                        dst_root_path=args[1], max_img_count=(kwargs['max-images'] if 'max-images' in kwargs else 3))
         time.sleep(5)
 
-# TODO: Write a README.md guide that 1) talks about how to use the commands, 2) talks about how to write a custom script
-
 
 def batch_download_by_file(argv: list[str]):
     args_format = '<Comma Separated File> <Destination Path> --custom-filter=<Path to a python file (optional)> --filter=<Choose between the two implemented filters (optional)> --max-images=<Default is 3 per model (optional)>'

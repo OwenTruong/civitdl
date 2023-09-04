@@ -69,7 +69,7 @@ There are three ways to batch download using this script:
 
 Please create an issue if you encounter any problem, bugs or if you have a feature request.
 
-## Features to Implement
+## TODO
 * Save bandwidth by enabling the option to move safetensors file instead of downloading a fresh new copy in batchdir.
 * Turn it into a python package so it can be installed globally.
 
