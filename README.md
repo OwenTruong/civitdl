@@ -77,7 +77,7 @@ Please create an issue if you encounter any problem, bugs or if you have a featu
 
 ## TODO
 * Save bandwidth by enabling the option to move safetensors file instead of downloading a fresh new copy in batchdir.
-* Turn it into a python package so it can be installed globally.
+* Allow the option to install nsfw images even if the model is sfw.
 
 ## License
 
