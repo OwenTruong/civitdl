@@ -8,7 +8,7 @@ There are three ways to batch download using this script:
 - batchdir -> given the path to a folder, it finds all of the safetensors file and extract the model id from the filename if it exists.
     - ex: some_kind_of_model-123456.safetensors, model id is 123456
 - batchfile -> given the path to a comma separated text file (recommend .txt) that contains numbers or urls, it extracts all of the model ids from the file.
-- batchstr -> specify a comma separated list of model id as arguments.
+- batchstr -> specify a comma separated list of model id and/or url as arguments.
 
 ## Getting Started
 
