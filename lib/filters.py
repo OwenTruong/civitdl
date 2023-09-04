@@ -1,3 +1,4 @@
+import importlib.util
 from typing import Dict
 import os
 
@@ -26,3 +27,25 @@ def create_path_by_tags(metadata: Dict, model_data: Dict, filename: str, root_pa
     path = os.path.join(path, filename)
 
     return path
+
+
+def choose_filter_helper(kwargs: Dict[str, str]):
+    filter_model = None
+    if 'custom-filter' in kwargs:
+        if not os.path.exists(kwargs['custom-filter']):
+            return print('Error: Custom filter python file does not exist')
+        spec = importlib.util.spec_from_file_location(
+            'plugin', kwargs['custom-filter'])
+        plugin = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(plugin)
+        filter_model = plugin.filter_model
+    elif 'filter' in kwargs:
+        if kwargs['filter'] == 'tags':
+            filter_model = create_path_by_tags
+        elif kwargs['filter'] == 'basic':
+            filter_model = create_basic_path
+        else:
+            return print(f'Error: Unknown filter specified. The available built-in filters are {["tags", "basic"]} (basic is the default filter)')
+    else:
+        filter_model = create_basic_path
+    return filter_model

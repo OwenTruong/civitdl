@@ -1,39 +1,15 @@
 #!/usr/bin/env python3
 
 import os
-import re
 import sys
 from typing import Callable, Dict
-import importlib.util
 import time
 
 from lib.get_model import download_model
 from lib.get_model_id import get_model_ids_from_comma_file, get_model_ids_from_comma_str, get_model_ids_from_dir_path
-from lib.filters import create_basic_path, create_path_by_tags
+from lib.filters import choose_filter_helper
 from lib.utils.utils import parse_args
 # from custom.tags import create_dir_path_by_tag
-
-
-def choose_filter_helper(kwargs: Dict[str, str]):
-    filter_model = None
-    if 'custom-filter' in kwargs:
-        if not os.path.exists(kwargs['custom-filter']):
-            return print('Error: Custom filter python file does not exist')
-        spec = importlib.util.spec_from_file_location(
-            'plugin', kwargs['custom-filter'])
-        plugin = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(plugin)
-        filter_model = plugin.filter_model
-    elif 'filter' in kwargs:
-        if kwargs['filter'] == 'tags':
-            filter_model = create_path_by_tags
-        elif kwargs['filter'] == 'basic':
-            filter_model = create_basic_path
-        else:
-            return print(f'Error: Unknown filter specified. The available built-in filters are {["tags", "basic"]} (basic is the default filter)')
-    else:
-        filter_model = create_basic_path
-    return filter_model
 
 
 def batch_download_by_dir(argv: list[str]):
