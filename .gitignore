@@ -8,3 +8,6 @@ custom/*
 !custom/batchfile.txt
 __pycache__/
 **/__pycache__
+.venv
+dist
+**/*.egg-info

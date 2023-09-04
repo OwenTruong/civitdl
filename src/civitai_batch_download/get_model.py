@@ -4,7 +4,7 @@ import os
 import re
 from typing import Callable, Dict
 
-from utils.utils import write_to_file
+from .utils import write_to_file
 
 
 def _get_metadata_json(id: str):
