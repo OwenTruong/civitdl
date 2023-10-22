@@ -35,7 +35,9 @@ If you encounter the following warning on Linux:
   Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
 ```
 Please concat the path to your PATH env, example:
-- echo 'PATH="$HOME/.local/bin:"$PATH' >> ~/.bashrc
+```bash
+echo 'PATH="$HOME/.local/bin:"$PATH' >> ~/.bashrc
+```
 
 
 ### Executing program - Replace civitdl with ./main.py if not doing a global install
