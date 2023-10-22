@@ -14,15 +14,16 @@ There are three ways to batch download using this script:
 
 ### Dependencies
 1. Requires Python 3.10 or later.
+2. build
+3. requests
 
 
 ### Installing
 
-#### Cloning
-* Download the project: git clone https://github.com/OwenTruong/civitai-batch-download.git
-
 #### Global Install (recommended)
+* Download the project: git clone https://github.com/OwenTruong/civitai-batch-download.git
 * Inside terminal, run: cd civitai-batch-download
+* If you have pip3 available in the environment, run pip3 -r requirements.txt
 * Then run to make cli command available globally: make dev 
 
 
