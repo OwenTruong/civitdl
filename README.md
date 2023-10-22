@@ -41,6 +41,7 @@ If you encounter the following warning on Linux:
 Please concat the path to your PATH env, example:
 ```bash
 echo 'PATH="$HOME/.local/bin:"$PATH' >> ~/.bashrc
+source ~/.bashrc
 ```
 
 
