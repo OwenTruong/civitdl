@@ -24,6 +24,7 @@ There are three ways to batch download using this script:
 * Download the project: git clone https://github.com/OwenTruong/civitai-batch-download.git
 * Inside terminal, run: cd civitai-batch-download
 * If you have pip3 available in the environment, run pip3 -r requirements.txt
+  * Else, please install build and requests dependencies based on your OS' instructions.
 * Then run to make cli command available globally: make dev 
 
 
