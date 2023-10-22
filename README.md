@@ -25,7 +25,17 @@ There are three ways to batch download using this script:
 * Inside terminal, run: cd civitai-batch-download
 * If you have pip3 available in the environment, run pip3 -r requirements.txt
   * Else, please install build and requests dependencies based on your OS' instructions.
-* Then run to make cli command available globally: make dev 
+* Then run to make cli command available globally: make dev
+
+#### Troubleshooting
+
+If you encounter the following warning on Linux:
+```bash
+  WARNING: The script civitdl is installed in '/home/OwenTruong/.local/bin' which is not on PATH.
+  Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
+```
+Please concat the path to your PATH env, example:
+- echo 'PATH="$HOME/.local/bin:"$PATH' >> ~/.bashrc
 
 
 ### Executing program - Replace civitdl with ./main.py if not doing a global install
