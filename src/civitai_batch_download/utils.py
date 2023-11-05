@@ -1,3 +1,4 @@
+import json
 from typing import Callable
 
 
@@ -27,3 +28,28 @@ def parse_args(args: list[str]):
             non_kwargs.append(arg)
 
     return (kwargs, non_kwargs)
+
+
+def err_if_true(condition: bool, message: str, status: int):
+    """Raises an exception fi condition is true"""
+
+    if condition:
+        dic = {
+            "status": status,
+            "message": message
+        }
+        raise Exception(json.dumps(dic))
+    else:
+        return False
+
+
+def err_400_if_true(condition: bool, message: str):
+    return err_if_true(condition, message, 400)
+
+
+def err_404_if_true(condition: bool, message: str):
+    return err_if_true(condition, message, 404)
+
+
+def err_500_if_true(condition: bool, message: str):
+    return err_if_true(condition, 'InternalError: ' + message, 500)
