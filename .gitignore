@@ -3,8 +3,8 @@ test.txt
 manual-test
 custom/*
 !custom/filter.py
-!custom/metadata-example.json
-!custom/model_data-example.json
+!custom/model_dict-example.json
+!custom/verson_dict-example.json
 !custom/batchfile.txt
 __pycache__/
 **/__pycache__

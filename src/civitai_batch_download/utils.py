@@ -53,3 +53,7 @@ def err_404_if_true(condition: bool, message: str):
 
 def err_500_if_true(condition: bool, message: str):
     return err_if_true(condition, 'InternalError: ' + message, 500)
+
+
+def err_501_if_true(condition: bool, message: str):
+    return err_if_true(condition, 'ImplementationError: ' + message, 501)

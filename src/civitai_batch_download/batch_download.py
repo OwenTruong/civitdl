@@ -1,10 +1,13 @@
 import os
 import time
 import re
+import functools
+
+import requests
 
 from .get_model import download_model
 from .filters import choose_filter_helper
-from .utils import err_400_if_true, err_404_if_true, err_500_if_true, parse_args
+from .utils import err_400_if_true, err_404_if_true, err_500_if_true, err_501_if_true, err_if_true, parse_args
 
 
 args_message = {
@@ -19,24 +22,19 @@ args_message = {
 }
 
 
-def get_model_ids(type: str, source: str):
-    """Type can be any of the actions"""
-    ids = source
-
-    # TODO: make it so we don't have to guess types
-
+def get_input_strings(type: str, source: str):
+    string = source
     if type == 'batchfile':
         with open(source, 'r') as file:
-            ids = file.read().strip()
-    ids = ids.split(',')
-    ids = [re.findall(r'\d+', id) for id in ids]
-    ids = [id for id in ids if len(id) > 0]
-    print(ids)
-    return ids
+            string = file.read().strip()
+    return [input_str for input_str in string.replace('\n', '').split(',') if input_str.strip() != '']
 
 
 def batch_download(type: str, argv: list[str]):
     """Accepted type are batchfile and batchstr"""
+    err_500_if_true(type != 'batchfile' and type != 'batchstr',
+                    f'Unknown batch type --> {type}')
+
     message = args_message[type]
     kwargs, args = parse_args(argv)
     err_400_if_true(len(args) < 2,
@@ -44,24 +42,23 @@ def batch_download(type: str, argv: list[str]):
     err_404_if_true(type != 'batchstr' and not os.path.exists(
         args[0]), 'Source directory does not exist.')
 
-    ids = None
-    if type == 'batchfile':
-        ids = get_model_ids(type, args[0])
-    elif type == 'batchstr':
-        ids = get_model_ids(type, args[0])
-    else:
-        err_500_if_true(True, ValueError,
-                        f'Unknown batch type --> {type}')
+    input_li = None
+    input_li = get_input_strings(type, args[0])
 
-    err_500_if_true(ids == None, 'ids is of type None')
+    err_500_if_true(input_li == None, 'input_li is of type None')
+    err_500_if_true(len(input_li) == None,
+                    f'get_input_strings was not able to parse argument, {args[0]}')
 
     filter_model = choose_filter_helper(kwargs)
     err_500_if_true(filter_model == None,
                     'Error: filter_model is of type None')
 
-    for id in ids:
-        model_id = id[0]
-        version_id = id[1] if len(id) == 2 else None
-        download_model(model_id=model_id, create_dir_path=filter_model,
-                       dst_root_path=args[1], max_img_count=(kwargs['max-images'] if 'max-images' in kwargs else 3), version_id=version_id)
+    for input_str in input_li:
+
+        download_model(
+            input_str=input_str,
+            create_dir_path=filter_model,
+            dst_root_path=args[1],
+            download_image=True,
+            max_img_count=(kwargs['max-images'] if 'max-images' in kwargs else 3))
         time.sleep(2)

@@ -1,6 +1,6 @@
 # civitai-batch-download
 
-Uses CLI to batch download models, metadatas (including description of model, author, base model, example prompts and etc.) and example images (default is 3) of checkpoint and lora models. One thing to note is that for **sfw models**, currently, the program is set to only **download sfw images**. Please note that there may be sfw models that are rated as nsfw by CivitAI (and vice versa).
+Uses CLI to batch download models, metadata (including description of model, author, base model, example prompts and etc.) and example images (default is 3) of checkpoint and lora models. One thing to note is that for **sfw models**, currently, the program is set to only **download sfw images**. Please note that there may be sfw models that are rated as nsfw by CivitAI (and vice versa).
 
 ## Description
 
@@ -13,23 +13,25 @@ There are three ways to batch download using this script:
 ## Getting Started
 
 ### Dependencies
-1. Requires Python 3.10 or later.
-2. build
-3. requests
+* Install using `pip3 install -r requirements.txt`
+  * Replace `pip3` with `pip` if `pip3` is not found (but this script still requires Python 3)
 
 
 ### Installing
 
 #### Global Install (recommended)
 * Download the project:
-    * git clone https://github.com/OwenTruong/civitai-batch-download.git
+    * `git clone https://github.com/OwenTruong/civitai-batch-download.git`
 * Inside terminal, run:
-    * cd civitai-batch-download
-* If you have pip3 available in the environment, run:
+    * `cd civitai-batch-download`
+* Then run:
     * pip3 -r requirements.txt
-    * Else, please install build and requests dependencies based on your OS' instructions.
-* Then run to make cli command available globally:
-    * make dev
+        * If `pip3` is not found, try `pip`
+        * If `build` or `requests` is not installable, please install them based on your OS's instruction.
+* Then run:
+    * `make dev`
+* Now the module is available globally (example):
+    * `civitdl batchstr 123456 ./`
 
 #### Troubleshooting
 
@@ -45,49 +47,46 @@ source ~/.bashrc
 ```
 
 
-### Executing program - Replace civitdl with ./main.py if not doing a global install
-
-#### batchdir
-* Args: civitdl batchdir \<source model folder path> \<destination model folder path>
-* Make sure model id is the last number in the text file. 
-    * Example, some times, model makers like to include their epoch count in their safetensors filename so make sure that is not the last number. Suppose the model id is 123456: amazing_lora-00020-123456.safetensors.
-* Examples:
-    * civitdl batchdir ~/loras ~/sorted-loras
-        * Will get the model id from all of your safetensors' filename in ~/loras recursively
-    * civitdl batchdir ./stable-diffusion-webui/models/Lora/unfiltered ./stable-diffusion-webui/models/Lora/filtered --filter=tags
-
+### Executing program
 
 #### batchfile 
-* Args: civitdl batchfile \<txt file path> \<destination model folder path>
+* Args: 
+    * `civitdl batchfile <txt file path> <destination model folder path>`
 * Make sure everything is comma separated. txt files are recommended. 
-* The list can be made out of model id or civitai.com urls. 
+* The list can be made out of model id or civitai.com/models urls. 
+  * `civitai.com/api/download/models` urls are not supported yet.
 * If you need a specific version of a model, copy paste the url of the specific version in the txt file, and it would download the correct one.
 * Examples:
-    * civitdl batchfile ./custom/batchfile.txt ~/sorted-models --filter=tags
-    * civitdl batchfile ./custom/batchfile.txt ~/sorted-models --custom-filter=./custom/filter.py
+    * `civitdl batchfile ./custom/batchfile.txt ~/sorted-models --filter=tags`
+    * `civitdl batchfile ./custom/batchfile.txt ~/sorted-models --custom-filter=./custom/filter.py`
 * See [batchfile.txt](./custom/batchfile.txt) for example of a batchfile
 
 
 #### batchstr
-* Args: civitdl batchstr \<comma separated string of model id / url> \<destination model folder path>
+* Args: 
+    * `civitdl batchstr <comma separated string of model id / url> <destination model folder path>`
 * Accepts model id or urls separated by commas as an argument.
 * Examples:
-    * civitdl batchstr "https://civitai.com/models/7808/easynegative, 79326" ~/Downloads/ComfyUI/models/loras
+    * `civitdl batchstr "https://civitai.com/models/7808/easynegative, 79326" ~/Downloads/ComfyUI/models/loras`
 
 #### Filters
 * Beyond downloading models, it is possible to specify some filters, or rules, on how to organize the model folders when batch downloading multiple models.
 * There are two built-in filters: tags and basic.
     * "tags" filters the models by the model type (i.e. if lora is trained on a 1.5 or 2.0 or SDXL base model) and tags associated with them on CivitAI. 
-        * Example, if a model was trained on 1.5, and has tags - Anime, Character -, it would be filtered as so: /SD_1.5/Anime/Character/yaemiko-lora-nochekaiser/yaemiko-lora-nochekaiser-123456.safetensors
+        * Example, if a model was trained on 1.5, and has tags - Anime, Character -, it would be filtered as so: 
+          * Running script: `civitdl batchstr 123456 ~/models --filter="tags"`
+            * `~/models/SD_1.5/Anime/Character/yaemiko-lora-nochekaiser/yaemiko-lora-nochekaiser-mid_123456-vid_134605.safetensors`
         * See [filters.py](./src/civitai_batch_download/filters.py?plain=1#L13) for available tags in the filter.
     * "basic" does not filter anything. It just downloads all of the models' data inside destination path folder specified in the arguments. It is also the default filter function used.
         * Example: 
-            * Running script: civitdl batchstr "123456" ~/models
-            * The model for 123456 is a Yae Miko character lora by coincidence. The folder that includes the models folder, json and example images are stored in the following path: ~/models/yaemiko-lora-nochekaiser
+            * Running script: `civitdl batchstr "123456" ~/models`
+            * The model for 123456 is a Yae Miko character lora. The folder that includes the models folder, json and example images are stored in the following path: ~/models/yaemiko-lora-nochekaiser
 
 #### Creating Custom Filters
 * To create a custom filter, please create a python file with any filename. The only thing that is important is that the python file must contain a function called filter_model that has the following signatures: filter_model(Dict,Dict,str,str) -> str
 * Please see [filter.py](./custom/filter.py) in custom folder for an example.
+  * Other examples include the built in one [filters.py](./src/civitai_batch_download/filters.py).
+
 
 
 ## Help
