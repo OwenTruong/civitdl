@@ -1,11 +1,11 @@
 from typing import Dict
 import os
 
-# See custom/metadata-example.json and custom/model_data-example.json for examples of the kind of data metadata and model_data parameters provide.
+# See custom/model_dict-example.json and custom/version_dict-example.json for examples of the kind of data model_dict and version_dict parameters provide.
 # Load filter_model by calling the program with --custom-filter=./custom/example.py (or relative to whatever directory you are in currently).
 
 
-def filter_model(metadata: Dict, model_data: Dict, filename: str, root_path: str):
+def filter_model(model_dict: Dict, version_dict: Dict, filename: str, root_path: str):
     """This example will filter models based on alphabetical order. There are going to be five directories: A-F, G-L, M-R, S-Z, unidentified"""
     dirs = [('A', 'F'), ('G', 'L'), ('M', 'R'), ('S', 'Z')]
     chosen = 'unidentified'
