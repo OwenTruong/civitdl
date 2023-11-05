@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import ast
-import json
 import sys
 from traceback import print_exc
 from termcolor import colored

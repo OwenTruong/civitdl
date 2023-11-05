@@ -1,9 +1,8 @@
+import ast
 import os
 import time
-import re
-import functools
-
-import requests
+from traceback import print_exc
+from termcolor import colored
 
 from .get_model import download_model
 from .filters import choose_filter_helper
@@ -27,7 +26,9 @@ def get_input_strings(type: str, source: str):
     if type == 'batchfile':
         with open(source, 'r') as file:
             string = file.read().strip()
-    return [input_str for input_str in string.replace('\n', '').split(',') if input_str.strip() != '']
+    res = [input_str for input_str in string.replace(
+        '\n', '').split(',') if input_str.strip() != '']
+    return res
 
 
 def batch_download(type: str, argv: list[str]):
@@ -54,11 +55,19 @@ def batch_download(type: str, argv: list[str]):
                     'Error: filter_model is of type None')
 
     for input_str in input_li:
-
-        download_model(
-            input_str=input_str,
-            create_dir_path=filter_model,
-            dst_root_path=args[1],
-            download_image=True,
-            max_img_count=(kwargs['max-images'] if 'max-images' in kwargs else 3))
-        time.sleep(2)
+        try:
+            download_model(
+                input_str=input_str,
+                create_dir_path=filter_model,
+                dst_root_path=args[1],
+                download_image=True,
+                max_img_count=(kwargs['max-images'] if 'max-images' in kwargs else 3))
+            time.sleep(2)
+        except Exception as e:
+            try:
+                res = ast.literal_eval(str(e))
+                print(
+                    f"{colored('Status ' + str(res['status']), 'red', attrs=['bold'])}: {colored(res['message'], 'red')}")
+            except:
+                # TODO: What do we do about error status from civitai's server?
+                print_exc(e)

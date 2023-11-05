@@ -38,9 +38,28 @@ class Metadata:
         self.__handler(id)
 
     def __url_handler(self):
-        regex = r'((?<=models\/)\d+)|((?<=modelVersionId=)\d+)'
-        id = re.findall(regex, self.__id_string)
-        self.__handler(id)
+        model_id_regex = r'(?<=models\/)\d+'
+        version_id_regex = r'(?<=modelVersionId=)\d+'
+        model_id = re.search(model_id_regex, self.__id_string)
+        version_id = re.search(version_id_regex, self.__id_string)
+        err_400_if_true(model_id == None,
+                        f'Incorrect format for the url/id provided: {self.__id_string}')
+        model_id = model_id.group(0)
+        err_500_if_true(
+            model_id == None, f'Unknown error while parsing model id for the url/id provided: {self.__id_string}')
+
+        if version_id:
+            version_id = version_id.group(0)
+            err_500_if_true(
+                version_id == None, f'Unknown error while parsing version id for the url/id provided: {self.__id_string}')
+            self.__handler([model_id, version_id])
+        else:
+            self.__handler([model_id])
+
+        # file_version_id = re.search(r'(?<=models\/)\d+', file['downloadUrl'])
+        # if file_version_id != None and file_version_id.group(0) == metadata.version_id:
+        #     filename = file['name']
+        #     break
 
     def __handler(self, id):
         if len(id) == 2:

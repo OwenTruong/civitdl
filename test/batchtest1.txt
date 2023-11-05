@@ -1,3 +1,8 @@
 123456,
 78901,
-23456
+ssss,
+23456,
+https://civitai.com/models/190315/frieren-3-outfits-or-frieren-beyond-journeys-end?modelVersionId=213725,
+https://civitai.com/models/20522/gobin-slayer-priestessor,
+https://civitai.com/models/135451?modelVersionId=149306,
+https://civitai.com/models/68415/25d-style-lora
