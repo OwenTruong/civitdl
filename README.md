@@ -23,7 +23,7 @@ There are two ways to batch download using this script (NOTE: batchdir has been 
 * Inside terminal, run:
     * `cd civitai-batch-download`
 * Then run:
-    * pip3 -r requirements.txt
+    * `pip3 -r requirements.txt`
         * If `pip3` is not found, try `pip`
         * If `build` or `requests` is not installable, please install them based on your OS's instruction.
 * Then run:
