@@ -1,5 +1,6 @@
 dev: clean
 	python3 -m build
+	pip3 install -r ./requirements.txt
 	pip3 install --upgrade dist/*.whl
 
 test: dev

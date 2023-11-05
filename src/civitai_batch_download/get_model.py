@@ -104,4 +104,4 @@ def download_model(model_id: str, create_dir_path: Callable[[Dict, Dict, str, st
             dst_dir_path, model_dict['images'], meta_json['nsfw'], max_img_count)
 
     print(colored(
-        f"Download completed for \"{meta_json['name']}\" with model id, {model_id}, and version id, {version_id}...", 'green'))
+        f"Download completed for \"{meta_json['name']}\" with model id, {model_id}, and version id, {version_id}: {filename_without_ext}-{model_id}.safetensors", 'green'))
