@@ -51,8 +51,7 @@ source ~/.bashrc
 * Args: 
     * `civitdl batchfile <txt file path> <destination model folder path>`
 * Make sure everything is comma separated. txt files are recommended. 
-* The list can be made out of model id or civitai.com/models urls. 
-  * `civitai.com/api/download/models` urls are not supported yet.
+* The list can be made out of model id, civitai.com/models or civitai.com/api/download/models urls. 
 * If you need a specific version of a model, copy paste the url of the specific version in the txt file, and it would download the correct one.
 * Examples:
     * `civitdl batchfile ./custom/batchfile.txt ~/sorted-models --filter=tags`
