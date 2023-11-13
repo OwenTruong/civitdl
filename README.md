@@ -11,21 +11,24 @@ There are two ways to batch download using this script (NOTE: batchdir has been 
 ## Getting Started
 
 ### Dependencies
-* Install using `pip3 install -r requirements.txt`
-  * Replace `pip3` with `pip` if `pip3` is not found (but this script still requires Python 3)
+* Python3
+* `requirements.txt`
 
 
 ### Installing
 
-#### Global Install (recommended)
+#### Install using PIP
+* `pip3 install civitdl`
+  * Use `pip install civitdl` if `pip3` is not found.
+
+#### Build from source
 * Download the project:
     * `git clone https://github.com/OwenTruong/civitdl.git`
 * Inside terminal, run:
     * `cd civitai-batch-download`
 * Then run:
     * `pip3 -r requirements.txt`
-        * If `pip3` is not found, try `pip`
-        * If `build` or `requests` is not installable, please install them based on your OS's instruction.
+        * Use `pip install civitdl` if `pip3` is not found.
 * Then run:
     * `make dev`
 * Now the module is available globally (example):
