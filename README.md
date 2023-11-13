@@ -94,12 +94,6 @@ source ~/.bashrc
 
 Please create an issue if you encounter any problem, bugs or if you have a feature request.
 
-## TODO
-* Save bandwidth by enabling the option to move safetensors file instead of downloading a fresh new copy in batchdir.
-* Allow the option to install nsfw images even if the model is sfw.
-* Remove match case statement in main.py to make compatibility with earlier version of python3 better. 
-* Add the ability to upload custom filters to the program and can be called persistently. To find all custom filters, a potential solution is to do civitdl filters ls. To call a custom filter, we can call them by their index id.
-
 ## License
 
 This project is licensed under the MIT License - see the LICENSE.md file for details
