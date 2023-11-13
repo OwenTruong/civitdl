@@ -7,7 +7,10 @@ test1:
 test2:
 	civitdl batchfile ./test/batchtest1.txt ./test/models/test2
 
-test: dev test1 test2
+errortest1:
+	civitdl batchfile ./test/errortest1.txt ./test/models/test2
+
+test: install test1 test2
 
 
 clean:
