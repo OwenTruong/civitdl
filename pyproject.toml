@@ -25,7 +25,7 @@ dynamic = ["dependencies"]
 dependencies = {file = ["requirements.txt"]}
 
 [project.urls]
-"Homepage" = "https://github.com/OwenTruong/civitdl"
+Repository = "https://github.com/OwenTruong/civitdl"
 "Bug Tracker" = "https://github.com/OwenTruong/civitdl/issues"
 
 [project.scripts]
