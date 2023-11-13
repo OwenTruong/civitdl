@@ -1,7 +1,32 @@
 [build-system]
 
-requires = [
-   "setuptools",
-   "wheel"
-]
+requires = [ "setuptools", "wheel" ]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "civitai_batch_download"
+version = "1.1.0"
+authors = [ 
+   { name = "Owen Truong" } 
+]
+description = "Package for batch downloading models from civitai.com"
+readme = "README.md"
+requires-python = ">=3.6"
+license = {file = "License"}
+keywords = ["civitai", "batch download"]
+classifiers = [
+   "Programming Language :: Python :: 3",
+   "License :: OSI Approved :: MIT License",
+   "Operating System :: OS Independent"
+]
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[project.urls]
+"Homepage" = "https://github.com/OwenTruong/civitai-batch-download"
+"Bug Tracker" = "https://github.com/OwenTruong/civitai-batch-download/issues"
+
+[project.scripts]
+civitdl = "civitai_batch_download.command_line:main"
