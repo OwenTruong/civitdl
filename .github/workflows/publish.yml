@@ -30,11 +30,37 @@ jobs:
           name: python-package-distributions
           path: dist/
 
+  check:
+    name: Check if version number is different
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check pypi versions
+        uses: maybe-hello-world/pyproject-check-version@v4
+        id: versioncheck
+        with:
+          pyproject-path: './pyproject.toml' # default value
+
+      - name: print output
+        run: |
+          echo "Output: ${{ steps.versioncheck.outputs.local_version_is_higher }}"  # 'true' or 'false
+          echo "Local version: ${{ steps.versioncheck.outputs.local_version }}"     # e.g., 0.1.1
+          echo "Public version: ${{ steps.versioncheck.outputs.public_version }}"   # e.g., 0.1.0
+
+      - name: check version
+        run: |
+          if [ "${{ steps.versioncheck.outputs.local_version_is_higher }}" == "false" ]; then
+            echo "Error: Local version is the same as the public version."
+            exit 1
+          fi
+
   publish-to-pypi:
     name: >-
       Publish Python 🐍 distribution 📦 to PyPI
     needs:
       - build
+      - check
     runs-on: ubuntu-latest
     environment:
       name: pypi
