@@ -16,4 +16,4 @@ clean:
 	rm -rf ./test/models
 
 uninstall: clean
-	pip3 uninstall civitai-batch-download -y
+	pip3 uninstall civitdl -y

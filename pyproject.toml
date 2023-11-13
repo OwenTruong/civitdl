@@ -4,7 +4,7 @@ requires = [ "setuptools", "wheel" ]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "civitai_batch_download"
+name = "civitdl"
 version = "1.1.0"
 authors = [ 
    { name = "Owen Truong" } 
@@ -25,8 +25,8 @@ dynamic = ["dependencies"]
 dependencies = {file = ["requirements.txt"]}
 
 [project.urls]
-"Homepage" = "https://github.com/OwenTruong/civitai-batch-download"
-"Bug Tracker" = "https://github.com/OwenTruong/civitai-batch-download/issues"
+"Homepage" = "https://github.com/OwenTruong/civitdl"
+"Bug Tracker" = "https://github.com/OwenTruong/civitdl/issues"
 
 [project.scripts]
-civitdl = "civitai_batch_download.command_line:main"
+civitdl = "civitdl.command_line:main"

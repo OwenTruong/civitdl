@@ -1,6 +1,6 @@
-# civitai-batch-download (civitdl)
+# civitdl (civitai-batch-download)
 
-Uses CLI to batch download Stable Diffusion models, metadata (including description of model, author, base model, example prompts and etc.) and example images (default is 3) of checkpoint and lora models. One thing to note is that for **sfw models**, currently, the program is set to only **download sfw images**. Please note that there may be sfw models that are rated as nsfw by CivitAI (and vice versa).
+Uses CLI to batch download Stable Diffusion models from CivitAI, metadata (including description of model, author, base model, example prompts and etc.) and example images (default is 3) of checkpoint and lora models. One thing to note is that for **sfw models**, currently, the program is set to only **download sfw images**. Please note that there may be sfw models that are rated as nsfw by CivitAI (and vice versa).
 
 ## Description
 
@@ -19,7 +19,7 @@ There are two ways to batch download using this script (NOTE: batchdir has been 
 
 #### Global Install (recommended)
 * Download the project:
-    * `git clone https://github.com/OwenTruong/civitai-batch-download.git`
+    * `git clone https://github.com/OwenTruong/civitdl.git`
 * Inside terminal, run:
     * `cd civitai-batch-download`
 * Then run:
