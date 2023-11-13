@@ -25,12 +25,12 @@ There are two ways to batch download using this script (NOTE: batchdir has been 
 * Download the project:
     * `git clone https://github.com/OwenTruong/civitdl.git`
 * Inside terminal, run:
-    * `cd civitai-batch-download`
+    * `cd civitdl`
 * Then run:
-    * `pip3 -r requirements.txt`
-        * Use `pip install civitdl` if `pip3` is not found.
+    * `pip3 install -r requirements.txt`
+        * Use `pip install -r requirements.txt ` if `pip3` is not found.
 * Then run:
-    * `make dev`
+    * `make install`
 * Now the module is available globally (example):
     * `civitdl batchstr 123456 ./`
 
@@ -93,12 +93,6 @@ source ~/.bashrc
 ## Help
 
 Please create an issue if you encounter any problem, bugs or if you have a feature request.
-
-## TODO
-* Save bandwidth by enabling the option to move safetensors file instead of downloading a fresh new copy in batchdir.
-* Allow the option to install nsfw images even if the model is sfw.
-* Remove match case statement in main.py to make compatibility with earlier version of python3 better. 
-* Add the ability to upload custom filters to the program and can be called persistently. To find all custom filters, a potential solution is to do civitdl filters ls. To call a custom filter, we can call them by their index id.
 
 ## License
 
