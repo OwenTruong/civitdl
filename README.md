@@ -63,7 +63,7 @@ source ~/.bashrc
 #### batchstr
 * Args: 
     * `civitdl batchstr <comma separated string of model id / url> <destination model folder path>`
-* Accepts model id or urls separated by commas as an argument.
+* Accepts model id or urls separated by commas as an argument (accepts the same type of comma separated list as batchfile).
 * Examples:
     * `civitdl batchstr "https://civitai.com/models/7808/easynegative, 79326" ~/Downloads/ComfyUI/models/loras`
 
