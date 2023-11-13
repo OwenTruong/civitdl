@@ -22,6 +22,8 @@ args_message = {
 
 
 def get_input_strings(type: str, source: str):
+    if len(source.strip()) == 0:
+        raise InputException('No model id or url provided')
     string = source
     if type == 'batchfile':
         with open(source, 'r') as file:
@@ -68,7 +70,7 @@ def batch_download(type: str, argv: list[str]):
     if input_li == None:
         raise UnexpectedException('input_li is of type None')
     elif len(input_li) == 0:
-        raise UnexpectedException(
+        raise InputException(
             f'get_input_strings was not able to parse argument: {args[0]}')
 
     filter_model = choose_filter_helper(kwargs)
