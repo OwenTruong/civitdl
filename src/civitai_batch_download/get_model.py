@@ -147,38 +147,39 @@ def download_model(input_str: str, create_dir_path: Callable[[Dict, Dict, str, s
                 f'Downloading model from CivitAI failed for model id, {metadata.model_id}, and version id, {metadata.version_id}', model_res.status_code)
 
     # Find filename
-    # FIXME: Finding filename by content-disposition is not working for UTF-8 characters (i.e. chinese characters). wget is able to retrieve the filename normally.
     content_disposition = model_res.headers.get('Content-Disposition')
     err_404_if_true(content_disposition == None,
                     f'Downloaded model from CivitAI has no content disposition header available.')
-    alt_filename = content_disposition.split('filename=')[-1].strip('"')
-
-    # Temporary solution for finding filename
     filename = None
-    for file in metadata.version_dict['files']:
-        file_version_id = re.search(r'(?<=models\/)\d+', file['downloadUrl'])
-        if file_version_id != None and file_version_id.group(0) == metadata.version_id:
-            filename = file['name']
-            break
+
+    try:
+        filename = content_disposition.split(
+            'filename=')[-1].strip('"').encode('latin-1').decode('utf-8')
+    except UnicodeDecodeError:
+        # Alternative solution for finding filename
+        for file in metadata.version_dict['files']:
+            file_version_id = re.search(
+                r'(?<=models\/)\d+', file['downloadUrl'])
+            if file_version_id != None and file_version_id.group(0) == metadata.version_id:
+                filename = file['name']
+                break
 
     if filename == None:
-        err_404_if_true(alt_filename == None,
-                        f"Error: Unable to retrieve filename for {metadata.model_name}")
-        filename = alt_filename
+        err_500_if_true(filename == None,
+                        f"Error: Unable to retrieve filename for {input_str}")
 
     # Create empty directory recursively
-    filename_without_ext = os.path.splitext(filename)[0]
+    filename_without_ext, filename_ext = os.path.splitext(filename)
     dst_dir_path = create_dir_path(
         metadata.model_dict, metadata.version_dict, filename_without_ext, dst_root_path)
     if not os.path.exists(dst_dir_path):
         os.makedirs(dst_dir_path)
 
     # Write model to the directory
-    model_filetype = 'safetensors'
     json_path = os.path.join(
         dst_dir_path, f'{filename_without_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}.json')
     model_path = os.path.join(
-        dst_dir_path, f'{filename_without_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}.{model_filetype}')
+        dst_dir_path, f'{filename_without_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}{filename_ext}')
     write_to_file(json_path, dumps(
         metadata.model_dict, indent=2, ensure_ascii=False))
     write_to_file(model_path, model_res.content, 'wb')

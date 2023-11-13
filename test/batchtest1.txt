@@ -8,3 +8,4 @@ https://civitai.com/models/197273?modelVersionId=221861,
 https://civitai.com/models/68415/25d-style-lora,
 https://civitai.com/api/download/models/128641,
 https://civitai.com/api/download/models/131654,
+https://civitai.com/models/185146/shizuka
