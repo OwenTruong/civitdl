@@ -1,4 +1,4 @@
-dev: uninstall
+install: uninstall
 	pip3 install .
 
 test1:
