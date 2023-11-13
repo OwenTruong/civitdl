@@ -6,7 +6,7 @@ from typing import Callable, Dict, List
 
 from termcolor import colored
 
-from .utils import err_400_if_true, err_404_if_true, err_500_if_true, err_501_if_true, err_if_true, write_to_file
+from .utils import err_400_if_true, err_404_if_true, err_500_if_true, err_501_if_true, err_if_true, write_to_file, write_to_file_with_progress_bar
 
 
 class Metadata:
@@ -129,25 +129,15 @@ def _download_image(dirpath: str, images: list[Dict], nsfw: bool, max_img_count)
             dirpath, os.path.basename(url)), image_res.content, 'wb')
 
 
-def download_model(input_str: str, create_dir_path: Callable[[Dict, Dict, str, str], str], dst_root_path: str, download_image: bool, max_img_count: int):
-    """
-        Downloads the model's safetensors and json metadata files.
-        create_dir_path is a callback function that takes in the following: metadata dict, specific model's data as dict, filename, and root path.
-    """
-    err_500_if_true(input_str == None or create_dir_path == None or dst_root_path ==
-                    None or download_image == None or max_img_count == None, 'download_model received a None type in one of its parameter')
+def _get_filename_and_model_res(input_str: str, metadata: Metadata):
+    # Request model
+    res = requests.get(metadata.download_url, stream=True, headers={
+        "Accept-Charset": "utf-16"})
+    err_if_true(res.status_code != 200,
+                f'Downloading model from CivitAI failed for model id, {metadata.model_id}, and version id, {metadata.version_id}', res.status_code)
 
-    metadata = Metadata(input_str)
-
-    print(colored(
-        f"Now downloading \"{metadata.model_name}\" with model id, {metadata.model_id}, and version id, {metadata.version_id}...", 'blue'))
-    model_res = requests.get(metadata.download_url, headers={
-                             "Accept-Charset": "utf-16"})
-    err_if_true(model_res.status_code != 200,
-                f'Downloading model from CivitAI failed for model id, {metadata.model_id}, and version id, {metadata.version_id}', model_res.status_code)
-
-    # Find filename
-    content_disposition = model_res.headers.get('Content-Disposition')
+    # Find filename from content disposition
+    content_disposition = res.headers.get('Content-Disposition')
     err_404_if_true(content_disposition == None,
                     f'Downloaded model from CivitAI has no content disposition header available.')
     filename = None
@@ -168,6 +158,27 @@ def download_model(input_str: str, create_dir_path: Callable[[Dict, Dict, str, s
         err_500_if_true(filename == None,
                         f"Error: Unable to retrieve filename for {input_str}")
 
+    return (res, filename)
+
+
+def download_model(input_str: str, create_dir_path: Callable[[Dict, Dict, str, str], str], dst_root_path: str, download_image: bool, max_img_count: int):
+    """
+        Downloads the model's safetensors and json metadata files.
+        create_dir_path is a callback function that takes in the following: metadata dict, specific model's data as dict, filename, and root path.
+    """
+    err_500_if_true(input_str == None or create_dir_path == None or dst_root_path ==
+                    None or download_image == None or max_img_count == None, 'download_model received a None type in one of its parameter')
+
+    metadata = Metadata(input_str)
+
+    print(colored(
+        f"""Now downloading \"{metadata.model_name}\"...
+            - Model ID: {metadata.model_id}
+            - Version ID: {metadata.version_id}\n""",
+        'blue'))
+
+    model_res, filename = _get_filename_and_model_res(input_str, metadata)
+
     # Create empty directory recursively
     filename_without_ext, filename_ext = os.path.splitext(filename)
     dst_dir_path = create_dir_path(
@@ -182,82 +193,15 @@ def download_model(input_str: str, create_dir_path: Callable[[Dict, Dict, str, s
         dst_dir_path, f'{filename_without_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}{filename_ext}')
     write_to_file(json_path, dumps(
         metadata.model_dict, indent=2, ensure_ascii=False))
-    write_to_file(model_path, model_res.content, 'wb')
+    write_to_file_with_progress_bar(model_path, model_res, 'wb')
     if download_image:
         _download_image(
             dst_dir_path, metadata.version_dict['images'], metadata.nsfw, max_img_count)
 
     print(colored(
-        f"Download completed for \"{metadata.model_name}\" with model id, {metadata.model_id}, and version id, {metadata.version_id}: {model_path}", 'green'))
+        f"""\nDownload completed for \"{metadata.model_name}\" 
+            - Model ID: {metadata.model_id}
+            - Version ID: {metadata.version_id}
+            - Path: {model_path}\n""", 'green'))
 
-
-# def download_model(model_id: str, create_dir_path: Callable[[Dict, Dict, str, str], str], dst_root_path: str, version_id: str = None, download_image: bool = True, max_img_count: int = 3):
-#     """
-#         Downloads the model's safetensors and json metadata files.
-#         create_dir_path is a callback function that takes in the following: metadata dict, specific model's data as dict, filename, and root path.
-#     """
-#     err_500_if_true(model_id == None or create_dir_path == None or dst_root_path ==
-#                     None or download_image == None or max_img_count == None, 'download_model received a None type in one of its parameter')
-
-#     def create_model_url(version):
-#         return f'https://civitai.com/api/download/models/{version}'
-
-#     # Fetch model metadata
-#     meta_json = _get_metadata_json(model_id)
-#     if (meta_json == None):
-#         return
-
-#     # Find the specific version of the model
-#     model_dict_list: list = meta_json['modelVersions']
-#     model_dict = model_dict_list[0] if version_id == None else next(
-#         (obj for obj in model_dict_list if str(obj['id']) == version_id), None)
-#     err_404_if_true(model_dict == None,
-#                     f'The version id, {version_id} provided does not exist on CivitAI for the model with model id, {model_id}.\nAvailable version ids: {[dict["id"] for dict in model_dict_list]}')
-#     version_id = model_dict['id']
-
-#     # Fetch model data
-#     print(colored(
-#         f"Now downloading \"{meta_json['name']}\" with model id, {model_id}, and version id, {version_id}...", 'blue'))
-#     model_res = requests.get(create_model_url(
-#         model_dict['id']), headers={"Accept-Charset": "utf-16"})
-
-#     err_if_true(model_res.status_code != 200,
-#                 f'Downloading model from CivitAI failed for model id, {model_id}, and version id, {version_id}', model_res.status_code)
-
-#     # Find filename # FIXME: Finding filename by content-disposition is not working for UTF-8 characters (i.e. chinese characters). wget is able to retrieve the filename normally.
-#     content_disposition = model_res.headers.get('Content-Disposition')
-#     err_404_if_true(content_disposition == None,
-#                     f'Downloaded model from CivitAI has no content disposition header available.')
-#     alt_filename = content_disposition.split('filename=')[-1].strip('"')
-
-#     # Temporary solution for finding filename
-#     filename = None
-#     for file in model_dict['files']:
-#         regex_res = re.search(r'/(\d+)$', file['downloadUrl'])
-#         if regex_res != None and regex_res.group(0) == model_dict['id']:
-#             filename = file['name']
-#             break
-
-#     if filename == None:
-#         err_404_if_true(alt_filename == None,
-#                         f"Error: Unable to retrieve filename for {meta_json['name']}")
-#         filename = alt_filename
-
-#     # Write metadata and model data to files
-#     filename_without_ext = os.path.splitext(filename)[0]
-#     dst_dir_path = create_dir_path(
-#         meta_json, model_dict, filename_without_ext, dst_root_path)
-#     if not os.path.exists(dst_dir_path):
-#         os.makedirs(dst_dir_path)
-#     write_to_file(
-#         os.path.join(dst_dir_path, f'{filename_without_ext}-{model_id}.json'), dumps(meta_json, indent=2, ensure_ascii=False))
-#     write_to_file(
-#         os.path.join(dst_dir_path, f'{filename_without_ext}-{model_id}.safetensors'), model_res.content, 'wb')
-#     if download_image:
-#         _download_image(
-#             dst_dir_path, model_dict['images'], meta_json['nsfw'], max_img_count)
-
-#     tensor_full_path = os.path.join(
-#         dst_dir_path, f'{filename_without_ext}-{model_id}.safetensors')
-#     print(colored(
-#         f"Download completed for \"{meta_json['name']}\" with model id, {model_id}, and version id, {version_id}: {tensor_full_path}", 'green'))
+    print('---------------------------\n')
