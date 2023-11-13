@@ -25,12 +25,12 @@ There are two ways to batch download using this script (NOTE: batchdir has been 
 * Download the project:
     * `git clone https://github.com/OwenTruong/civitdl.git`
 * Inside terminal, run:
-    * `cd civitai-batch-download`
+    * `cd civitdl`
 * Then run:
-    * `pip3 -r requirements.txt`
-        * Use `pip install civitdl` if `pip3` is not found.
+    * `pip3 install -r requirements.txt`
+        * Use `pip install -r requirements.txt ` if `pip3` is not found.
 * Then run:
-    * `make dev`
+    * `make install`
 * Now the module is available globally (example):
     * `civitdl batchstr 123456 ./`
 
