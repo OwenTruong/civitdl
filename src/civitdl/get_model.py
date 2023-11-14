@@ -6,9 +6,8 @@ from typing import Callable, Dict, List
 
 from termcolor import colored
 
-from .utils import write_to_file, write_to_file_with_progress_bar, run_in_dev
-
-from .exceptions import InputException, ResourcesException, UnexpectedException, APIException
+from .helper.utils import write_to_file, write_to_file_with_progress_bar, run_in_dev
+from .helper.exceptions import InputException, ResourcesException, UnexpectedException, APIException
 
 
 class Metadata:

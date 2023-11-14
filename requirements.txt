@@ -1,5 +1,6 @@
 requests
-build
 termcolor
 tqdm
 pygit2
+appdirs
+click

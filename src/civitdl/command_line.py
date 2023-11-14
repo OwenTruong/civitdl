@@ -3,13 +3,16 @@
 import sys
 import traceback
 
-from .utils import run_in_dev
+from .helper.utils import run_in_dev
 from .batch_download import batch_download
-from .exceptions import InputException
+from .helper.exceptions import InputException
+
+from .config.config import setupJson
 
 
 def main():
     try:
+        # setupJson()
         available_actions = ['batchfile', 'batchstr']
         argv = sys.argv[1:]
         if len(argv) == 0:
