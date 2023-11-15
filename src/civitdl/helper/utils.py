@@ -34,24 +34,6 @@ def find_in_list(li, cond_fn: Callable[[any, int], bool], default=None):
     return next((item for i, item in enumerate(li) if cond_fn(item, int)), default)
 
 
-def parse_args(args: list[str]):
-    """Returns a tuple of (kwargs, args)"""
-    kwargs = {}
-    non_kwargs = []
-
-    for arg in args:
-        if arg.startswith('--'):
-            key_value = arg[2:].split('=')
-            if len(key_value) == 2:
-                key, value = key_value
-                kwargs[key] = value
-
-        else:
-            non_kwargs.append(arg)
-
-    return (kwargs, non_kwargs)
-
-
 def run_in_dev(fn, *args):
     if pygit2.Repository('.').head.shorthand != 'master':
         fn(*args)

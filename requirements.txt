@@ -3,4 +3,4 @@ termcolor
 tqdm
 pygit2
 appdirs
-click
+argparse>=1.4,<2

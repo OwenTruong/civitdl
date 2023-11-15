@@ -2,10 +2,10 @@ install: uninstall
 	pip3 install .
 
 test1:
-	civitdl batchstr '123456,78901,23456' ./test/models/test1
+	civitdl 123456 '78901,23456' ./test/models/test1
 
 test2:
-	civitdl batchfile ./test/batchtest1.txt ./test/models/test2
+	civitdl ./test/batchtest1.txt ./test/models/test2
 
 errortest1:
 	civitdl batchfile ./test/errortest1.txt ./test/models/test2

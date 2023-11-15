@@ -1,14 +1,8 @@
-import importlib.util
 from typing import Dict
 import os
 
 
-def create_basic_path(model_dict: Dict, version_dict: Dict, filename: str, root_path: str):
-    """This is useful when you only just want all of the lora in the same parent folder."""
-    return os.path.join(root_path, filename)
-
-
-def create_path_by_tags(model_dict: Dict, version_dict: Dict, filename: str, root_path: str):
+def sort_model(model_dict: Dict, version_dict: Dict, filename: str, root_path: str):
     """Create nested directories with info about the specific model given root path and the model dict. If no tag is found in the model's json, the default dir path name used will be the last element of twodim_tags' inner list."""
     twodim_tags = [
         ['anime', 'non-anime'],

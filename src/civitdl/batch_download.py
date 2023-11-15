@@ -1,92 +1,38 @@
-import os
+import importlib.util
 import time
 import traceback
-
+from typing import Dict
 
 from .get_model import download_model
-from .helper.filters import choose_filter_helper
-from .helper.utils import parse_args, run_in_dev
+from .helper.utils import run_in_dev
 
-from .helper.exceptions import InputException, UnexpectedException
-
-args_message = {
-    'batchfile': {
-        'args_format': '<Comma Separated File> <Destination Path> --custom-filter=<Path to filter file (optional)> --filter=<tags (optional)> --max-images=<default=3 (optional)',
-        'example': '~/lora-to-download.txt ~/organized_loras --custom-filter=example.py'
-    },
-    'batchstr': {
-        'args_format': '<Comma Separated File> <Destination Path> --custom-filter=<Path to filter file (optional)> --filter=<tags (optional)> --max-images=<default=3 (optional)',
-        'example': '"123456,78901,23456" ~/organized_loras --custom-filter=example.py'
-    }
-}
+from civitdl.config.sorter import basic, tags
 
 
-def get_input_strings(type: str, source: str):
-    if len(source.strip()) == 0:
-        raise InputException('No model id or url provided')
-    string = source
-    if type == 'batchfile':
-        with open(source, 'r') as file:
-            string = file.read().strip()
-    res = [input_str for input_str in string.replace(
-        '\n', '').split(',') if input_str.strip() != '']
-    return res
+def choose_sorter(sorter: Dict):
+    if sorter['type'] == 'path':
+        spec = importlib.util.spec_from_file_location('sorter', sorter['data'])
+        sorter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(sorter)
+        return sorter.sort_model
+    else:
+        return tags.sort_model if sorter['data'] == 'tags' else basic.sort_model
 
 
-# TODO: Add error checking for the kwargs
+def batch_download(ids, rootdir, sorter, max_imgs):
+    """Batch downloads model from CivitAI one by one."""
 
-def verify_custom_filter():
-    None
-
-
-def verify_filter():
-    None
-
-
-def verify_max_images():
-    None
-
-
-def batch_download(type: str, argv: list[str]):
-    """Accepted type are batchfile and batchstr"""
-    if type != 'batchfile' and type != 'batchstr':
-        raise UnexpectedException(f'Unknown batch type --> {type}')
-
-    message = args_message[type]
-    kwargs, args = parse_args(argv)
-    input_li = None
-    filter_model = None
-
-    if len(args) < 2:
-        raise InputException(
-            'Missing arguments.',
-            f'Arguments should be in the following format: {message["args_format"]}.', f'Example: {message["example"]}'
-        )
-    elif type == 'batchfile' and not os.path.exists(args[0]):
-        raise InputException(f'Batch file does not exist at path: {args[0]}')
-
-    input_li = get_input_strings(type, args[0])
-
-    if input_li == None:
-        raise UnexpectedException('input_li is of type None')
-    elif len(input_li) == 0:
-        raise InputException(
-            f'get_input_strings was not able to parse argument: {args[0]}')
-
-    filter_model = choose_filter_helper(kwargs)
-
-    if (filter_model == None):
-        raise UnexpectedException('filter_model is of type None')
-
-    for input_str in input_li:
+    for id in ids:
         try:
             download_model(
-                input_str=input_str,
-                create_dir_path=filter_model,
-                dst_root_path=args[1],
+                id=id,
+                create_dir_path=choose_sorter(sorter),
+                dst_root_path=rootdir,
                 download_image=True,
-                max_img_count=(kwargs['max-images'] if 'max-images' in kwargs else 3))
+                max_img_count=max_imgs)
+            run_in_dev(print, 'Pausing for 3 seconds...')
             time.sleep(3)
+            run_in_dev(print, 'Waking up!')
         except Exception as e:
             print('---------')
             run_in_dev(traceback.print_exc)

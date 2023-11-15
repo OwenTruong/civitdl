@@ -2,16 +2,17 @@ from json import dumps
 import requests
 import os
 import re
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Union
 
 from termcolor import colored
 
+from civitdl.args.argparser import Id
 from .helper.utils import write_to_file, write_to_file_with_progress_bar, run_in_dev
 from .helper.exceptions import InputException, ResourcesException, UnexpectedException, APIException
 
 
 class Metadata:
-    __id_string = None
+    __id = None
 
     model_name = None
     model_id = None
@@ -24,62 +25,20 @@ class Metadata:
     images_dict_li = None
     nsfw = False
 
-    def __init__(self, id_string: str):
-        self.__id_string = id_string
+    def __init__(self, id: Id):
+        self.__id = id
+        self.__handler()
 
-        if id_string.isdigit():
-            self.__id_handler()
-        elif "/api/" in id_string:
-            self.__api_url_handler()
-        else:
-            self.__url_handler()
+    def __handler(self):
+        type = self.__id.type
+        ids = self.__id.data
 
-    def __id_handler(self):
-        id = [self.__id_string]
-        self.__handler(id, 'id')
-
-    def __url_handler(self):
-        model_id_regex = r'(?<=models\/)\d+'
-        version_id_regex = r'(?<=modelVersionId=)\d+'
-        model_id = re.search(model_id_regex, self.__id_string)
-        version_id = re.search(version_id_regex, self.__id_string)
-        if model_id == None:
-            raise InputException(
-                f'Incorrect format for the url/id provided: {self.__id_string}')
-        model_id = model_id.group(0)
-        if model_id == None:
-            raise UnexpectedException(
-                f'Unknown error while parsing model id for the url/id provided: {self.__id_string}')
-
-        if version_id:
-            version_id = version_id.group(0)
-            if version_id == None:
-                raise UnexpectedException(
-                    f'Unknown error while parsing version id for the url/id provided: {self.__id_string}')
-
-            self.__handler([model_id, version_id], 'url')
-        else:
-            self.__handler([model_id], 'url')
-
-    def __api_url_handler(self):
-        version_id_regex = r'(?<=models\/)\d+'
-        version_id = re.search(version_id_regex, self.__id_string)
-        if version_id == None:
-            raise InputException(
-                f'Incorrect format for the url provided: {self.__id_string}')
-        version_id = version_id.group(0)
-        if version_id == None:
-            raise UnexpectedException(
-                f'Unknown error while parsing version id for the url provided: {self.__id_string}')
-        self.__handler([version_id], 'api')
-
-    def __handler(self, ids: List[int], type: str):
-        if type == 'url' and len(ids) == 2:
+        if type == 'site' and len(ids) == 2:
             self.model_id = ids[0]
             self.version_id = ids[1]
             self.model_dict = self.__get_model_metadata()
             self.version_dict = self.__get_version_metadata()
-        elif type == 'id' or (type == 'url' and len(ids) == 1):
+        elif type == 'id' or (type == 'site' and len(ids) == 1):
             self.model_id = ids[0]
             self.model_dict = self.__get_model_metadata()
             if len(self.model_dict['modelVersions']) == 0:
@@ -94,7 +53,7 @@ class Metadata:
             self.model_dict = self.__get_model_metadata()
         else:
             raise InputException(
-                f'Incorrect format sent ({ids}, {type}): "{self.__id_string}"')
+                f'Incorrect format sent ({ids}, {type}): "{self.__id.original}"')
 
         self.download_url = self.version_dict['downloadUrl']
         self.images_dict_li = self.version_dict['images']
@@ -103,11 +62,11 @@ class Metadata:
 
     def __get_model_metadata(self):
         """Returns json object if request succeeds, else print error and returns None"""
-        metadata_url = 'https://civitai.com/api/v1/models/' + self.model_id
+        metadata_url = f'https://civitai.com/api/v1/models/{self.model_id}'
         return self.__get_metadata(metadata_url)
 
     def __get_version_metadata(self):
-        metadata_url = 'https://civitai.com/api/v1/model-versions/' + self.version_id
+        metadata_url = f'https://civitai.com/api/v1/model-versions/{self.version_id}'
         return self.__get_metadata(metadata_url)
 
     def __get_metadata(self, url: str):
@@ -116,7 +75,7 @@ class Metadata:
         run_in_dev(print, 'Finished downloading model metadata.')
         if meta_res.status_code != 200:
             raise APIException(
-                meta_res.status_code, f'Downloading metadata from CivitAI for "{self.__id_string}" failed when trying to request metadata from "{url}"')
+                meta_res.status_code, f'Downloading metadata from CivitAI for "{self.__id.original}" failed when trying to request metadata from "{url}"')
         return meta_res.json()
 
 
@@ -178,12 +137,12 @@ def _get_filename_and_model_res(input_str: str, metadata: Metadata):
     return (res, filename)
 
 
-def download_model(input_str: str, create_dir_path: Callable[[Dict, Dict, str, str], str], dst_root_path: str, download_image: bool, max_img_count: int):
+def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str], dst_root_path: str, download_image: bool, max_img_count: int):
     """
         Downloads the model's safetensors and json metadata files.
         create_dir_path is a callback function that takes in the following: metadata dict, specific model's data as dict, filename, and root path.
     """
-    if input_str == None or \
+    if id == None or \
             create_dir_path == None or \
             dst_root_path == None or \
             download_image == None or \
@@ -191,7 +150,7 @@ def download_model(input_str: str, create_dir_path: Callable[[Dict, Dict, str, s
         raise UnexpectedException(
             'download_model received a None type in one of its parameter')
 
-    metadata = Metadata(input_str)
+    metadata = Metadata(id)
 
     print(colored(
         f"""Now downloading \"{metadata.model_name}\"...
@@ -199,7 +158,7 @@ def download_model(input_str: str, create_dir_path: Callable[[Dict, Dict, str, s
             - Version ID: {metadata.version_id}\n""",
         'blue'))
 
-    model_res, filename = _get_filename_and_model_res(input_str, metadata)
+    model_res, filename = _get_filename_and_model_res(id.original, metadata)
 
     # Create empty directory recursively
     filename_without_ext, filename_ext = os.path.splitext(filename)
