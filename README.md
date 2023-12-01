@@ -53,8 +53,8 @@ source ~/.bashrc
 
 ### Executing program
 
-#### Note in v2, it is now possible to use both batchfile and batchstr
-- Args:
+#### Note in v2, it is now possible to use both batchfile and batchstr without specifying batchfile or batchstr as an argument.
+- New Args:
   - `civitdl source1 source2 ... sourceN dst_root_directory`
 - Example:
   - `civitdl 123456 batchfile ./models`
