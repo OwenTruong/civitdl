@@ -75,7 +75,7 @@ source ~/.bashrc
 * Examples:
     * `civitdl https://civitai.com/models/7808/easynegative 79326 ~/Downloads/ComfyUI/models/loras`
 
-#### Sorters
+#### Sorters (previously called filters)
 * Beyond downloading models, it is possible to specify some sorters, or rules, on how to organize the model folders when batch downloading multiple models.
 * There are two built-in sorters: tags and basic.
     * "tags" sorters the models by the model type (i.e. if lora is trained on a 1.5 or 2.0 or SDXL base model) and tags associated with them on CivitAI. 
