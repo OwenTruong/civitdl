@@ -21,6 +21,7 @@ def getFallback():
     data = {
         "max_image": 3,
         "default_filter": "basic",
+        "default_path": '',
         "aliases": []
     }
 

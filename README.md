@@ -1,11 +1,13 @@
-# civitdl (civitai-batch-download)
+# civitdl v2.0 (civitai-batch-download)
+
+**Note v2 has some changes regarding the cli args of the program. Please read the README below or run `civitdl --help` for the new arguments.
 
 Uses CLI to batch download Stable Diffusion models from CivitAI, metadata (including description of model, author, base model, example prompts and etc.) and example images (default is 3) of checkpoint and lora models. One thing to note is that for **sfw models**, currently, the program is set to only **download sfw images**. Please note that there may be sfw models that are rated as nsfw by CivitAI (and vice versa).
 
 ## Description
 
-There are two ways to batch download using this script (NOTE: batchdir has been removed):
-- batchfile -> given the path to a comma separated text file (recommend .txt) that contains numbers or urls, it extracts all of the model ids from the file.
+There are two ways to batch download using this script:
+- batchfile -> given the path to a comma separated text file that contains numbers or urls, it extracts all of the model ids from the file.
 - batchstr -> specify a comma separated list of model id and/or url as arguments.
 
 ## Getting Started
@@ -20,6 +22,7 @@ There are two ways to batch download using this script (NOTE: batchdir has been 
 #### Install using PIP
 * `pip3 install civitdl`
   * Use `pip install civitdl` if `pip3` is not found.
+  * Run `civitdl --help` for args and options.
 
 #### Build from source
 * Download the project:
@@ -32,7 +35,7 @@ There are two ways to batch download using this script (NOTE: batchdir has been 
 * Then run:
     * `make install`
 * Now the module is available globally (example):
-    * `civitdl batchstr 123456 ./`
+    * `civitdl 123456 ./`
 
 #### Troubleshooting
 
@@ -50,44 +53,46 @@ source ~/.bashrc
 
 ### Executing program
 
+#### Note in v2, it is now possible to use both batchfile and batchstr
+- Args:
+  - `civitdl source1 source2 ... sourceN dst_root_directory`
+- Example:
+  - `civitdl 123456 batchfile ./models`
+
 #### batchfile 
-* Args: 
-    * `civitdl batchfile <txt file path> <destination model folder path>`
 * Make sure everything is comma separated. txt files are recommended. 
 * The comma separated list can be made out of model id, civitai.com/models or civitai.com/api/download/models urls. 
 * If you need a specific version of a model, copy paste the url of the specific version in the txt file, and it would download the correct one.
   * Example of a url with a specific version id: `https://civitai.com/models/197273?modelVersionId=221861`
 * Examples:
-    * `civitdl batchfile ./custom/batchfile.txt ~/sorted-models --filter=tags`
-    * `civitdl batchfile ./custom/batchfile.txt ~/sorted-models --custom-filter=./custom/filter.py`
+    * `civitdl ./custom/batchfile.txt ~/sorted-models --sorter=tags`
+    * `civitdl ./custom/batchfile.txt ~/sorted-models --sorter=./custom/sort.py`
 * See [batchfile.txt](./custom/batchfile.txt) for example of a batchfile
 
 
 #### batchstr
-* Args: 
-    * `civitdl batchstr <comma separated string of model id / url> <destination model folder path>`
 * Accepts model id or urls separated by commas as an argument (accepts the same type of comma separated list as batchfile).
 * Examples:
-    * `civitdl batchstr "https://civitai.com/models/7808/easynegative, 79326" ~/Downloads/ComfyUI/models/loras`
+    * `civitdl https://civitai.com/models/7808/easynegative 79326 ~/Downloads/ComfyUI/models/loras`
 
-#### Filters
-* Beyond downloading models, it is possible to specify some filters, or rules, on how to organize the model folders when batch downloading multiple models.
-* There are two built-in filters: tags and basic.
-    * "tags" filters the models by the model type (i.e. if lora is trained on a 1.5 or 2.0 or SDXL base model) and tags associated with them on CivitAI. 
-        * Example, if a model was trained on 1.5, and has tags - Anime, Character -, it would be filtered as so: 
-          * Running script: `civitdl batchstr 123456 ~/models --filter="tags"`
+#### Sorters
+* Beyond downloading models, it is possible to specify some sorters, or rules, on how to organize the model folders when batch downloading multiple models.
+* There are two built-in sorters: tags and basic.
+    * "tags" sorters the models by the model type (i.e. if lora is trained on a 1.5 or 2.0 or SDXL base model) and tags associated with them on CivitAI. 
+        * Example, if a model was trained on 1.5, and has tags - Anime, Character -, it would be sorted as so: 
+          * Running script: `civitdl 123456 ~/models -s "tags"`
             * `~/models/SD_1.5/Anime/Character/yaemiko-lora-nochekaiser/yaemiko-lora-nochekaiser-mid_123456-vid_134605.safetensors`
-        * See [filters.py](./src/civitai_batch_download/filters.py?plain=1#L13) for available tags in the filter.
-    * "basic" does not filter anything. It just downloads all of the models' data inside destination path folder specified in the arguments. It is also the default filter function used.
+        * See [tags.py](./src/civitdl/config/sorter/tags.py) for available tags in the sorter.
+    * "basic" does not sort anything. It just downloads all of the models' data inside destination path folder specified in the arguments. It is also the default sorter function used.
         * Example: 
-            * Running script: `civitdl batchstr "123456" ~/models`
+            * Running script: `civitdl 123456 ~/models`
             * The model for 123456 is a Yae Miko character lora. The folder that includes the models folder, json and example images are stored in the following path: ~/models/yaemiko-lora-nochekaiser
 
-#### Creating Custom Filters
-* To create a custom filter, please create a python file with any filename. The only thing that is important is that the python file must contain a function called filter_model that has the following signatures: filter_model(Dict,Dict,str,str) -> str
-* Please see [filter.py](./custom/filter.py) in custom folder for an example.
-  * Other examples include the built in one [filters.py](./src/civitai_batch_download/filters.py).
-
+#### Creating Custom Sorters
+* To create a custom sorter, please create a python file with any filename. The only thing that is important is that the python file must contain a function called sort_model that has the following signatures: sort_model(Dict,Dict,str,str) -> str
+* Please see [sort.py](./custom/sort.py) in custom folder for an example.
+* Example of running custom sorter:
+  * `civitdl 123456 ~/models -s ./custom/sort.py`
 
 
 ## Help

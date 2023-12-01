@@ -1,6 +1,6 @@
 import os
 import re
-from typing import List
+from typing import List, Union
 
 import argparse
 
@@ -35,7 +35,11 @@ def get_comma_list(string: str) -> List[str]:
         '\n', '').split(',') if input_str.strip() != '']
 
 
-def parse_src(str_li: List[str], parent=None):
+def use_parent_dir_if_exist(src: str, parent: Union[str, None]) -> str:
+    return os.path.join(os.path.dirname(parent), src) if parent else src
+
+
+def parse_src(str_li: List[str], parent: Union[str, None] = None):
     res: List[Id] = []
     for string in str_li:
         string = string.strip()
@@ -70,12 +74,17 @@ def parse_src(str_li: List[str], parent=None):
                     Id('site', [model_id, version_id], string))
             else:
                 res.append(Id('site', [model_id], string))
-        elif os.path.exists(string):
+        elif os.path.exists(use_parent_dir_if_exist(string, parent)):
+            string = use_parent_dir_if_exist(string, parent)
             file_str = None
+
             with open(string, 'r') as file:
                 file_str = file.read().strip()
+            if file_str == None:
+                raise UnexpectedException(
+                    'Unknown exception while reading batchfile path.')
             str_li_res = get_comma_list(file_str)
-            res.extend(parse_src(str_li_res, string))
+            res.extend(parse_src(str_li_res, parent=string))
         else:
             print(colored(f'Bad source provided: {string}', 'red'))
 
@@ -98,12 +107,12 @@ def parse_sorter(str):
 
 
 HELP_MESSAGE_FOR_SRC_MODEL = """
-Provide one or more elements as arguments.
-An element can be one of the following: model ID, CivitAI URL, string list of elements or batchfiles.
-- batchfiles must be a textfile of comma separated list of elements.
-- string list of elements in the following example is "element2, element3, element4, ...": 
-- Example 1: civitdl element1 "element2, element3, element4, ..." element5 ./path/to/root/model/directory
-- Example 2 (download some loras): civitdl ./batchfile1.txt 123456 ~/Downloads/ComfyUI/models/loras
+Provide one or more sources as arguments.
+A source can be one of the following: model ID, CivitAI URL, string list of sources or batchfiles.
+- batchfiles must be a textfile of comma separated list of sources.
+- string list of sources in the following example is "sourceA, sourceB, sourceC, ...":
+- Example 1: civitdl source1 "sourceA, sourceB, sourceC, ..." source2 ./path/to/root/model/directory
+- Example 2: civitdl ./batchfile1.txt 123456 ~/Downloads/ComfyUI/models/loras
 """
 
 parser = argparse.ArgumentParser(
@@ -116,9 +125,11 @@ parser.add_argument('srcmodel', type=str, action="extend", nargs='+',
 parser.add_argument('rootdir', type=str,
                     help='Root directory of where the downloaded model should go.')
 parser.add_argument('-s', '--sorter', type=str, default='basic',
-                    help='Specify which sorter function to use. Default is "basic" sorter. Provide path to sorter function if you wish to use a specific sorter.')
+                    help='Specify which sorter function to use.\nDefault is "basic" sorter.\nProvide file path to sorter function if you wish to use a custom sorter.')
 parser.add_argument('-m', '--max-images', type=int, default=3,
                     help='Specify max images to download for each model.')
+
+# TODO: If we were to load a ./batchfile.txt inside batchfile.txt, does it look at the location of the batchfile.txt or the location of the program running ./batchfile.txt?
 
 
 def get_args():

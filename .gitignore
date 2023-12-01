@@ -1,11 +1,7 @@
 test.json
 test.txt
 manual-test
-custom/*
-!custom/filter.py
-!custom/model_dict-example.json
-!custom/verson_dict-example.json
-!custom/batchfile.txt
+custom/__pycache__
 __pycache__/
 **/__pycache__
 .venv
