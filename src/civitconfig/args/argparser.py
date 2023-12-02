@@ -6,7 +6,7 @@ import argparse
 
 from termcolor import colored
 
-from civitdl.helper.exceptions import InputException, UnexpectedException
+from helpers.exceptions import InputException, UnexpectedException
 
 __all__ = ['get_args']
 
@@ -19,7 +19,8 @@ parser = argparse.ArgumentParser(
 
 
 subparsers = parser.add_subparsers(
-    dest='subparser',
+    dest='subcommand',
+    required=True,
     help='Choose one of the following subcommands: default, sorter, alias.')
 
 default_parser = subparsers.add_parser(

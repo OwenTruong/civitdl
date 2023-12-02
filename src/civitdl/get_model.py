@@ -7,8 +7,8 @@ from typing import Callable, Dict, List, Union
 from termcolor import colored
 
 from civitdl.args.argparser import Id
-from .helper.utils import write_to_file, write_to_file_with_progress_bar, run_in_dev
-from .helper.exceptions import InputException, ResourcesException, UnexpectedException, APIException
+from helpers.utils import write_to_file, write_to_file_with_progress_bar, run_in_dev
+from helpers.exceptions import InputException, ResourcesException, UnexpectedException, APIException
 
 
 class Metadata:

@@ -4,7 +4,7 @@ import traceback
 from typing import Dict
 
 from .get_model import download_model
-from .helper.utils import run_in_dev
+from helpers.utils import run_in_dev
 
 from civitdl.helper.sorter import basic, tags
 

@@ -4,7 +4,7 @@ from typing import Callable
 from tqdm import tqdm
 import pygit2
 
-from .exceptions import UnexpectedException
+from helpers.exceptions import UnexpectedException
 
 
 def write_to_file(path, content, mode: str = None):
