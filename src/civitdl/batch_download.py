@@ -5,8 +5,7 @@ from typing import Dict
 
 from .get_model import download_model
 from helpers.utils import run_in_dev
-
-from civitdl.helper.sorter import basic, tags
+from helpers.sorter import basic, tags
 
 
 def choose_sorter(sorter: Dict):

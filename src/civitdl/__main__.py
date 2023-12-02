@@ -7,13 +7,13 @@ from operator import itemgetter
 
 from helpers.utils import run_in_dev
 from .batch_download import batch_download
-from civitconfig.data.setupJson import setupJson
+from civitconfig.data.configjson import getConfig
 from .args.argparser import get_args
 
 
 def main():
     try:
-        setupJson()
+        getConfig()
         ids, rootdir, sorter, max_imgs = itemgetter(
             'ids', 'rootdir', 'sorter', 'max_imgs')(get_args())
         batch_download(ids, rootdir, sorter, max_imgs)

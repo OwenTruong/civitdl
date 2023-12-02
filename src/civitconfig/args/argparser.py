@@ -52,10 +52,9 @@ alias_group.add_argument('-a', '--add', type=str, nargs=2,
 alias_group.add_argument('-d', '--delete', type=str,
                          help='Delete alias based on name of the alias.\nExample: civitconfig alias --delete @lora.')
 
+# TODO: Check correct values (type is checked, but value is not)
+
 
 def get_args():
     parser_result = parser.parse_args()
-    return {
-        key: value for key, value in list(
-            vars(parser_result).items()) if value != None
-    }
+    return vars(parser_result)
