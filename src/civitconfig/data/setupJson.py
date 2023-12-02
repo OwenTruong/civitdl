@@ -5,7 +5,7 @@ import json
 
 from appdirs import AppDirs
 
-from ..helper.exceptions import UnexpectedException
+from civitdl.helper.exceptions import UnexpectedException
 
 
 __all__ = ['setupJson']

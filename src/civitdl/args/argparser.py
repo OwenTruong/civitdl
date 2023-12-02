@@ -129,8 +129,6 @@ parser.add_argument('-s', '--sorter', type=str, default='basic',
 parser.add_argument('-m', '--max-images', type=int, default=3,
                     help='Specify max images to download for each model.')
 
-# TODO: If we were to load a ./batchfile.txt inside batchfile.txt, does it look at the location of the batchfile.txt or the location of the program running ./batchfile.txt?
-
 
 def get_args():
     parser_result = parser.parse_args()
