@@ -15,7 +15,7 @@ def choose_sorter(sorter: Dict):
         return tags.sort_model if sorter['data'] == 'tags' else basic.sort_model
 
 
-def batch_download(ids, rootdir, sorter, max_imgs):
+def batch_download(ids, rootdir, sorter, max_imgs, api_key=None):
     """Batch downloads model from CivitAI one by one."""
 
     for id in ids:
@@ -24,8 +24,8 @@ def batch_download(ids, rootdir, sorter, max_imgs):
                 id=id,
                 create_dir_path=choose_sorter(sorter),
                 dst_root_path=rootdir,
-                download_image=True,
-                max_img_count=max_imgs)
+                max_img_count=max_imgs,
+                api_key=api_key)
             run_in_dev(print, 'Pausing for 3 seconds...')
             time.sleep(3)
             run_in_dev(print, 'Waking up!')

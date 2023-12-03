@@ -79,7 +79,7 @@ class Metadata:
         return meta_res.json()
 
 
-def _download_image(dirpath: str, images: list[Dict], nsfw: bool, max_img_count):
+def _download_image(dirpath: str, images: list[Dict], nsfw: bool, max_img_count: int):
     image_urls = []
 
     for dict in images:
@@ -100,18 +100,25 @@ def _download_image(dirpath: str, images: list[Dict], nsfw: bool, max_img_count)
             dirpath, os.path.basename(url)), image_res.content, 'wb')
 
 
-def _get_filename_and_model_res(input_str: str, metadata: Metadata):
+def _get_filename_and_model_res(input_str: str, metadata: Metadata, api_key: Union[str, None]):
     # Request model
     run_in_dev(print, 'Preparing to download model by reading headers.')
-    res = requests.get(metadata.download_url, stream=True)
+    download_url = metadata.download_url + \
+        (f'?token={api_key}' if api_key else '')
+    res = requests.get(download_url, stream=True)
     run_in_dev(print, 'Finished downloading headers.')
+    print('reason=download-auth' in res.url)
 
     if res.status_code != 200:
+
         raise APIException(
             res.status_code, f'Downloading model from CivitAI failed for model id, {metadata.model_id}, and version id, {metadata.version_id}')
 
     # Find filename from content disposition
     content_disposition = res.headers.get('Content-Disposition')
+
+    if 'reason=download-auth' in res.url:
+        raise InputException('Unable to download this model as it requires an API Key. Please head to "civitai.com", go to "Account Settings", then go to "API Keys" section, then add an api key to your account. After that, paste the key to the program.')
 
     if content_disposition == None:
         raise ResourcesException(
@@ -137,7 +144,7 @@ def _get_filename_and_model_res(input_str: str, metadata: Metadata):
     return (res, filename)
 
 
-def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str], dst_root_path: str, download_image: bool, max_img_count: int):
+def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str], dst_root_path: str, max_img_count: int, api_key: Union[str, None] = None):
     """
         Downloads the model's safetensors and json metadata files.
         create_dir_path is a callback function that takes in the following: metadata dict, specific model's data as dict, filename, and root path.
@@ -145,7 +152,6 @@ def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str
     if id == None or \
             create_dir_path == None or \
             dst_root_path == None or \
-            download_image == None or \
             max_img_count == None:
         raise UnexpectedException(
             'download_model received a None type in one of its parameter')
@@ -158,7 +164,8 @@ def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str
             - Version ID: {metadata.version_id}\n""",
         'blue'))
 
-    model_res, filename = _get_filename_and_model_res(id.original, metadata)
+    model_res, filename = _get_filename_and_model_res(
+        id.original, metadata, api_key)
 
     # Create empty directory recursively
     filename_without_ext, filename_ext = os.path.splitext(filename)
@@ -175,9 +182,8 @@ def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str
     write_to_file(json_path, dumps(
         metadata.model_dict, indent=2, ensure_ascii=False))
     write_to_file_with_progress_bar(model_path, model_res, 'wb')
-    if download_image:
-        _download_image(
-            dst_dir_path, metadata.version_dict['images'], metadata.nsfw, max_img_count)
+    _download_image(
+        dst_dir_path, metadata.version_dict['images'], metadata.nsfw, max_img_count)
 
     print(colored(
         f"""\nDownload completed for \"{metadata.model_name}\" 
