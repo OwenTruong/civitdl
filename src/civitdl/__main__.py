@@ -3,7 +3,7 @@ import traceback
 from operator import itemgetter
 
 from helpers.utils import run_in_dev
-from .batch_download import batch_download
+from .batch.batch_download import batch_download
 from .args.argparser import get_args
 
 

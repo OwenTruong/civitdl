@@ -3,7 +3,7 @@ import time
 import traceback
 from typing import Dict
 
-from .get_model import download_model
+from ._get_model import download_model
 from helpers.utils import run_in_dev, import_sort_model
 from helpers.sorter import basic, tags
 
