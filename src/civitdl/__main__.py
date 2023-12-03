@@ -13,10 +13,16 @@ from .args.argparser import get_args
 
 def main():
     try:
+        ids, rootdir, sorter, max_imgs, api_key = itemgetter(
+            'ids', 'rootdir', 'sorter', 'max_imgs', 'api_key')(get_args())
+
         config_manager = ConfigManager()
-        ids, rootdir, sorter, max_imgs = itemgetter(
-            'ids', 'rootdir', 'sorter', 'max_imgs')(get_args())
-        batch_download(ids, rootdir, sorter, max_imgs)
+        d_max_imgs, d_sorter_name, d_api_key = config_manager.getDefaultAsList()
+        sorters = config_manager.getSortersList()
+        aliases = config_manager.getAliasesList()
+
+        batch_download(ids, rootdir, sorter, max_imgs,
+                       api_key if api_key else d_api_key)
 
     except Exception as e:
         print('---------')

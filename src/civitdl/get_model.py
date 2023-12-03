@@ -107,7 +107,6 @@ def _get_filename_and_model_res(input_str: str, metadata: Metadata, api_key: Uni
         (f'?token={api_key}' if api_key else '')
     res = requests.get(download_url, stream=True)
     run_in_dev(print, 'Finished downloading headers.')
-    print('reason=download-auth' in res.url)
 
     if res.status_code != 200:
 

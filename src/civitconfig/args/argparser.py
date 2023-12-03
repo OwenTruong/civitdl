@@ -7,6 +7,7 @@ import argparse
 from termcolor import colored
 
 from helpers.exceptions import InputException, UnexpectedException
+from helpers.argparse import PwdAction
 
 __all__ = ['get_args']
 
@@ -29,8 +30,8 @@ default_parser.add_argument('-m', '--max-images', metavar='INT', type=int,
                             help='Set the default max number of images to download per model.')
 default_parser.add_argument('-s', '--sorter', metavar='NAME', type=str,
                             help='Set the default sorter given name of sorter (filepath not accepted).')
-default_parser.add_argument('-k', '--api-key', metavar='KEY', type=str,
-                            help='Set the api key to use for model downloads that require users to log in.')
+default_parser.add_argument('-k', '--api-key', action=PwdAction, type=str, nargs=0,
+                            help='Prompts the user for their api key to use for model downloads that require users to log in.')
 
 
 sorter_parser = subparsers.add_parser(

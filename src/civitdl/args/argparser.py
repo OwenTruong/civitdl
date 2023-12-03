@@ -3,9 +3,9 @@ import re
 from typing import List, Union
 
 import argparse
-
 from termcolor import colored
 
+from helpers.argparse import PwdAction
 from helpers.exceptions import InputException, UnexpectedException
 
 __all__ = ['Id', 'get_args']
@@ -126,8 +126,11 @@ parser.add_argument('rootdir', type=str,
                     help='Root directory of where the downloaded model should go.')
 parser.add_argument('-s', '--sorter', type=str, default='basic',
                     help='Specify which sorter function to use.\nDefault is "basic" sorter.\nProvide file path to sorter function if you wish to use a custom sorter.')
-parser.add_argument('-m', '--max-images', type=int, default=3,
+parser.add_argument('-m', '--max-images', metavar='INT', type=int, default=3,
                     help='Specify max images to download for each model.')
+
+parser.add_argument('-k', '--api-key', action=PwdAction, type=str, nargs=0,
+                    help='Use api key to download models that require users to log in.')
 
 
 def get_args():
@@ -136,5 +139,6 @@ def get_args():
         "ids": parse_src(parser_result.srcmodel),
         "rootdir": parser_result.rootdir,
         "sorter": parse_sorter(parser_result.sorter),
-        "max_imgs": parser_result.max_images
+        "max_imgs": parser_result.max_images,
+        "api_key": parser_result.api_key
     }
