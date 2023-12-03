@@ -66,8 +66,7 @@ class ConfigManager:
         shutil.move(self.config_path, os.path.join(
             self.config_trash_dir_path, dst_filename))
 
-    def _uncopyPyFile(self, filename):
-        filepath = os.path.join(self.sorters_dir_path, filename)
+    def _uncopyPyFile(self, filepath):
         if os.path.exists(filepath):
             os.remove(filepath)
         else:
@@ -79,19 +78,19 @@ class ConfigManager:
         dstpath = os.path.join(
             self.sorters_dir_path, dst_filename)
         shutil.copy2(filepath, dstpath)
-        return dst_filename
+        return dstpath
 
-    def _trashPyFile(self, filename):
-        pypath = os.path.join(self.sorters_dir_path, filename)
-        if os.path.exists(pypath):
-            shutil.move(pypath, os.path.join(
+    def _trashPyFile(self, filepath):
+        filename = os.path.basename(filepath)
+        if os.path.exists(filepath):
+            shutil.move(filepath, os.path.join(
                 self.sorters_trash_dir_path, filename))
         else:
             raise ResourcesException(
                 'Unable to trash python file because it does not exist.')
 
-    def _untrashPyFile(self, filename):
-        trashpath = os.path.join(self.sorters_trash_dir_path, filename)
+    def _untrashPyFile(self, trashpath):
+        filename = os.path.basename(trashpath)
         if os.path.exists(trashpath):
             shutil.move(trashpath, os.path.join(
                 self.sorters_dir_path, filename))
@@ -117,7 +116,7 @@ class ConfigManager:
                 "sorter": "basic",
                 "api_key": ""
             },
-            "sorters": [["basic", basic.sort_model.__doc__, 'N/A'], ["tags", tags.sort_model.__doc__, 'N/A']],
+            "sorters": [["basic", basic.sort_model.__doc__, 'basic'], ["tags", tags.sort_model.__doc__, 'tags']],
             "aliases": [["@example", "~/.models"]]
         }
         if self._configExists():
@@ -161,6 +160,9 @@ class ConfigManager:
         if name == 'tags' or name == 'basic':
             raise InputException(f'Sorter with name "{name}" is reserved.')
 
+        if '/' in name:
+            raise InputException(f'Sorter name may not contain "/": {name}')
+
         if name in [sorter[0] for sorter in sorters]:
             raise InputException(f'Sorter with name "{name}" already exist.')
 
@@ -168,22 +170,22 @@ class ConfigManager:
             filepath).__doc__ or "Description not provided"
 
         # First, we save python file (if exception, need to undo)
-        filename = self._copyPyFile(filepath)
+        filepath = self._copyPyFile(filepath)
 
         # Then, we edit config
         config = None
         try:
             config = self._getConfig()
-            config['sorters'].append([name, desc, filename])
+            config['sorters'].append([name, desc, filepath])
         except:
-            self._uncopyPyFile(filename)
+            self._uncopyPyFile(filepath)
             raise e
 
         # Lastly, we save config
         try:
             self._saveConfig(config)
         except Exception as e:
-            self._uncopyPyFile(filename)
+            self._uncopyPyFile(filepath)
             raise e
 
     def deleteSorter(self, name):
@@ -226,6 +228,10 @@ class ConfigManager:
     def addAlias(self, alias_name: str, path: str):
         # if alias does not exist, we add
         aliases = self.getAliasesList()
+
+        if '/' in alias_name:
+            raise InputException(
+                f'Alias name may not contain "/": {alias_name}')
 
         if alias_name in [aname for aname, _ in aliases]:
             raise InputException(

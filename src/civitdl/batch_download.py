@@ -8,11 +8,11 @@ from helpers.utils import run_in_dev, import_sort_model
 from helpers.sorter import basic, tags
 
 
-def choose_sorter(sorter: Dict):
-    if sorter['type'] == 'path':
-        return import_sort_model(sorter['data'])
+def choose_sorter(sorter_str: str):
+    if sorter_str == 'basic' or sorter_str == 'tags':
+        return tags.sort_model if sorter_str == 'tags' else basic.sort_model
     else:
-        return tags.sort_model if sorter['data'] == 'tags' else basic.sort_model
+        return import_sort_model(sorter_str)
 
 
 def batch_download(ids, rootdir, sorter, max_imgs, api_key=None):
