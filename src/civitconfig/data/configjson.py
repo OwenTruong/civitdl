@@ -114,7 +114,7 @@ def _getConfig():
 
 ### Public Functions ###
 
-## _getConfig dep ##
+## No pub dep ##
 
 def getDefaultAsList() -> list:
     return _getConfig()['default'].values()
@@ -128,7 +128,7 @@ def getAliasesList() -> list:
     return _getConfig()['aliases']
 
 
-## _getConfig + getList dep ##
+## getList dep ##
 
 def setDefault(max_images=None, sorter=None, api_key=None):
     config = _getConfig()
