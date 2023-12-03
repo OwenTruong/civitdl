@@ -7,7 +7,7 @@ from operator import itemgetter
 from helpers.exceptions import UnexpectedException
 from helpers.utils import run_in_dev, add_colors
 from civitconfig.args.argparser import get_args
-from civitconfig.data.configjson import deleteSorter, getConfig, getDefaultAsList, setDefault, getSortersList, addSorter
+from civitconfig.data.configjson import addAlias, deleteAlias, deleteSorter, getConfig, getDefaultAsList, setDefault, getSortersList, addSorter, getAliasesList
 
 
 def main():
@@ -36,10 +36,23 @@ def main():
                 color = 'green' if i % 2 == 0 else 'blue'
                 print(
                     add_colors(
-                        f'Sorter #{i + 1}, {name}:     {f"{docstr[:300 - 3]}..." if len(docstr) > 300 else docstr}', color)
+                        f'Sorter #{i + 1}, "{name}":     {f"{docstr[:300 - 3]}..." if len(docstr) > 300 else docstr}', color)
                 )
         elif subcommand == 'alias':
-            print('alias')
+            if args['add'] != None:
+                add_name, add_path = args['add']
+                addAlias(add_name, add_path)
+            elif args['delete'] != None:
+                deleteAlias(args['delete'])
+
+            aliasesLi = getAliasesList()
+            for i, [alias_name, path] in enumerate(aliasesLi):
+                color = 'green' if i % 2 == 0 else 'blue'
+                print(
+                    add_colors(
+                        f'Alias #{i + 1}, "{alias_name}": {path}', color
+                    )
+                )
         else:
             raise UnexpectedException(
                 'Unknown subcommand not caught by argparse')

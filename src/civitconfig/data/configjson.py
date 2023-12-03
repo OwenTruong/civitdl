@@ -13,8 +13,6 @@ from helpers.sorter import basic, tags
 from helpers.utils import run_in_dev, import_sort_model
 
 
-__all__ = ['getConfig']
-
 dirs = AppDirs('civitdl', 'Owen Truong')
 CONFIG_PATH = os.path.join(dirs.user_config_dir, 'config.json')
 SORTERS_DIR_PATH = os.path.join(dirs.user_config_dir, 'sorters')
@@ -141,8 +139,13 @@ def getAliasesList() -> list:
 def setDefault(max_images=None, sorter=None, api_key=None):
     config = getConfig()
     if max_images:
+        if type(max_images) != int or max_images < 0:
+            raise InputException(
+                f'max_images argument is not type int or max_images is below 0. The following was provided: {max_images}')
         config["default"]["max_images"] = max_images
     if sorter:
+        if len([s for s in getSortersList() if s[0] == sorter]) != 1:
+            raise InputException(f'Sorter "{sorter}" does not exist')
         config["default"]["sorter"] = sorter
     if api_key:
         config["default"]["sorter"] = api_key
@@ -220,9 +223,37 @@ def deleteSorter(name):
         raise e
 
 
-def addAlias():
-    None
+def addAlias(alias_name: str, path: str):
+    # if alias does not exist, we add
+    aliases = getAliasesList()
+
+    for aname, _ in aliases:
+        if aname == alias_name:
+            raise InputException(f'Alias name exist already: ${alias_name}')
+
+    config = getConfig()
+    if os.path.split(path)[0].split(os.path.sep)[0] in [aname for aname, _ in aliases]:
+        config['aliases'].append([alias_name, path])
+    else:
+        config['aliases'].append([alias_name, os.path.abspath(path)])
+
+    _setConfig(config)
 
 
-def deleteAlias():
-    None
+def deleteAlias(alias_name: str):
+    aliases = getAliasesList()
+
+    target_alias = None
+    for aname, _ in aliases:
+        if aname == alias_name:
+            target_alias = aname
+
+    if target_alias == None:
+        raise InputException(f'Alias with name {alias_name} does not exist.')
+
+    config = getConfig()
+    config['aliases'] = [
+        alias for alias in config['aliases'] if alias[0] != alias_name
+    ]
+
+    _setConfig(config)
