@@ -4,16 +4,13 @@ import traceback
 from typing import Dict
 
 from .get_model import download_model
-from helpers.utils import run_in_dev
+from helpers.utils import run_in_dev, import_sort_model
 from helpers.sorter import basic, tags
 
 
 def choose_sorter(sorter: Dict):
     if sorter['type'] == 'path':
-        spec = importlib.util.spec_from_file_location('sorter', sorter['data'])
-        sorter = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(sorter)
-        return sorter.sort_model
+        return import_sort_model(sorter['data'])
     else:
         return tags.sort_model if sorter['data'] == 'tags' else basic.sort_model
 

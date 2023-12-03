@@ -5,9 +5,9 @@ import traceback
 from operator import itemgetter
 
 from helpers.exceptions import UnexpectedException
-from helpers.utils import run_in_dev
+from helpers.utils import run_in_dev, add_colors
 from civitconfig.args.argparser import get_args
-from civitconfig.data.configjson import getConfig, getDefaultAsList, setDefault
+from civitconfig.data.configjson import deleteSorter, getConfig, getDefaultAsList, setDefault, getSortersList, addSorter
 
 
 def main():
@@ -21,13 +21,23 @@ def main():
                 setDefault(
                     max_images=args['max_images'], sorter=args['sorter'], api_key=args['api_key'])
             (max_images, sorter, _) = getDefaultAsList()
-            print(
-                f'Defaults:\n      Max Images:     {max_images}\n      Sorter:         {sorter}'
-            )
-            # TODO: Write the other subcommands
-            # TODO: Should I do all of these for loops in args? Yk to separate data...
+            print(add_colors('Default:', 'green'))
+            print(add_colors(f'     Max Images:         {max_images}', 'blue'))
+            print(add_colors(f'     Sorter:             {sorter}', 'green'))
         elif subcommand == 'sorter':
-            print('sorter')
+            if args['add'] != None:
+                add_name, add_path = args['add']
+                addSorter(add_name, add_path)
+            elif args['delete'] != None:
+                deleteSorter(args['delete'])
+
+            sortersLi = getSortersList()
+            for i, [name, docstr, _] in enumerate(sortersLi):
+                color = 'green' if i % 2 == 0 else 'blue'
+                print(
+                    add_colors(
+                        f'Sorter #{i + 1}, {name}:     {f"{docstr[:300 - 3]}..." if len(docstr) > 300 else docstr}', color)
+                )
         elif subcommand == 'alias':
             print('alias')
         else:

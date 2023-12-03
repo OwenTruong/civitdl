@@ -1,8 +1,10 @@
 import json
-from typing import Callable
+from typing import Callable, Dict
+import importlib.util
 
 from tqdm import tqdm
 import pygit2
+from termcolor import colored
 
 from helpers.exceptions import UnexpectedException
 
@@ -37,3 +39,14 @@ def find_in_list(li, cond_fn: Callable[[any, int], bool], default=None):
 def run_in_dev(fn, *args):
     if pygit2.Repository('.').head.shorthand != 'master':
         fn(*args)
+
+
+def import_sort_model(filepath) -> Callable[[Dict, Dict, str, str], str]:
+    spec = importlib.util.spec_from_file_location('sorter', filepath)
+    sorter = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(sorter)
+    return sorter.sort_model
+
+
+def add_colors(message, color):
+    return colored(message, color)
