@@ -23,13 +23,12 @@ SORTERS_TRASH_DIR_PATH = os.path.join(SORTERS_DIR_PATH, '.trash')
 
 run_in_dev(print, CONFIG_PATH)
 
+### Low Level Helpers ###
 
-# this is too general compared to savePyFile
-def _saveToJSON(path, data):
-    with open(path, 'w') as file:
-        json.dump(data, file, indent=2)
 
-    return os.path.basename(path)
+def _saveConfig(dic: dict):
+    with open(CONFIG_PATH, 'w') as file:
+        json.dump(dic, file, indent=2)
 
 
 def _unsavePyFile(filename):
@@ -70,6 +69,8 @@ def _untrashPyFile(filename):
         shutil.move(trashpath, os.path.join(SORTERS_DIR_PATH, filename))
 
 
+### Helper ###
+
 def _setFallback():
     fallback = {
         "default": {
@@ -82,26 +83,20 @@ def _setFallback():
     }
 
     os.makedirs(dirs.user_config_dir, exist_ok=True)
-    _saveToJSON(CONFIG_PATH, fallback)
+    _saveConfig(fallback)
 
     return fallback
 
 
 def _setConfig(data):
     try:
-        _saveToJSON(CONFIG_PATH, data)
+        _saveConfig(data)
     except Exception as e:
-        print('---------')
-        run_in_dev(traceback.print_exc)
-        print(e)
-        print('JSON config could potentially be corrupted. It is recommended to reinstall the default configuration.')
-        print('---------')
+        print('JSON config could potentially be corrupted.')
+        raise e
 
 
-### Public Functions ###
-
-
-def getConfig():
+def _getConfig():
     data = None
 
     try:
@@ -111,33 +106,32 @@ def getConfig():
         if data == None:
             raise UnexpectedException('JSON config file was not read...')
     except Exception as e:
-        print('---------')
-        run_in_dev(traceback.print_exc)
-        print(e)
-        print('---------')
-        print('Wiping JSON config and reinstalling defaults...')
+        print('Config not found. Installing defaults...')
         data = _setFallback()
-
-    if data == None:
-        raise UnexpectedException('No data returned from fallback')
 
     return data
 
 
+### Public Functions ###
+
+## _getConfig dep ##
+
 def getDefaultAsList() -> list:
-    return getConfig()['default'].values()
+    return _getConfig()['default'].values()
 
 
 def getSortersList() -> list:
-    return getConfig()['sorters']
+    return _getConfig()['sorters']
 
 
 def getAliasesList() -> list:
-    return getConfig()['aliases']
+    return _getConfig()['aliases']
 
+
+## _getConfig + getList dep ##
 
 def setDefault(max_images=None, sorter=None, api_key=None):
-    config = getConfig()
+    config = _getConfig()
     if max_images:
         if type(max_images) != int or max_images < 0:
             raise InputException(
@@ -169,7 +163,7 @@ def addSorter(name, filepath):
             f'Something went wrong with the filepath provided for the sorter')
 
     # First, we edit config
-    config = getConfig()
+    config = _getConfig()
     config['sorters'].append([name, desc, filename])
 
     # Then, we save python file (if exception, need to undo)
@@ -191,27 +185,26 @@ def deleteSorter(name):
     if name == 'tags' or name == 'basic':
         raise InputException(f'Sorter with name "{name}" can not be deleted.')
 
-    target_sorter = None
-    for sorter in sorters:
-        sname = sorter[0]
-        if name == sname:
-            target_sorter = sorter
-
-    if target_sorter == None:
+    target_sorter = [sorter for sorter in sorters if name == sorter[0]]
+    if len(target_sorter) == 0:
         raise InputException(f'Sorter with name "{name}" does not exist.')
+    else:
+        target_sorter = target_sorter[0]
 
     # First, we edit config
-    config = getConfig()
+    config = _getConfig()
     config['sorters'] = [
         sorter for sorter in config['sorters'] if sorter[0] != name]
 
     # Then, we delete file (if exception, need to undo)
+    resources_error_was_raised = False
     try:
         _trashPyFile(target_sorter[2])
     except Exception as e:
         exception_type = type(e)
         if exception_type.__name__ == 'ResourcesException':
             print(e)
+            resources_error_was_raised = True
         else:
             raise e
 
@@ -219,7 +212,8 @@ def deleteSorter(name):
     try:
         _setConfig(config)
     except Exception as e:
-        _untrashPyFile(target_sorter[2])
+        if not resources_error_was_raised:
+            _untrashPyFile(target_sorter[2])
         raise e
 
 
@@ -231,8 +225,8 @@ def addAlias(alias_name: str, path: str):
         if aname == alias_name:
             raise InputException(f'Alias name exist already: ${alias_name}')
 
-    config = getConfig()
-    if os.path.split(path)[0].split(os.path.sep)[0] in [aname for aname, _ in aliases]:
+    config = _getConfig()
+    if path.split(os.path.sep)[0] in [aname for aname, _ in aliases]:
         config['aliases'].append([alias_name, path])
     else:
         config['aliases'].append([alias_name, os.path.abspath(path)])
@@ -251,7 +245,7 @@ def deleteAlias(alias_name: str):
     if target_alias == None:
         raise InputException(f'Alias with name {alias_name} does not exist.')
 
-    config = getConfig()
+    config = _getConfig()
     config['aliases'] = [
         alias for alias in config['aliases'] if alias[0] != alias_name
     ]

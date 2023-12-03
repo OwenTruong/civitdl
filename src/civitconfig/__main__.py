@@ -7,7 +7,7 @@ from operator import itemgetter
 from helpers.exceptions import UnexpectedException
 from helpers.utils import run_in_dev, add_colors
 from civitconfig.args.argparser import get_args
-from civitconfig.data.configjson import addAlias, deleteAlias, deleteSorter, getConfig, getDefaultAsList, setDefault, getSortersList, addSorter, getAliasesList
+from civitconfig.data.configjson import addAlias, deleteAlias, deleteSorter, getDefaultAsList, setDefault, getSortersList, addSorter, getAliasesList
 
 
 def main():
