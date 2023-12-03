@@ -57,7 +57,7 @@ source ~/.bashrc
 - New Args:
   - `civitdl source1 source2 ... sourceN dst_root_directory`
 - Example:
-  - `civitdl 123456 batchfile ./models`
+  - `civitdl 123456 ./batchfile.txt ./models`
 
 #### batchfile 
 * Make sure everything is comma separated. txt files are recommended. 
