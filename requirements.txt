@@ -2,4 +2,4 @@ requests
 build
 termcolor
 tqdm
-pygit
+pygit2
