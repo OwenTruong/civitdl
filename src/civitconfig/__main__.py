@@ -29,6 +29,7 @@ def main():
             if args['add'] != None:
                 add_name, add_path = args['add']
                 config_manager.addSorter(add_name, add_path)
+            # FIXME: If default is also the one deleted, then reset default to basic
             elif args['delete'] != None:
                 config_manager.deleteSorter(args['delete'])
 
@@ -43,6 +44,8 @@ def main():
             if args['add'] != None:
                 add_name, add_path = args['add']
                 config_manager.addAlias(add_name, add_path)
+            # FIXME: If default is also the one deleted, then reset default to ""
+            # FIXME: What happens to aliases that rely on say alias A that is being deleted?
             elif args['delete'] != None:
                 config_manager.deleteAlias(args['delete'])
 

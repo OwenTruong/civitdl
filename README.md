@@ -4,10 +4,16 @@
 
 Uses CLI to batch download Stable Diffusion models from CivitAI, metadata (including description of model, author, base model, example prompts and etc.) and example images (default is 3) of checkpoint and lora models. One thing to note is that for **sfw models**, currently, the program is set to only **download sfw images**. Please note that there may be sfw models that are rated as nsfw by CivitAI (and vice versa).
 
+## Navigate
+- [README Page](../README.md)
+- [Configuration Page](./config.md)
+- [Sorter Page](./sorter.md)
 
-## Table Of Contents:
+
+## Table Of Contents
 - [civitdl v2.0 (civitai-batch-download)](#civitdl-v20-civitai-batch-download)
-  - [Table Of Contents:](#table-of-contents)
+  - [Navigate](#navigate)
+  - [Table Of Contents](#table-of-contents)
   - [Description](#description)
   - [Getting Started](#getting-started)
     - [Dependencies](#dependencies)
