@@ -1,6 +1,5 @@
 requests
 termcolor
 tqdm
-pygit2
 appdirs
 argparse>=1.4,<2
