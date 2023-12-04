@@ -4,6 +4,26 @@
 
 Uses CLI to batch download Stable Diffusion models from CivitAI, metadata (including description of model, author, base model, example prompts and etc.) and example images (default is 3) of checkpoint and lora models. One thing to note is that for **sfw models**, currently, the program is set to only **download sfw images**. Please note that there may be sfw models that are rated as nsfw by CivitAI (and vice versa).
 
+
+## Table Of Contents:
+- [civitdl v2.0 (civitai-batch-download)](#civitdl-v20-civitai-batch-download)
+  - [Table Of Contents:](#table-of-contents)
+  - [Description](#description)
+  - [Getting Started](#getting-started)
+    - [Dependencies](#dependencies)
+    - [Installing](#installing)
+      - [Install using PIP](#install-using-pip)
+      - [Build from source](#build-from-source)
+      - [Troubleshooting](#troubleshooting)
+    - [Executing program](#executing-program)
+      - [v2 changes](#v2-changes)
+      - [batchfile](#batchfile)
+      - [batchstr](#batchstr)
+      - [Sorters](#sorters)
+      - [Creating Custom Sorters](#creating-custom-sorters)
+  - [Help](#help)
+  - [License](#license)
+
 ## Description
 
 There are two ways to batch download using this script:
@@ -53,7 +73,8 @@ source ~/.bashrc
 
 ### Executing program
 
-#### Note in v2, it is now possible to use both batchfile and batchstr without specifying batchfile or batchstr as an argument.
+#### v2 changes
+Note in v2, it is now possible to use both batchfile and batchstr without specifying batchfile or batchstr as an argument.
 - New Args:
   - `civitdl source1 source2 ... sourceN dst_root_directory`
 - Example:
@@ -75,7 +96,7 @@ source ~/.bashrc
 * Examples:
     * `civitdl https://civitai.com/models/7808/easynegative 79326 ~/Downloads/ComfyUI/models/loras`
 
-#### Sorters (previously called filters)
+#### Sorters
 * Beyond downloading models, it is possible to specify some sorters, or rules, on how to organize the model folders when batch downloading multiple models.
 * There are two built-in sorters: tags and basic.
     * "tags" sorters the models by the model type (i.e. if lora is trained on a 1.5 or 2.0 or SDXL base model) and tags associated with them on CivitAI. 
