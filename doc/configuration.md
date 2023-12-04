@@ -1,18 +1,17 @@
-# Configuration
+# Config
 - In this page, we will go over three types of configurations: default, sorters, and aliases.
-
-Run `civitconfig --help` when you need help on some options!
+- Run `civitconfig --help` when you need help on some options!
 
 ## Navigate
 - [README Page](../README.md)
 - [Alias Page](./alias.md)
 - [API Key Page](./api_key.md)
-- [Configuration Page](./config.md)
+- [Configuration Page](./configuration.md)
 - [Sorter Page](./sorter.md)
 
 
 ## Table Of Contents
-- [Configuration](#configuration)
+- [Config](#config)
   - [Navigate](#navigate)
   - [Table Of Contents](#table-of-contents)
   - [Defaults](#defaults)
@@ -37,7 +36,7 @@ Defaults set the defaults for options that are used in `civitdl` command.
 ### Set max image
 - This sets the default max images to download from civitai when `civitdl` is run without the option `-i` or `--max-images`
 
-To set the default max images to N (any integer): 
+To set the default max images to N (N >= 0): 
 - Shorthand: `civitconfig default -i N`
 - Longhand: `civitconfig default --max-images N`
 
@@ -79,7 +78,7 @@ To set the default api key, use the below option and the program will securely p
 - Run `civitconfig sorter` to list the sorters saved to the program.
 
 ### Add a sorter
-- Adds and saves sorter to program. Must be a .py file with a function called `sort_model`. See [sorter doc](./sorter.md)
+- Adds and saves sorter to program. Must be a .py file with a function called `sort_model`. See [sorter doc](./sorter.md) on requirements.
 - Shorthand: `civitconfig sorter -a mysorter /path/to/sorter.py`
 - Longhand: `civitconfig sorter --add mysorter /path/to/sorter.py`
 
