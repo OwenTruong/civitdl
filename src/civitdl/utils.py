@@ -2,7 +2,6 @@ import json
 from typing import Callable, List
 
 from tqdm import tqdm
-import pygit2
 
 from .exceptions import UnexpectedException
 
@@ -53,5 +52,4 @@ def parse_args(args: List[str]):
 
 
 def run_in_dev(fn, *args):
-    if pygit2.Repository('.').head.shorthand != 'master':
-        fn(*args)
+    return False
