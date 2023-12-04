@@ -79,7 +79,7 @@ class Metadata:
         return meta_res.json()
 
 
-def _download_image(dirpath: str, images: list[Dict], nsfw: bool, max_img_count: int):
+def _download_image(dirpath: str, images: List[Dict], nsfw: bool, max_img_count):
     image_urls = []
 
     for dict in images:
