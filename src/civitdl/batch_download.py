@@ -1,6 +1,7 @@
 import os
 import time
 import traceback
+from typing import List
 
 
 from .get_model import download_model
@@ -47,7 +48,7 @@ def verify_max_images():
     None
 
 
-def batch_download(type: str, argv: list[str]):
+def batch_download(type: str, argv: List[str]):
     """Accepted type are batchfile and batchstr"""
     if type != 'batchfile' and type != 'batchstr':
         raise UnexpectedException(f'Unknown batch type --> {type}')

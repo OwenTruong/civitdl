@@ -1,5 +1,5 @@
 import json
-from typing import Callable
+from typing import Callable, List
 
 from tqdm import tqdm
 import pygit2
@@ -34,7 +34,7 @@ def find_in_list(li, cond_fn: Callable[[any, int], bool], default=None):
     return next((item for i, item in enumerate(li) if cond_fn(item, int)), default)
 
 
-def parse_args(args: list[str]):
+def parse_args(args: List[str]):
     """Returns a tuple of (kwargs, args)"""
     kwargs = {}
     non_kwargs = []
