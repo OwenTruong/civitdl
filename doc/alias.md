@@ -16,6 +16,10 @@
   - [What Are Aliases?](#what-are-aliases)
     - [Example Of Substitution / Usage:](#example-of-substitution--usage)
     - [Example Of Relative Alias Usage:](#example-of-relative-alias-usage)
+  - [Configuring Alias](#configuring-alias)
+    - [List aliases](#list-aliases)
+    - [Add an alias](#add-an-alias)
+    - [Delete an alias](#delete-an-alias)
 
 
 ## What Are Aliases?
@@ -47,9 +51,20 @@
 
 For details on sorters, please head to [sorter doc](./sorter.md)
 
+## Configuring Alias
+- Duplicate of [alias section in configuration](./configuration.md#aliases)
 
-Adding Alias 
 
-Adding Relative Alias
 
-Deleting Alias
+### List aliases
+- Run `civitconfig alias` to list the aliases saved to the program.
+
+### Add an alias
+- Shorthand: `civitconfig alias -a alias-name /path/to/the/alias/dir`
+- Longhand: `civitconfig alias --add alias-name /path/to/the/alias/dir`
+
+### Delete an alias
+- Shorthand: `civitconfig alias -d alias-name`
+- Longhand: `civitconfig alias --delete alias-name`
+
+

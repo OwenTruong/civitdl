@@ -96,8 +96,8 @@ To set the default api key, use the below option and the program will securely p
 - Run `civitconfig alias` to list the aliases saved to the program.
 
 ### Add an alias
-- Shorthand: `civitconfig alias -a alias-name /path/of/the/alias/dir`
-- Longhand: `civitconfig alias --add alias-name /path/of/the/alias/dir`
+- Shorthand: `civitconfig alias -a alias-name /path/to/the/alias/dir`
+- Longhand: `civitconfig alias --add alias-name /path/to/the/alias/dir`
 - See [alias doc](./alias.md) on how to add relative alias.
 
 ### Delete an alias
