@@ -78,7 +78,7 @@ echo 'PATH="$HOME/.local/bin:"$PATH' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-If you are building from source and the following packages are not available `setuptools, wheel, build`, please install them with `pip install setuptools whell build`
+If you are building from source and the following packages are not available `setuptools, wheel, build`, please install them with `pip install setuptools wheel build`
 
 <br/>
 
