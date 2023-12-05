@@ -81,6 +81,7 @@ For details on sorters, please head to [sorter doc](./sorter.md)
 <br/>
 
 ### Add an alias
+- Path can be relative or absolute.
 - Shorthand: `civitconfig alias -a alias-name /path/to/the/alias/dir`
 - Longhand: `civitconfig alias --add alias-name /path/to/the/alias/dir`
 
@@ -97,5 +98,4 @@ For details on sorters, please head to [sorter doc](./sorter.md)
 civitconfig alias -a @loras /home/ubuntu/ComfyUI/models/loras
 civitdl 123456 @loras
 civitconfig alias -d @loras
-
 ```
