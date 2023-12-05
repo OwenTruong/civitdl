@@ -40,7 +40,7 @@
 Suppose we have an alias named `@models` 
   that is mapped to the path `/home/ubuntu/ComfyUI/models`
 
-Then we run the following command to download Anything v3 to the subdirectories inside the root directory, `/checkpoints`: `/home/ubuntu/ComfyUI/models/checkpoints`
+Then we run the following command to download Anything v3 to the subdirectories inside following root directory, `/home/ubuntu/ComfyUI/models/checkpoints`
   -  `civitdl 66 @models/checkpoints`
   -  The above command translates to 
       -  `civitdl 66 /home/ubuntu/ComfyUI/models/checkpoints`
@@ -58,7 +58,7 @@ Suppose we have two aliases `@models` and `@loras`
   - `@models` is mapped to the path `/home/ubuntu/ComfyUI/models`
   - `@loras` is the relative alias that is mapped to the path `@models/loras`
 
-To download a lora with a model id of 80848 to the subdirectories inside the root directory, `/loras`: `/home/ubuntu/ComfyUI/models/loras`
+To download a lora with a model id of 80848 to the subdirectories inside the following root directory, `/home/ubuntu/ComfyUI/models/loras`
   - `civitdl 80848 @loras`
   - The above command translates to
     - `civitdl 80848 /home/ubuntu/ComfyUI/models/loras`
