@@ -29,9 +29,9 @@
 <br/>
 
 ## What Are Aliases?
-- Aliases in `civitdl` are a way to subsitute keywords with some paths for rootdir,  or last argument a user provides to `civitdl`. 
+- Aliases in `civitdl` are a way to subsitute keywords with some paths for rootdir (last argument a user provides to `civitdl`). 
   - `civitdl source1 source2 ... sourceN rootdir-path`
-- This was made to be more convenient for users who do not wish to write out a long path to the root directory at where they would like to download their models.
+- This was made to be more convenient for users who do not wish to remember or write out a long path to the root directory at where they would like to download their models.
 
 <br/>
 
