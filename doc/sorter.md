@@ -4,11 +4,12 @@
 <br/>
 
 ## Navigate
-- [README Page](../README.md)
-- [Alias Page](./alias.md)
-- [API Key Page](./api_key.md)
-- [Configuration Page](./configuration.md)
-- [Sorter Page](./sorter.md)
+- [README Page](/README.md)
+- [Alias Page](/doc/alias.md)
+- [API Key Page](/doc/api_key.md)
+- [Configuration Page](/doc/configuration.md)
+- [Sorter Page](/doc/sorter.md)
+
 
 <br/>
 
@@ -56,11 +57,13 @@ stable-diffusion-webui/
 
 `basic` is the **default** sorter, and it is possible to change the parent directory name from `anythingv3_fp16` to any other name in a custom sorter.
 
+`basic` does not really do anything vesides creating a parent directory right under root directory (or in our case here, the ckpt directory).
+
 <br/>
 
 ### Example of tag sorter creating subdirectories
 
-With sorters, we can also customize the **subdirectories** of the parent directory. `tags` sorter offer a way to sort by SD version (SD1.5, SDXL, and etc.) and by tags.
+With sorters, we can also customize the **subdirectories** of the parent directory. `tags` sorter offer a way to sort by SD version (SD1.5, SDXL, and etc.) and by civitai tags parsed from the metadata.
 
 For example, suppose we download a Hatsune Miku lora with model id 80848
 using `tags` sorter in a root directory "`Lora`" of Auto1111:
@@ -91,7 +94,11 @@ stable-diffusion-webui/
 
 ### Using a sorter is really simple as shown in the previous section
 - To use the default sorter, run without `-s` or `--sorter`, else run with the sorter option.
-- `civitdl source1 source2 ... sourceN /path/to/the/root/dir -s tags`
+  - `civitdl source1 ... sourceN /path/to/root/dir -s tags`
+- To run a sorter from filepath, just provide the path to the sorter python file.
+  - `civitdl source1 ... sourceN /path/to/root/dir -s /path/to/sorter.py`
+
+
 
 ### Configuring sorters
 - To set a default sorter to use in `civitdl`, go to [set sorter section in configuration](./configuration.md#set-sorter)

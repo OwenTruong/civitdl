@@ -4,11 +4,12 @@
 <br/>
 
 ## Navigate
-- [README Page](../README.md)
-- [Alias Page](./alias.md)
-- [API Key Page](./api_key.md)
-- [Configuration Page](./configuration.md)
-- [Sorter Page](./sorter.md)
+- [README Page](/README.md)
+- [Alias Page](/doc/alias.md)
+- [API Key Page](/doc/api_key.md)
+- [Configuration Page](/doc/configuration.md)
+- [Sorter Page](/doc/sorter.md)
+
 
 <br/>
 
