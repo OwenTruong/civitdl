@@ -39,6 +39,7 @@ using `basic` sorter in root directory "`Stable-diffusion`" of Auto1111
 
 `civitdl 66 ./stable-diffusion-webui/models/Stable-diffusion -s basic`
 
+--- RESULT ---
 ```
 stable-diffusion-webui/
 | models/
@@ -64,6 +65,7 @@ using `tags` sorter in a root directory "`Lora`" of Auto1111:
 
 `civitdl 80848 ./stable-diffusion-webui/models/Lora -s tags`
 
+--- RESULT ---
 ```
 stable-diffusion-webui/
 | models/
