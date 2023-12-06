@@ -4,7 +4,7 @@ import traceback
 from typing import Dict
 
 from ._get_model import download_model
-from helpers.utils import run_in_dev, import_sort_model
+from helpers.utils import get_env, run_in_dev, import_sort_model
 from helpers.sorter import basic, tags
 
 

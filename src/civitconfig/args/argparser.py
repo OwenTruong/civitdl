@@ -8,6 +8,7 @@ from termcolor import colored
 
 from helpers.exceptions import InputException, UnexpectedException
 from helpers.argparse import PwdAction
+from helpers.utils import set_env
 
 __all__ = ['get_args']
 
@@ -17,6 +18,8 @@ parser = argparse.ArgumentParser(
     description="civitconfig is a cli program used to set configurations for the main program, civitdl.",
     formatter_class=argparse.RawTextHelpFormatter
 )
+
+parser.add_argument('-d', '--dev', action=argparse.BooleanOptionalAction)
 
 
 subparsers = parser.add_subparsers(
@@ -59,4 +62,6 @@ alias_group.add_argument('-d', '--delete', metavar=('NAME'), type=str,
 
 def get_args():
     parser_result = parser.parse_args()
+    if parser_result.dev:
+        set_env('development')
     return vars(parser_result)

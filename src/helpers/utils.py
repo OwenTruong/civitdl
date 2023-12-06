@@ -1,11 +1,27 @@
 import json
+import os
 from typing import Callable, Dict, List
 import importlib.util
 
 from tqdm import tqdm
 from termcolor import colored
 
-from helpers.exceptions import UnexpectedException
+from helpers.exceptions import InputException, UnexpectedException
+
+_environment = 'production'
+
+
+def get_env():
+    return _environment
+
+
+def set_env(env: str):
+    if env != 'production' and env != 'development':
+        raise UnexpectedException(
+            f'Program is trying to set unexpected enviornment {env}')
+    global _environment
+    _environment = env
+    return _environment
 
 
 def write_to_file(path, content, mode: str = None):
@@ -36,7 +52,8 @@ def find_in_list(li, cond_fn: Callable[[any, int], bool], default=None):
 
 
 def run_in_dev(fn, *args):
-    return False
+    if get_env() == 'development':
+        fn(*args)
 
 
 def import_sort_model(filepath) -> Callable[[Dict, Dict, str, str], str]:

@@ -6,6 +6,7 @@ import argparse
 from termcolor import colored
 
 from civitconfig.data.configmanager import ConfigManager
+from helpers.utils import set_env
 from helpers.argparse import PwdAction
 from helpers.exceptions import InputException, UnexpectedException
 
@@ -137,6 +138,8 @@ parser.add_argument('-i', '--max-images', metavar='INT', type=int, default=3,
 parser.add_argument('-k', '--api-key', action=PwdAction, type=str, nargs=0,
                     help='Prompt user for api key to download models that require users to log in.')
 
+parser.add_argument('-d', '--dev', action=argparse.BooleanOptionalAction)
+
 
 def get_args():
     parser_result = parser.parse_args()
@@ -144,6 +147,9 @@ def get_args():
     d_max_imgs, d_sorter_name, d_api_key = config_manager.getDefaultAsList()
     sorters = config_manager.getSortersList()
     aliases = config_manager.getAliasesList()
+
+    if parser_result.dev:
+        set_env('development')
 
     return {
         "ids": parse_src(parser_result.srcmodel),

@@ -76,7 +76,13 @@ class Metadata:
         if meta_res.status_code != 200:
             raise APIException(
                 meta_res.status_code, f'Downloading metadata from CivitAI for "{self.__id.original}" failed when trying to request metadata from "{url}"')
-        return meta_res.json()
+
+        try:
+            return meta_res.json()
+        except Exception as e:
+            raise UnexpectedException(
+                'Unable to parse metadata from CivitAI (incorrect format provided by Civitai).', 'CivitAI might be under maintainence.',
+                f'\nOriginal Error:\n       {e}')
 
 
 def _download_image(dirpath: str, images: List[Dict], nsfw: bool, max_img_count):
