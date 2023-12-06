@@ -28,9 +28,12 @@
 <br/>
 
 ## What is a sorter?
-- A sorter provides a way for users to automatically organize their downloaded models. A sorter is able to change the parent directory's name, and create subdirectores. More is explained below.
+- A sorter provides a way for users to automatically organize their downloaded models. A sorter is able to change a parent directory's name, and create subdirectores. More is explained below.
 
-When one downloads a model with `civitdl`, a few other files are downloaded too - images and json metadata for the model. In order to make things organized, the downloaded model, images and jsons are grouped together and stored in a **parent directory**.
+When one downloads a model with `civitdl`, the model's example images and json metadata are also downloaded.
+- A parent directory describes the parent directory a model, metadata or images are download to.
+
+The reason we want to download the images and metadatas too are because it helps to have a reference of what a model does locally, plus on the off chance that the model is pulled off of civitai one day, we can still refer to the model locally.
 
 <br/>
 
@@ -49,15 +52,19 @@ stable-diffusion-webui/
   | Stable-diffusion/
     | anythingv3_fp16/
       | anythingV3_fp16-mid_66-vid_75.ckpt
-      | anythingV3_fp16-mid_66-vid_75.json
-      | 517.jpeg
-      | 525.jpeg
-      | 526.jpeg
+      | extra_data-vid_75/
+        | model_dict-mid_66-vid_75.json
+        | 517.jpeg
+        | 525.jpeg
+        | 526.jpeg
 ```
 
-`basic` is the **default** sorter, and it is possible to change the parent directory name from `anythingv3_fp16` to any other name in a custom sorter.
+`basic` is the **default** sorter, and it is possible to change the parent directory name from `anythingv3_fp16` to any other name in a **custom sorter**.
+- It is also possible to change the directory path of metadata and images in a **custom sorter**
 
-`basic` does not really do anything vesides creating a parent directory right under root directory (or in our case here, the ckpt directory).
+`basic` does not really do anything besides creating a parent directory right under root directory (or in our case here, the ckpt directory).
+
+**NOTE: mid_66-vid_75 just means the model id is 66 and the version id is 75. I will move this note to a more appropriate spot later.**
 
 <br/>
 
@@ -78,12 +85,13 @@ stable-diffusion-webui/
     | SD_1.5/
       | anime/
         | character/
-          | hatsunemiku1-000006/
+          | "Hatsune Miku 初音ミク | 23 Outfits | Character Lora 9289"/
             | hatsunemiku1-000006-mid_80848-vid_85767.safetensors
-            | hatsunemiku1-000006-mid_80848-vid_85767.json
-            | 972495.jpeg
-            | 972496.jpeg
-            | 972497.jpeg
+            | extra_data-vid_85767/
+              | model_dict-mid_80848-vid_85767.json
+              | 972495.jpeg
+              | 972496.jpeg
+              | 972497.jpeg
 ```
 
 
@@ -112,8 +120,10 @@ stable-diffusion-webui/
 2. Create a function named exactly `sort_model`
    1. There should be four parameter:
       1. `(model_dict: Dict, version_dict: Dict, filename: str, root_path: str)`
-   2. The return type should be a parent directory path string.
-      1.  The path returned will be where the model will be downloaded
+   2. The return type should be a list of exactly three string paths.
+      1. Model Parent Directory Path string
+      2. Metadata Parent Directory Path string
+      3. Images Parent Directory Path string
    3. Please also add some description, or doc string, to your custom sort_model as that would be printed out to the terminal when a user runs `civitconfig sorter`
 
 Example image of running `civitconfig` to display description of sorters.
@@ -122,7 +132,14 @@ Example image of running `civitconfig` to display description of sorters.
 ```python
 def sort_model(model_dict: Dict, version_dict: Dict, filename: str, root_path: str):
     """This string here describes the following model."""
-    return '/path/to/parent/directory/of/model'
+    model_dir_path = '/path/to/model/parent/dir'
+    metadata_dir_path = '/path/to/metadata/parent/dir'
+    image_dir_path = '/path/to/image/parent/dir'
+    return [
+      model_dir_path, # Parent dir of where the downloaded model should be in
+      metadata_dir_path, # Parent dir of where the JSON metadata should be in
+      image_dir_path # Parent dir of where the images should be in
+    ]
 ```
 
 Please see [sort.py](/custom/sort.py) in custom folder for an example.

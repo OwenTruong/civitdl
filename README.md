@@ -1,6 +1,7 @@
 # civitdl (civitai-batch-download)
 
 **Note v2 has some changes regarding the cli args of the program. Please read the README below or run `civitdl --help` for the new arguments!**
+- To see changes to v2, go to [Changes in v2](#changes-in-v2-from-v1) section.
 
 Uses CLI to batch download Stable Diffusion models from CivitAI, metadata (including description of model, author, base model, example prompts and etc.) and example images (default is 3) of checkpoint, lora, and TI models!
 
@@ -34,6 +35,7 @@ One thing to note is that for sfw models, currently, the program is set to only 
         - [batchfile](#batchfile)
       - [Main Program Options - civitdl](#main-program-options---civitdl)
       - [Configuration Program Options - civitconfig](#configuration-program-options---civitconfig)
+  - [Changes in v2 from v1](#changes-in-v2-from-v1)
   - [Contributing](#contributing)
   - [License](#license)
 
@@ -156,6 +158,16 @@ Three options are available
 - Run `civitconfig --help` to check what options are available!
 
 <br/>
+
+## Changes in v2 from v1
+- basic and tags sorter now downloads metadata and images to `/parent_dir/extra_data/` instead of to `/parent_dir/`
+- Sorter is now more flexible/customizable (i.e. able to select individual paths model, metadata and images should go to)
+- Added support for providing API Key to program to download restricted models.
+  - See [api key doc](/doc/api_key.md)
+- Added configuration to set defaults for options, and to create alias + sorters.
+  - See [config doc](/doc/configuration.md) 
+
+
 
 ## Contributing
 

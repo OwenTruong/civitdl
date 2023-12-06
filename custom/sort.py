@@ -15,8 +15,15 @@ def sort_model(model_dict: Dict, version_dict: Dict, filename: str, root_path: s
             chosen = lowerbound + '-' + upperbound
 
     # Here you specify the full path of the directory (minus the parent directory) you want the model to be in
-    path = os.path.join(root_path, chosen)  # Example: /A-F
-    # Here you specify the name and path of the parent directory that is going to be used to store the model, json and images
-    # Example, for figma lora, parent directory path would be /A-F/figma and the safetensors model path would be /A-F/figma/figma.safetensors
-    path = os.path.join(path, filename)
-    return path
+    sub_dir = os.path.join(root_path, chosen)  # Example: /A-F
+    # Here you specify the names and paths of the parent directory that is going to be used to store the model, json and images
+
+    parent_dir = os.path.join(sub_dir, model_dict['name'])
+    extra_data_dir = os.path.join(
+        parent_dir, f'extra_data-vid_{version_dict["id"]}')
+    paths = [
+        parent_dir,      # model path
+        extra_data_dir,  # metadata path
+        extra_data_dir   # image path
+    ]
+    return paths

@@ -90,6 +90,7 @@ def _download_image(dirpath: str, images: List[Dict], nsfw: bool, max_img_count)
         else:
             image_urls.append(dict['url'])
 
+    os.makedirs(dirpath, exist_ok=True)
     for url in image_urls:
         image_res = requests.get(url)
         if image_res.status_code != 200:
@@ -98,6 +99,16 @@ def _download_image(dirpath: str, images: List[Dict], nsfw: bool, max_img_count)
 
         write_to_file(os.path.join(
             dirpath, os.path.basename(url)), image_res.content, 'wb')
+
+
+def _download_metadata(dirpath: str, metadata: Metadata):
+
+    model_dict_filename = f'model_dict-mid_{metadata.model_id}-vid_{metadata.version_id}.json'
+    model_dict_path = os.path.join(
+        dirpath, model_dict_filename)
+    os.makedirs(dirpath, exist_ok=True)
+    write_to_file(model_dict_path, dumps(
+        metadata.model_dict, indent=2, ensure_ascii=False))
 
 
 def _get_filename_and_model_res(input_str: str, metadata: Metadata, api_key: Union[str, None]):
@@ -166,23 +177,32 @@ def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str
     model_res, filename = _get_filename_and_model_res(
         id.original, metadata, api_key)
 
-    # Create empty directory recursively
+    # Create empty directory recursively #
     filename_without_ext, filename_ext = os.path.splitext(filename)
-    dst_dir_path = create_dir_path(
+    paths = create_dir_path(
         metadata.model_dict, metadata.version_dict, filename_without_ext, dst_root_path)
-    if not os.path.exists(dst_dir_path):
-        os.makedirs(dst_dir_path)
 
-    # Write model to the directory
-    json_path = os.path.join(
-        dst_dir_path, f'{filename_without_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}.json')
-    model_path = os.path.join(
-        dst_dir_path, f'{filename_without_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}{filename_ext}')
-    write_to_file(json_path, dumps(
-        metadata.model_dict, indent=2, ensure_ascii=False))
-    write_to_file_with_progress_bar(model_path, model_res, 'wb')
+    if len(paths) != 3:
+        raise InputException(
+            'Sorter function provided returned invalid # of paths.')
+
+    model_dir_path, metadata_dir_path, image_dir_path = paths
+
+    # Write model to the directory #
+
+    # Download metadata
+    _download_metadata(metadata_dir_path, metadata)
+
+    # Download images
     _download_image(
-        dst_dir_path, metadata.version_dict['images'], metadata.nsfw, max_img_count)
+        image_dir_path, metadata.version_dict['images'], metadata.nsfw, max_img_count)
+
+    # Download file
+    os.makedirs(model_dir_path, exist_ok=True)
+    model_filename = f'{filename_without_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}{filename_ext}'
+    model_path = os.path.join(
+        model_dir_path, model_filename)
+    write_to_file_with_progress_bar(model_path, model_res, 'wb')
 
     print(colored(
         f"""\nDownload completed for \"{metadata.model_name}\" 
