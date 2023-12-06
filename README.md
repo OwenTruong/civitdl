@@ -1,4 +1,4 @@
-# civitdl v2.0 (civitai-batch-download)
+# civitdl (civitai-batch-download)
 
 **Note v2 has some changes regarding the cli args of the program. Please read the README below or run `civitdl --help` for the new arguments!**
 
@@ -18,7 +18,7 @@ One thing to note is that for sfw models, currently, the program is set to only 
 <br/>
 
 ## Table Of Contents
-- [civitdl v2.0 (civitai-batch-download)](#civitdl-v20-civitai-batch-download)
+- [civitdl (civitai-batch-download)](#civitdl-civitai-batch-download)
   - [Navigate](#navigate)
   - [Table Of Contents](#table-of-contents)
   - [Getting Started](#getting-started)
@@ -27,6 +27,7 @@ One thing to note is that for sfw models, currently, the program is set to only 
       - [Install using PIP](#install-using-pip)
       - [Build from source](#build-from-source)
       - [Troubleshooting](#troubleshooting)
+    - [Quick Start](#quick-start)
     - [Executing program v2](#executing-program-v2)
       - [Sources](#sources)
         - [Note about Model ID vs Version ID of a model](#note-about-model-id-vs-version-id-of-a-model)
@@ -49,8 +50,10 @@ One thing to note is that for sfw models, currently, the program is set to only 
 ### Installing
 
 #### Install using PIP
-- `pip3 install civitdl`
-  - Use `pip install civitdl` if `pip3` is not found.
+```bash
+pip3 install civitdl
+```
+- Use `pip install civitdl` if `pip3` is not found.
 
 <br/>
 
@@ -82,22 +85,33 @@ If you are building from source and the following packages are not available `se
 
 <br/>
 
+### Quick Start
+To get started quickly, copy the command below.
+
+``` bash
+civitdl model_id rootpath
+```
+- Replace `model_id` your model of choice.
+- Replace `rootpath` with the directory you wish to download the model to.
+
+<br/>
+
 ### Executing program v2
-Note in v2, it is now possible to use both batchfile and batchstr without specifying batchfile or batchstr as an argument.
 - New Args:
   - `civitdl source1 source2 ... sourceN dst_root_directory`
 - Example usage:
   - `civitdl 123456 ./batchfile.txt ./models`
 - Run `civitdl --help` for help with arguments.
 
+
 <br/>
 
 #### Sources
 - Sources can be either one of the following
-  - Model ID,
+  - Model ID
   - `civitai.com/models` url
   - `civitai.com/api/downloads/models` url
-  - `/path/to/batchfile.txt`
+  - `/path/to/batchfile.txt` batch file path
 - Examples
   - `civitdl https://civitai.com/models/7808/easynegative 79326 ~/Downloads/ComfyUI/models/loras`
 
