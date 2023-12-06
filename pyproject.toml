@@ -1,21 +1,21 @@
 [build-system]
 
-requires = [ "setuptools", "wheel" ]
+requires = [ "setuptools", "wheel", "build" ]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "civitdl"
-version = "1.2.1"
+version = "2.0.0-dev5"
 authors = [ 
    { name = "Owen Truong" } 
 ]
 description = "Package for batch downloading models from civitai.com"
 readme = "README.md"
-requires-python = ">=3.6"
+requires-python = ">=3.7"
 license = {file = "License"}
 keywords = ["civitai", "batch download"]
 classifiers = [
-   "Programming Language :: Python :: 3",
+   "Programming Language :: Python :: 3.7",
    "License :: OSI Approved :: MIT License",
    "Operating System :: OS Independent"
 ]
@@ -29,4 +29,5 @@ Repository = "https://github.com/OwenTruong/civitdl"
 "Bug Tracker" = "https://github.com/OwenTruong/civitdl/issues"
 
 [project.scripts]
-civitdl = "civitdl.command_line:main"
+civitdl = "civitdl.__main__:main"
+civitconfig = "civitconfig.__main__:main"

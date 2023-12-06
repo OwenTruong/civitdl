@@ -1,9 +1,27 @@
 import json
-from typing import Callable, List
+import os
+from typing import Callable, Dict, List
+import importlib.util
 
 from tqdm import tqdm
+from termcolor import colored
 
-from .exceptions import UnexpectedException
+from helpers.exceptions import InputException, UnexpectedException
+
+_environment = 'production'
+
+
+def get_env():
+    return _environment
+
+
+def set_env(env: str):
+    if env != 'production' and env != 'development':
+        raise UnexpectedException(
+            f'Program is trying to set unexpected enviornment {env}')
+    global _environment
+    _environment = env
+    return _environment
 
 
 def write_to_file(path, content, mode: str = None):
@@ -33,23 +51,17 @@ def find_in_list(li, cond_fn: Callable[[any, int], bool], default=None):
     return next((item for i, item in enumerate(li) if cond_fn(item, int)), default)
 
 
-def parse_args(args: List[str]):
-    """Returns a tuple of (kwargs, args)"""
-    kwargs = {}
-    non_kwargs = []
-
-    for arg in args:
-        if arg.startswith('--'):
-            key_value = arg[2:].split('=')
-            if len(key_value) == 2:
-                key, value = key_value
-                kwargs[key] = value
-
-        else:
-            non_kwargs.append(arg)
-
-    return (kwargs, non_kwargs)
-
-
 def run_in_dev(fn, *args):
-    return False
+    if get_env() == 'development':
+        fn(*args)
+
+
+def import_sort_model(filepath) -> Callable[[Dict, Dict, str, str], str]:
+    spec = importlib.util.spec_from_file_location('sorter', filepath)
+    sorter = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(sorter)
+    return sorter.sort_model
+
+
+def add_colors(message, color):
+    return colored(message, color)
