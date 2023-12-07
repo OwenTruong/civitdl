@@ -1,7 +1,7 @@
 ---
 name: Bug Report
-about: Report a bug
-title: 'bug: title of bug'
+about: "general" feature is the one to use if other types of feature do not fit. "doc" feature for documentation. "priority" feature for features that are a priority to implement.
+title: 'bug(general/doc/priority): title of bug'
 labels: 'bug'
 assignees: ''
 
