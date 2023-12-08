@@ -203,6 +203,9 @@ class ConfigManager:
         config = self._getConfig()
         config['sorters'] = [
             sorter for sorter in config['sorters'] if sorter[0] != name]
+        if config['default']['sorter'] == name:
+            # If default config is the sorter being deleted, change default back to basic
+            config['default'] = 'basic'
 
         # Then, we delete file (if exception, need to undo)
         resources_error_was_raised = False
