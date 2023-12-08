@@ -1,3 +1,4 @@
+import glob
 import os
 import json
 import uuid
@@ -36,13 +37,15 @@ class ConfigManager:
         if not self._configExists():
             self.setFallback()
 
-    ### Low Level Helper ###
+    ### Low Level ###
+
+    ## Low Level Helper ##
 
     def _getDate(self) -> str:
         now = datetime.now()
         return now.strftime("%Y-%m-%d--%H:%M:%S-%f")
 
-    ### Low Level Fn ###
+    ## Low Level 1 ##
 
     def _configExists(self):
         return os.path.exists(self.config_path)
@@ -82,18 +85,23 @@ class ConfigManager:
 
     def _trashPyFile(self, filepath):
         filename = os.path.basename(filepath)
+        trashpath = os.path.join(
+            self.sorters_trash_dir_path, filename)
         if os.path.exists(filepath):
-            shutil.move(filepath, os.path.join(
-                self.sorters_trash_dir_path, filename))
+            shutil.move(filepath, trashpath)
+            return trashpath
         else:
             raise ResourcesException(
                 'Unable to trash python file because it does not exist.')
 
+    # FIXME: public function is incorrectly providing trash path, in the first place pub is not supposed to know trash path
     def _untrashPyFile(self, trashpath):
         filename = os.path.basename(trashpath)
+        filepath = os.path.join(
+            self.sorters_dir_path, filename)
         if os.path.exists(trashpath):
-            shutil.move(trashpath, os.path.join(
-                self.sorters_dir_path, filename))
+            shutil.move(trashpath, filepath)
+            return filepath
         else:
             raise ResourcesException(
                 'Unable to untrash python file because it does not exist.')
@@ -106,6 +114,25 @@ class ConfigManager:
 
     def _setApiKey(self, config, key):
         config['default']['api_key'] = key
+
+    ## Low Level 2 ##
+
+    def _trashPyFiles(self, dirpath):
+        if not os.path.exists(dirpath):
+            raise ResourcesException(
+                f'Unable to trash python files because the directory does not exist:\n      {dirpath}')
+        pyfile_paths = glob.glob(os.path.join(dirpath, '*.py'))
+        trashfile_paths = []
+        try:
+            for pyfile_path in pyfile_paths:
+                trashfile_paths.append(self._trashPyFile(pyfile_path))
+        except Exception as e:
+            for trashfile_paths in trashfile_paths:
+                self._untrashPyFile(trashfile_paths)
+            raise e
+
+    def _untrashPyFiles(self, dirpath):
+        None
 
     ### Public Functions ###
 
@@ -209,8 +236,9 @@ class ConfigManager:
 
         # Then, we delete file (if exception, need to undo)
         resources_error_was_raised = False
+        trashfile = None
         try:
-            self._trashPyFile(sorter_py_path)
+            trashfile = self._trashPyFile(sorter_py_path)
         except Exception as e:
             if type(e).__name__ == 'ResourcesException':
                 print(e)
@@ -223,7 +251,7 @@ class ConfigManager:
             self._saveConfig(config)
         except Exception as e:
             if not resources_error_was_raised:
-                self._untrashPyFile(sorter_py_path)
+                self._untrashPyFile(trashfile)
             raise e
 
     def addAlias(self, alias_name: str, path: str):

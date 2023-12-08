@@ -73,7 +73,7 @@ config_parser = subparsers.add_parser(
 )
 config_group = config_parser.add_mutually_exclusive_group()
 config_group.add_argument(
-    '-r', '--reset', action=ConfirmAction, help='Delete config and reinstall the default configuration. WARNING: DO NOT RUN THIS UNLESS YOU ARE SURE YOU WANT TO DELETE.')
+    '-r', '--reset', action=ConfirmAction, help='Delete config and reinstall the default configuration.\nWARNING: DO NOT RUN THIS UNLESS YOU ARE SURE YOU WANT TO DELETE.')
 config_group.add_argument(
     '-d', '--download', metavar=('PATH'), type=str, nargs=1, help='Downloads config directory.')
 add_shared_option(config_parser)
