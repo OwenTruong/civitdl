@@ -34,7 +34,7 @@ class ConfigManager:
         os.makedirs(self.sorters_dir_path, exist_ok=True)
         os.makedirs(self.sorters_trash_dir_path, exist_ok=True)
         if not self._configExists():
-            self._setFallback()
+            self.setFallback()
 
     ### Low Level Helper ###
 
@@ -107,9 +107,20 @@ class ConfigManager:
     def _setApiKey(self, config, key):
         config['default']['api_key'] = key
 
-    ### Helper ###
+    ### Public Functions ###
 
-    def _setFallback(self):
+    ## Level 1 - No pub dep ##
+
+    def getDefaultAsList(self) -> list:
+        return self._getConfig()['default'].values()
+
+    def getSortersList(self) -> list:
+        return self._getConfig()['sorters']
+
+    def getAliasesList(self) -> list:
+        return self._getConfig()['aliases']
+
+    def setFallback(self):
         fallback = {
             "default": {
                 "max_images": 3,
@@ -123,19 +134,6 @@ class ConfigManager:
             self._trashConfig()
 
         self._saveConfig(fallback)
-
-    ### Public Functions ###
-
-    ## Level 1 - No pub dep ##
-
-    def getDefaultAsList(self) -> list:
-        return self._getConfig()['default'].values()
-
-    def getSortersList(self) -> list:
-        return self._getConfig()['sorters']
-
-    def getAliasesList(self) -> list:
-        return self._getConfig()['aliases']
 
     ## Level 2 - level 1 pub deps ##
 

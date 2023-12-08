@@ -138,7 +138,8 @@ parser.add_argument('-i', '--max-images', metavar='INT', type=int, default=3,
 parser.add_argument('-k', '--api-key', action=PwdAction, type=str, nargs=0,
                     help='Prompt user for api key to download models that require users to log in.')
 
-parser.add_argument('-d', '--dev', action=argparse.BooleanOptionalAction)
+parser.add_argument(
+    '-v', '--dev', action=argparse.BooleanOptionalAction, help='Prints out traceback and other useful information.')
 
 
 def get_args():

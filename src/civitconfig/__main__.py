@@ -57,6 +57,8 @@ def main():
                         f'Alias #{i + 1}, "{alias_name}": {path}', color
                     )
                 )
+        elif subcommand == 'settings':
+            None
         else:
             raise UnexpectedException(
                 'Unknown subcommand not caught by argparse')
