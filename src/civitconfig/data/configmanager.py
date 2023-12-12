@@ -66,15 +66,10 @@ class ConfigManager:
 
     def _trashConfig(self):
         dst_filename = f'{self._getDate()}.json'
-        shutil.move(self.config_path, os.path.join(
-            self.config_trash_dir_path, dst_filename))
-
-    def _uncopyPyFile(self, filepath):
-        if os.path.exists(filepath):
-            os.remove(filepath)
-        else:
-            raise ResourcesException(
-                'Unable to uncopy python file (or delete it from program) because it does not exist')
+        trashpath = os.path.join(
+            self.config_trash_dir_path, dst_filename)
+        shutil.move(self.config_path, trashpath)
+        return trashpath
 
     def _copyPyFile(self, filepath) -> str:
         dst_filename = f'{self._getDate()}.py'
@@ -82,6 +77,13 @@ class ConfigManager:
             self.sorters_dir_path, dst_filename)
         shutil.copy2(filepath, dstpath)
         return dstpath
+
+    def _uncopyPyFile(self, filepath):
+        if os.path.exists(filepath):
+            os.remove(filepath)
+        else:
+            raise ResourcesException(
+                'Unable to uncopy python file (or delete it from program) because it does not exist')
 
     def _trashPyFile(self, filepath):
         filename = os.path.basename(filepath)
@@ -117,22 +119,27 @@ class ConfigManager:
 
     ## Low Level 2 ##
 
-    def _trashPyFiles(self, dirpath):
-        if not os.path.exists(dirpath):
-            raise ResourcesException(
-                f'Unable to trash python files because the directory does not exist:\n      {dirpath}')
-        pyfile_paths = glob.glob(os.path.join(dirpath, '*.py'))
+    def _trashPyFiles(self, pyfile_paths):
         trashfile_paths = []
         try:
             for pyfile_path in pyfile_paths:
                 trashfile_paths.append(self._trashPyFile(pyfile_path))
+            return trashfile_paths
         except Exception as e:
             for trashfile_paths in trashfile_paths:
                 self._untrashPyFile(trashfile_paths)
             raise e
 
-    def _untrashPyFiles(self, dirpath):
-        None
+    def _untrashPyFiles(self, trashfile_paths):
+        pyfile_paths = []
+        try:
+            for trashfile_path in trashfile_paths:
+                pyfile_paths.append(self._untrashPyFile(trashfile_path))
+            return pyfile_paths
+        except Exception as e:
+            for pyfile_path in pyfile_paths:
+                self._trashPyFile(pyfile_path)
+            raise e
 
     ### Public Functions ###
 
@@ -149,6 +156,7 @@ class ConfigManager:
 
     def setFallback(self):
         fallback = {
+            "version": "1.0.0",
             "default": {
                 "max_images": 3,
                 "sorter": "basic",
@@ -158,7 +166,20 @@ class ConfigManager:
             "aliases": [["@example", "~/.models"]]
         }
         if self._configExists():
-            self._trashConfig()
+            sorters = self.getSortersList()
+            try:
+                self._trashConfig()
+            except Exception as e:
+                raise UnexpectedException(
+                    'Unable to move config file to trash.', f'\nOriginal Error:\n       {e}')
+            try:
+                sorter_py_paths = [
+                    sorter[2] for sorter in sorters if sorter[0] != 'basic' and sorter[0] != 'tags'
+                ]
+                self._trashPyFiles(sorter_py_paths)
+            except Exception as e:
+                raise UnexpectedException(
+                    'Unable to move sorters to trash.', f'\n(Original Error)\n       {e}')
 
         self._saveConfig(fallback)
 
@@ -236,9 +257,9 @@ class ConfigManager:
 
         # Then, we delete file (if exception, need to undo)
         resources_error_was_raised = False
-        trashfile = None
+        trashpath = None
         try:
-            trashfile = self._trashPyFile(sorter_py_path)
+            trashpath = self._trashPyFile(sorter_py_path)
         except Exception as e:
             if type(e).__name__ == 'ResourcesException':
                 print(e)
@@ -251,7 +272,7 @@ class ConfigManager:
             self._saveConfig(config)
         except Exception as e:
             if not resources_error_was_raised:
-                self._untrashPyFile(trashfile)
+                self._untrashPyFile(trashpath)
             raise e
 
     def addAlias(self, alias_name: str, path: str):
