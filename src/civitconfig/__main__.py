@@ -56,7 +56,7 @@ def main():
                 )
         elif subcommand == 'settings':
             if args['reset'] != None:
-                config_manager.setFallback()
+                config_manager.reset()
             elif args['delete'] != None:
                 None
         else:

@@ -2,8 +2,10 @@
 import os
 import json
 from datetime import datetime
+import shutil
 
 from helpers.exceptions import UnexpectedException
+from helpers.utils import getDate
 
 
 class Config:
@@ -20,9 +22,7 @@ class Config:
 
     # Private Methods #
 
-    def _getDate(self) -> str:
-        now = datetime.now()
-        return now.strftime("%Y-%m-%d--%H:%M:%S-%f")
+    ## Configs ##
 
     def _configExists(self):
         return os.path.exists(self.config_path)
@@ -40,3 +40,23 @@ class Config:
     def _saveConfig(self, dic: dict):
         with open(self.config_path, 'w') as file:
             json.dump(dic, file, indent=2)
+
+    # Public Methods #
+
+    def getDefaultAsList(self) -> list:
+        return self._getConfig()['default'].values()
+
+    def getDefaultMaxImages(self):
+        return self._getConfig()['default']['max_images']
+
+    def getDefaultSorterName(self):
+        return self._getConfig()['default']['sorters']
+
+    def getDefaultApiKey(self):
+        return self._getConfig()['default']['api_key']
+
+    def getSortersList(self) -> list:
+        return self._getConfig()['sorters']
+
+    def getAliasesList(self) -> list:
+        return self._getConfig()['aliases']

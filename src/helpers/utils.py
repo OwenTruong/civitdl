@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 from typing import Callable, Dict, List
@@ -65,3 +66,13 @@ def import_sort_model(filepath) -> Callable[[Dict, Dict, str, str], str]:
 
 def add_colors(message, color):
     return colored(message, color)
+
+
+def getDate():
+    now = datetime.now()
+    return now.strftime("%Y-%m-%d--%H:%M:%S-%f")
+
+
+def createDirsIfNotExist(dirpaths):
+    for dirpath in dirpaths:
+        os.makedirs(dirpath, exist_ok=True)
