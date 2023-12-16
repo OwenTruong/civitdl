@@ -13,7 +13,7 @@ class SorterConfig(Config):
     def _copyPyFile(self, filepath) -> str:
         dst_filename = f'{getDate()}.py'
         dstpath = os.path.join(
-            self.sorters_dir_path, dst_filename)
+            self._sorters_dir_path, dst_filename)
         shutil.copy2(filepath, dstpath)
         return dstpath
 
@@ -27,7 +27,7 @@ class SorterConfig(Config):
     def _trashPyFile(self, filepath):
         filename = os.path.basename(filepath)
         trashpath = os.path.join(
-            self.sorters_trash_dir_path, filename)
+            self._sorters_trash_dir_path, filename)
         if os.path.exists(filepath):
             shutil.move(filepath, trashpath)
             return trashpath
@@ -38,7 +38,7 @@ class SorterConfig(Config):
     def _untrashPyFile(self, trashpath):
         filename = os.path.basename(trashpath)
         filepath = os.path.join(
-            self.sorters_dir_path, filename)
+            self._sorters_dir_path, filename)
         if os.path.exists(trashpath):
             shutil.move(trashpath, filepath)
             return filepath

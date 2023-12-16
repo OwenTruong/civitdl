@@ -3,10 +3,9 @@ import shutil
 from appdirs import AppDirs
 
 from helpers.exceptions import InputException, UnexpectedException
-from helpers.sorter import basic, tags
 from helpers.utils import createDirsIfNotExist, getDate
 
-from .config.config import Config
+from .config.config import Config, DEFAULT_CONFIG
 from .config.aliasconfig import AliasConfig
 from .config.defaultconfig import DefaultConfig
 from .config.sorterconfig import SorterConfig
@@ -37,7 +36,7 @@ class ConfigManager(Config):
         self._sorterConfig = SorterConfig(*args)
 
         # Make sure all directories exist
-        createDirsIfNotExist(args)
+        createDirsIfNotExist(args[1:])
 
         # make sure config file exist
         if not self._configExists():
@@ -46,21 +45,11 @@ class ConfigManager(Config):
     def _trashConfig(self):
         dst_filename = f'{getDate()}.json'
         trashpath = os.path.join(
-            self.config_trash_dir_path, dst_filename)
-        shutil.move(self.config_path, trashpath)
+            self._config_trash_dir_path, dst_filename)
+        shutil.move(self._config_path, trashpath)
         return trashpath
 
     def _setFallback(self):
-        fallback = {
-            "version": "1",
-            "default": {
-                "max_images": 3,
-                "sorter": "basic",
-                "api_key": ""
-            },
-            "sorters": [["basic", basic.sort_model.__doc__, 'basic'], ["tags", tags.sort_model.__doc__, 'tags']],
-            "aliases": [["@example", "~/.models"]]
-        }
         if self._configExists():
             sorters = self.getSortersList()
             try:
@@ -77,10 +66,10 @@ class ConfigManager(Config):
                 raise UnexpectedException(
                     'Unable to move sorters to trash.', f'\n(Original Error)\n       {e}')
 
-        self._saveConfig(fallback)
+        self._saveConfig(DEFAULT_CONFIG)
 
-    def setDefault(self, max_images=None, sorter=None, api_key=None):
-        self._defaultConfig(max_images, sorter, api_key)
+    def setDefault(self, max_images, sorter, api_key):
+        self._defaultConfig.setDefault(max_images, sorter, api_key)
 
     def addAlias(self, alias_name: str, path: str):
         self._aliasConfig.addAlias(alias_name, path)
