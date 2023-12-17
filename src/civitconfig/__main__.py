@@ -29,7 +29,6 @@ def main():
             if args['add'] != None:
                 add_name, add_path = args['add']
                 config_manager.addSorter(add_name, add_path)
-            # FIXME: If default is also the one deleted, then reset default to basic
             elif args['delete'] != None:
                 config_manager.deleteSorter(args['delete'])
 
@@ -44,8 +43,6 @@ def main():
             if args['add'] != None:
                 add_name, add_path = args['add']
                 config_manager.addAlias(add_name, add_path)
-            # FIXME: If default is also the one deleted, then reset default to ""
-            # FIXME: What happens to aliases that rely on say alias A that is being deleted?
             elif args['delete'] != None:
                 config_manager.deleteAlias(args['delete'])
 
@@ -57,6 +54,11 @@ def main():
                         f'Alias #{i + 1}, "{alias_name}": {path}', color
                     )
                 )
+        elif subcommand == 'settings':
+            if args['reset'] != None:
+                config_manager.reset()
+            elif args['download'] != None:
+                config_manager.download(args['download'])
         else:
             raise UnexpectedException(
                 'Unknown subcommand not caught by argparse')

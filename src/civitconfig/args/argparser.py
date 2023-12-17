@@ -7,10 +7,15 @@ import argparse
 from termcolor import colored
 
 from helpers.exceptions import InputException, UnexpectedException
-from helpers.argparse import PwdAction
-from helpers.utils import set_env
+from helpers.argparse import PwdAction, ConfirmAction
+from helpers.utils import get_env, set_env
 
 __all__ = ['get_args']
+
+
+def add_shared_option(par):
+    par.add_argument(
+        '-v', '--dev', action=argparse.BooleanOptionalAction, help='Prints out traceback and other useful information.')
 
 
 parser = argparse.ArgumentParser(
@@ -18,8 +23,6 @@ parser = argparse.ArgumentParser(
     description="civitconfig is a cli program used to set configurations for the main program, civitdl.",
     formatter_class=argparse.RawTextHelpFormatter
 )
-
-parser.add_argument('-d', '--dev', action=argparse.BooleanOptionalAction)
 
 
 subparsers = parser.add_subparsers(
@@ -35,6 +38,7 @@ default_parser.add_argument('-s', '--sorter', metavar='NAME', type=str,
                             help='Set the default sorter given name of sorter (filepath not accepted).')
 default_parser.add_argument('-k', '--api-key', action=PwdAction, type=str, nargs=0,
                             help='Prompts the user for their api key to use for model downloads that require users to log in.')
+add_shared_option(default_parser)
 
 
 sorter_parser = subparsers.add_parser(
@@ -46,6 +50,7 @@ sorter_group.add_argument('-a', '--add', metavar=('NAME', 'FILEPATH'), type=str,
                           help='Add/save a new sorter to civitdl program.\nExample: civitconfig sorter --add mysorter ./custom/tags.py.')
 sorter_group.add_argument('-d', '--delete', metavar='NAME', type=str,
                           help='Delete sorter based on name of the sorter.\nExample: civitconfig sorter --delete mysorter.')
+add_shared_option(sorter_parser)
 
 
 alias_parser = subparsers.add_parser(
@@ -58,10 +63,28 @@ alias_group.add_argument('-a', '--add', metavar=('NAME', 'FILEPATH'), type=str, 
                          help='Add a new alias to the civitdl program.\nExample: civitconfig alias --add @lora ./ComfyUI/models/loras.')
 alias_group.add_argument('-d', '--delete', metavar=('NAME'), type=str,
                          help='Delete alias based on name of the alias.\nExample: civitconfig alias --delete @lora.')
+add_shared_option(alias_parser)
+
+
+config_parser = subparsers.add_parser(
+    'settings',
+    help='Subcommand related to the operations of civitconfig.',
+    formatter_class=argparse.RawTextHelpFormatter
+)
+config_group = config_parser.add_mutually_exclusive_group()
+config_group.add_argument(
+    '-r', '--reset', action=ConfirmAction, help='Delete config and reinstall the default configuration.\nWARNING: DO NOT RUN THIS UNLESS YOU ARE SURE YOU WANT TO DELETE.')
+config_group.add_argument(
+    '-d', '--download', metavar=('PATH'), type=str, help='Downloads config directory to specified path.')
+add_shared_option(config_parser)
 
 
 def get_args():
     parser_result = parser.parse_args()
     if parser_result.dev:
         set_env('development')
+
+    if get_env() == 'development':
+        print(f'Parsed Args: {parser_result}')
+
     return vars(parser_result)
