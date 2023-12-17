@@ -19,6 +19,8 @@ DEFAULT_CONFIG = {
     "aliases": [["@example", "~/.models"]]
 }
 
+CURRENT_VERSION = "1"
+
 
 class Config:
 
