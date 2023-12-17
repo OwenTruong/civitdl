@@ -32,6 +32,9 @@
     - [List aliases](#list-aliases)
     - [Add an alias](#add-an-alias)
     - [Delete an alias](#delete-an-alias)
+  - [Settings](#settings)
+    - [Reset Config](#reset-config)
+    - [Download Config](#download-config)
 
 <br/>
 
@@ -127,5 +130,27 @@ To set the default api key, use the below option and the program will securely p
 - Shorthand: `civitconfig alias -d alias-name`
 - Longhand: `civitconfig alias --delete alias-name`
 
+
+<br/>
+
+## Settings
+- Collection of options related to the civitconfig program itself.
+- Ability to reset and download configs.
+
+<br/>
+
+### Reset Config
+- Shorthand: `civitconfig settings -r`
+- Longhand: `civitconfig settings --reset`
+- Run to reset configuration to the most recent default configuration.
+- All of your previous configs will be added to a trash directory in the program's data directory.
+
+<br/>
+
+
+### Download Config
+- Shorthand: `civitconfig settings -d /path/to/zipped-config.zip`
+- Longhand: `civitconfig settings --download /path/to/zipped-config.zip`
+- Run to download your configuration as a zip file.
 
 
