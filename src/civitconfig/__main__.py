@@ -57,8 +57,8 @@ def main():
         elif subcommand == 'settings':
             if args['reset'] != None:
                 config_manager.reset()
-            elif args['delete'] != None:
-                None
+            elif args['download'] != None:
+                config_manager.download(args['download'])
         else:
             raise UnexpectedException(
                 'Unknown subcommand not caught by argparse')

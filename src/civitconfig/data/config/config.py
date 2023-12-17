@@ -23,12 +23,14 @@ DEFAULT_CONFIG = {
 class Config:
 
     _config_path: str
+    _config_dir_path: str
     _config_trash_dir_path: str
     _sorters_dir_path: str
     _sorters_trash_dir_path: str
 
-    def __init__(self, config_path, config_trash_dir_path, sorters_dir_path, sorters_trash_dir_path):
+    def __init__(self, config_path, config_dir_path, config_trash_dir_path, sorters_dir_path, sorters_trash_dir_path):
         self._config_path = config_path
+        self._config_dir_path = config_dir_path
         self._config_trash_dir_path = config_trash_dir_path
         self._sorters_dir_path = sorters_dir_path
         self._sorters_trash_dir_path = sorters_trash_dir_path
