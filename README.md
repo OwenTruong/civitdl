@@ -175,7 +175,7 @@ Thanks for the interest in the project!
 
 Please create an issue if you encounter any problem, bugs or if you have a feature request.
 
-To run the script in development mode, run `d` or `--dev` option.
+To run the script in development mode, run `-v` or `--dev` option.
 * Running in development mode allows users to print tracebacks and other messages useful for debugging.
 * Example: `civitdl 123456 ./models -d`
 
