@@ -7,7 +7,7 @@ from typing import Callable, Dict, List, Union
 from termcolor import colored
 
 from civitdl.args.argparser import Id
-from helpers.utils import write_to_file, write_to_file_with_progress_bar, run_in_dev
+from helpers.utils import write_to_file, write_res_to_file_with_pb, write_res_list_to_files_with_pb, run_in_dev
 from helpers.exceptions import InputException, ResourcesException, UnexpectedException, APIException
 
 
@@ -97,14 +97,22 @@ def _download_image(dirpath: str, images: List[Dict], nsfw: bool, max_img_count)
             image_urls.append(dict['url'])
 
     os.makedirs(dirpath, exist_ok=True)
+    image_res_list = []
+    base_name_list = []
     for url in image_urls:
         image_res = requests.get(url)
         if image_res.status_code != 200:
             raise APIException(
                 image_res.status_code, f'Downloading image from CivitAI failed for the url: {url}')
 
-        write_to_file(os.path.join(
-            dirpath, os.path.basename(url)), image_res.content, 'wb')
+        image_res_list.append(image_res)
+        base_name_list.append(os.path.basename(url))
+
+    if (len(image_res_list)):
+        print('No images to download...')
+    else:
+        write_res_list_to_files_with_pb(
+            dirpath, image_res_list, base_name_list, desc='Images', mode='wb')
 
 
 def _download_metadata(dirpath: str, metadata: Metadata):
@@ -126,7 +134,6 @@ def _get_filename_and_model_res(input_str: str, metadata: Metadata, api_key: Uni
     run_in_dev(print, 'Finished downloading headers.')
 
     if res.status_code != 200:
-
         raise APIException(
             res.status_code, f'Downloading model from CivitAI failed for model id, {metadata.model_id}, and version id, {metadata.version_id}')
 
@@ -197,6 +204,7 @@ def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str
     # Write model to the directory #
 
     # Download metadata
+
     _download_metadata(metadata_dir_path, metadata)
 
     # Download images
@@ -208,7 +216,7 @@ def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str
     model_filename = f'{filename_without_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}{filename_ext}'
     model_path = os.path.join(
         model_dir_path, model_filename)
-    write_to_file_with_progress_bar(model_path, model_res, 'wb')
+    write_res_to_file_with_pb(model_path, model_res, desc='Model', mode='wb')
 
     print(colored(
         f"""\nDownload completed for \"{metadata.model_name}\" 

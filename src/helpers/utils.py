@@ -31,18 +31,48 @@ def write_to_file(path, content, mode: str = None):
     f.close()
 
 
-def write_to_file_with_progress_bar(path, res, mode: str = None):
-    """Stream must have been enabled -> request.get(url, stream=True)"""
+# def write_to_file_with_progress_bar(path, total_size, desc: str = None, mode: str = None):
+#     """If downloading files from http requests, make sure to set stream=True in request"""
+#     block_size = 1024
+#     progress_bar = tqdm(total=total_size, desc=desc, unit='iB', unit_scale=True)
+#     with open(path, mode)
+#     None
 
-    total_size_in_bytes = int(res.headers.get('content-length', 0))
+
+def write_res_to_file_with_pb(filepath, res, desc: str = None, mode: str = None):
+    """Stream must have been enabled -> request.get(url, stream=True)"""
+    run_in_dev(print, "(write_res_to_file_with_pb) res.headers.get('content-length', 0)",
+               res.headers.get('content-length', 0))
+
     block_size = 1024
-    progress_bar = tqdm(total=total_size_in_bytes, unit='iB', unit_scale=True)
-    with open(path, mode if mode != None else 'w') as file:
+    total_size = int(res.headers.get('content-length', 0))
+    progress_bar = tqdm(total=total_size, desc=desc,
+                        unit='iB', unit_scale=True)
+    with open(filepath, mode if mode != None else 'w') as file:
         for data in res.iter_content(block_size):
             progress_bar.update(len(data))
             file.write(data)
     progress_bar.close()
-    if total_size_in_bytes != 0 and progress_bar.n != total_size_in_bytes:
+    if total_size != 0 and progress_bar.n != total_size:
+        raise UnexpectedException(
+            'Unexpected error while writing file with progress bar.')
+
+
+def write_res_list_to_files_with_pb(dirpath, resList, baseNameList, desc: str = None, mode: str = None):
+    """Stream must have been enabled -> request.get(url, stream=True)"""
+    total_size = len(resList)
+    if (total_size == 0):
+        raise InputException('Length of files to write is 0.')
+
+    progress_bar = tqdm(total=total_size, desc=desc,
+                        unit='iB', unit_scale=True)
+    for i, res in enumerate(resList):
+        write_to_file(os.path.join(
+            dirpath, baseNameList[i]), res.content, mode)
+        progress_bar.update(1)
+    progress_bar.close()
+
+    if total_size != 0 and progress_bar.n != total_size:
         raise UnexpectedException(
             'Unexpected error while writing file with progress bar.')
 
