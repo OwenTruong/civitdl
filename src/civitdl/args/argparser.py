@@ -130,9 +130,9 @@ parser.add_argument('srcmodel', type=str, action="extend", nargs='+',
                     help=HELP_MESSAGE_FOR_SRC_MODEL)
 parser.add_argument('rootdir', type=str,
                     help='Root directory of where the downloaded model should go.')
-parser.add_argument('-s', '--sorter', type=str, default='basic',
+parser.add_argument('-s', '--sorter', type=str,
                     help='Specify which sorter function to use.\nDefault is "basic" sorter.\nProvide file path to sorter function if you wish to use a custom sorter.')
-parser.add_argument('-i', '--max-images', metavar='INT', type=int, default=3,
+parser.add_argument('-i', '--max-images', metavar='INT', type=int,
                     help='Specify max images to download for each model.')
 
 parser.add_argument('-k', '--api-key', action=PwdAction, type=str, nargs=0,

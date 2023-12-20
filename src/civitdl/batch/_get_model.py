@@ -7,7 +7,7 @@ from typing import Callable, Dict, List, Union
 from termcolor import colored
 
 from civitdl.args.argparser import Id
-from helpers.utils import write_to_file, write_to_file_with_progress_bar, run_in_dev
+from helpers.utils import write_to_file, write_to_files, run_in_dev, concurrent_request
 from helpers.exceptions import InputException, ResourcesException, UnexpectedException, APIException
 
 
@@ -70,9 +70,9 @@ class Metadata:
         return self.__get_metadata(metadata_url)
 
     def __get_metadata(self, url: str):
-        run_in_dev(print, 'Preparing to download model metadata.')
-        meta_res = requests.get(url)
-        run_in_dev(print, 'Finished downloading model metadata.')
+        run_in_dev(print, 'Requesting model metadata.')
+        meta_res = requests.get(url, stream=True)
+        run_in_dev(print, 'Finished requesting model metadata.')
         if meta_res.status_code != 200:
             raise APIException(
                 meta_res.status_code, f'Downloading metadata from CivitAI for "{self.__id.original}" failed when trying to request metadata from "{url}"')
@@ -86,8 +86,9 @@ class Metadata:
 
 
 def _download_image(dirpath: str, images: List[Dict], nsfw: bool, max_img_count):
-    image_urls = []
+    def make_req(url): return requests.get(url, stream=True)
 
+    image_urls = []
     for dict in images:
         if len(image_urls) == max_img_count:
             break
@@ -97,14 +98,25 @@ def _download_image(dirpath: str, images: List[Dict], nsfw: bool, max_img_count)
             image_urls.append(dict['url'])
 
     os.makedirs(dirpath, exist_ok=True)
+
+    base_name_list = []
+    run_in_dev(print, 'Now making request for images...')
+    image_data_list = [res.content for res in concurrent_request(
+        req_fn=make_req, urls=image_urls)]
+    run_in_dev(print, 'Finished making request for images...')
+
     for url in image_urls:
         image_res = requests.get(url)
         if image_res.status_code != 200:
             raise APIException(
                 image_res.status_code, f'Downloading image from CivitAI failed for the url: {url}')
+        base_name_list.append(os.path.basename(url))
 
-        write_to_file(os.path.join(
-            dirpath, os.path.basename(url)), image_res.content, 'wb')
+    if (len(image_data_list) == 0):
+        print('No images to download...')
+    else:
+        write_to_files(dirpath, base_name_list, image_data_list, mode='wb',
+                       use_pb=True, total=len(base_name_list), desc='Images')
 
 
 def _download_metadata(dirpath: str, metadata: Metadata):
@@ -113,8 +125,8 @@ def _download_metadata(dirpath: str, metadata: Metadata):
     model_dict_path = os.path.join(
         dirpath, model_dict_filename)
     os.makedirs(dirpath, exist_ok=True)
-    write_to_file(model_dict_path, dumps(
-        metadata.model_dict, indent=2, ensure_ascii=False))
+    write_to_file(model_dict_path, [dumps(
+        metadata.model_dict, indent=2, ensure_ascii=False)])
 
 
 def _get_filename_and_model_res(input_str: str, metadata: Metadata, api_key: Union[str, None]):
@@ -126,7 +138,6 @@ def _get_filename_and_model_res(input_str: str, metadata: Metadata, api_key: Uni
     run_in_dev(print, 'Finished downloading headers.')
 
     if res.status_code != 200:
-
         raise APIException(
             res.status_code, f'Downloading model from CivitAI failed for model id, {metadata.model_id}, and version id, {metadata.version_id}')
 
@@ -197,6 +208,7 @@ def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str
     # Write model to the directory #
 
     # Download metadata
+
     _download_metadata(metadata_dir_path, metadata)
 
     # Download images
@@ -208,7 +220,8 @@ def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str
     model_filename = f'{filename_without_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}{filename_ext}'
     model_path = os.path.join(
         model_dir_path, model_filename)
-    write_to_file_with_progress_bar(model_path, model_res, 'wb')
+    write_to_file(model_path, model_res.iter_content(1024*1024), mode='wb',
+                  use_pb=True, total=float(model_res.headers.get('content-length', 0)), desc='Model')
 
     print(colored(
         f"""\nDownload completed for \"{metadata.model_name}\" 
