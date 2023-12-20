@@ -7,7 +7,7 @@ from typing import Callable, Dict, List, Union
 from termcolor import colored
 
 from civitdl.args.argparser import Id
-from helpers.utils import write_to_file, write_res_to_file_with_pb, write_res_list_to_files_with_pb, run_in_dev
+from helpers.utils import write_to_file, write_res_to_file_with_pb, write_res_list_to_files_with_pb, run_in_dev, concurrent_request
 from helpers.exceptions import InputException, ResourcesException, UnexpectedException, APIException
 
 
@@ -99,16 +99,18 @@ def _download_image(dirpath: str, images: List[Dict], nsfw: bool, max_img_count)
     os.makedirs(dirpath, exist_ok=True)
     image_res_list = []
     base_name_list = []
+
+    image_res_list = concurrent_request(req_fn=requests.get, urls=image_urls)
     for url in image_urls:
         image_res = requests.get(url)
         if image_res.status_code != 200:
             raise APIException(
                 image_res.status_code, f'Downloading image from CivitAI failed for the url: {url}')
 
-        image_res_list.append(image_res)
+        # image_res_list.append(image_res)
         base_name_list.append(os.path.basename(url))
 
-    if (len(image_res_list)):
+    if (len(image_res_list) == 0):
         print('No images to download...')
     else:
         write_res_list_to_files_with_pb(

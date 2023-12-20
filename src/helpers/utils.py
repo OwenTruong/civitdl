@@ -3,6 +3,8 @@ import json
 import os
 from typing import Callable, Dict, List
 import importlib.util
+import concurrent.futures
+import requests
 
 from tqdm import tqdm
 from termcolor import colored
@@ -37,6 +39,18 @@ def write_to_file(path, content, mode: str = None):
 #     progress_bar = tqdm(total=total_size, desc=desc, unit='iB', unit_scale=True)
 #     with open(path, mode)
 #     None
+
+# TODO: what if a specific image have a hard time with getting a response?
+
+
+def concurrent_request(req_fn, urls):
+    res_list = None
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = [executor.submit(req_fn, url) for url in urls]
+        res_list = [future.result() for future in futures]
+
+    return res_list
 
 
 def write_res_to_file_with_pb(filepath, res, desc: str = None, mode: str = None):
