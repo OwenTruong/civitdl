@@ -1,7 +1,7 @@
 from datetime import datetime
 import json
 import os
-from typing import Callable, Dict, List
+from typing import Callable, Dict, Generator, List, Union, Iterable
 import importlib.util
 import concurrent.futures
 import requests
@@ -10,7 +10,6 @@ from tqdm import tqdm
 from termcolor import colored
 
 from helpers.exceptions import InputException, UnexpectedException
-
 _environment = 'production'
 
 
@@ -27,19 +26,6 @@ def set_env(env: str):
     return _environment
 
 
-def write_to_file(path, content, mode: str = None):
-    f = open(path, mode) if mode != None else open(path, 'w')
-    f.write(content)
-    f.close()
-
-
-# def write_to_file_with_progress_bar(path, total_size, desc: str = None, mode: str = None):
-#     """If downloading files from http requests, make sure to set stream=True in request"""
-#     block_size = 1024
-#     progress_bar = tqdm(total=total_size, desc=desc, unit='iB', unit_scale=True)
-#     with open(path, mode)
-#     None
-
 # TODO: what if a specific image have a hard time with getting a response?
 
 
@@ -53,42 +39,34 @@ def concurrent_request(req_fn, urls):
     return res_list
 
 
-def write_res_to_file_with_pb(filepath, res, desc: str = None, mode: str = None):
-    """Stream must have been enabled -> request.get(url, stream=True)"""
-    run_in_dev(print, "(write_res_to_file_with_pb) res.headers.get('content-length', 0)",
-               res.headers.get('content-length', 0))
+def get_progress_bar(total: float, desc: str):
+    return tqdm(total=total, desc=desc,
+                unit='iB', unit_scale=True)
 
-    block_size = 1024
-    total_size = int(res.headers.get('content-length', 0))
-    progress_bar = tqdm(total=total_size, desc=desc,
-                        unit='iB', unit_scale=True)
+
+def write_to_file(filepath: str, content_chunks: Iterable, mode: str = None, use_pb: bool = False, total: float = 0, desc: str = None):
+    """Uses content_chunks to write to filepath bit by bit. If use_pb is enabled, it is recommended to set total kwarg to the length of the file to be written."""
+    progress_bar = get_progress_bar(total, desc) if use_pb else None
     with open(filepath, mode if mode != None else 'w') as file:
-        for data in res.iter_content(block_size):
-            progress_bar.update(len(data))
-            file.write(data)
-    progress_bar.close()
-    if total_size != 0 and progress_bar.n != total_size:
-        raise UnexpectedException(
-            'Unexpected error while writing file with progress bar.')
+        for content in content_chunks:
+            file.write(content)
+            if (progress_bar):
+                progress_bar.update(len(content))
+    if (progress_bar):
+        progress_bar.close()
 
 
-def write_res_list_to_files_with_pb(dirpath, resList, baseNameList, desc: str = None, mode: str = None):
-    """Stream must have been enabled -> request.get(url, stream=True)"""
-    total_size = len(resList)
-    if (total_size == 0):
-        raise InputException('Length of files to write is 0.')
-
-    progress_bar = tqdm(total=total_size, desc=desc,
-                        unit='iB', unit_scale=True)
-    for i, res in enumerate(resList):
-        write_to_file(os.path.join(
-            dirpath, baseNameList[i]), res.content, mode)
-        progress_bar.update(1)
-    progress_bar.close()
-
-    if total_size != 0 and progress_bar.n != total_size:
-        raise UnexpectedException(
-            'Unexpected error while writing file with progress bar.')
+def write_to_files(dirpath: str, basenames: Iterable, contents: Iterable, mode: str = None, use_pb: bool = False, total: float = 0, desc: str = None):
+    """Write content to multiple files in dirpath. If use_pb is enabled, it is recommended to set total kwarg to the number of files being written."""
+    progress_bar = get_progress_bar(total, desc) if use_pb else None
+    for basename, content in zip(basenames, contents):
+        filepath = os.path.join(dirpath, basename)
+        with open(filepath, mode if mode != None else 'w') as file:
+            file.write(content)
+            if (progress_bar):
+                progress_bar.update(1)
+    if (progress_bar):
+        progress_bar.close()
 
 
 def find_in_list(li, cond_fn: Callable[[any, int], bool], default=None):
