@@ -20,6 +20,7 @@
   - [Table Of Contents](#table-of-contents)
   - [Defaults](#defaults)
     - [Set max image](#set-max-image)
+    - [Set with prompt](#set-with-prompt)
     - [Set sorter](#set-sorter)
       - [What is a sorter?](#what-is-a-sorter)
     - [Set api key](#set-api-key)
@@ -51,6 +52,18 @@ To set the default max images to N (N >= 0):
 - Longhand: `civitconfig default --max-images N`
 
 Set the default max image to a number you are comfortable with when you run `civitdl`
+
+<br/>
+
+### Set with prompt
+- This sets the default attribute `with-prompt` on whether to download images when `civitdl` is run without the option `-p` or `--with-prompt` or `--no-with-prompt`
+
+To set the default attribute for enabling `with-prompt`:
+- Shorthand: `civitconfig default -p`
+- Longhand: `civitconfig default --with-prompt`
+
+To set the default attribute for disabling `with-prompt`:
+- Longhand: `civitconfig default --no-with-prompt`
 
 <br/>
 

@@ -15,9 +15,9 @@ test3:
 	civitdl 123456 @test3/alphabet -s ./custom/sort.py -v
 	civitdl 78901 @test3/test3 -s test3 -v
 	civitdl 23456 @test3/tags -s tags -v
-	civitconfig default -p
+	civitconfig default --with-prompt
 	civitdl 80848 @test3/test-prompt-1 -v
-	civitconfig default -p
+	civitconfig default --no-with-prompt
 	civitdl 80848 @test3/test-prompt-2 -v
 
 test4:
