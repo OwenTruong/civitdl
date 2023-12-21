@@ -140,9 +140,10 @@ def _download_metadata(dirpath: str, metadata: Metadata):
 def _get_filename_and_model_res(input_str: str, metadata: Metadata, api_key: Union[str, None]):
     # Request model
     run_in_dev(print, 'Preparing to download model by reading headers.')
-    download_url = metadata.download_url + \
-        (f'?token={api_key}' if api_key else '')
-    res = requests.get(download_url, stream=True)
+    headers = {
+        'Authorization': f'Bearer {api_key}',
+    } if api_key else {}
+    res = requests.get(metadata.download_url, stream=True, headers=headers) if api_key else requests.get(metadata.download_url, stream=True)
     run_in_dev(print, 'Finished downloading headers.')
 
     if res.status_code != 200:
@@ -153,6 +154,7 @@ def _get_filename_and_model_res(input_str: str, metadata: Metadata, api_key: Uni
     content_disposition = res.headers.get('Content-Disposition')
 
     if 'reason=download-auth' in res.url:
+        run_in_dev(print, 'reason=download-auth status', res.status_code)
         raise InputException('Unable to download this model as it requires an API Key. Please head to "civitai.com", go to "Account Settings", then go to "API Keys" section, then add an api key to your account. After that, paste the key to the program.')
 
     if content_disposition == None:
