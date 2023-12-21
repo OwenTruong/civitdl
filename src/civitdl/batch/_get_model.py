@@ -85,16 +85,18 @@ class Metadata:
                 f'\nOriginal Error:\n       {e}')
 
 
-def _download_image(dirpath: str, images: List[Dict], nsfw: bool, max_img_count):
+def _download_images(dirpath: str, images: List[Dict], nsfw: bool, max_img_count: int):
     def make_req(url): return requests.get(url, stream=True)
 
     image_urls = []
+    interested_images = []
     for dict in images:
         if len(image_urls) == max_img_count:
             break
         if not nsfw and dict['nsfw'] != 'None':
             continue
         else:
+            interested_images.append(dict)
             image_urls.append(dict['url'])
 
     os.makedirs(dirpath, exist_ok=True)
@@ -117,6 +119,12 @@ def _download_image(dirpath: str, images: List[Dict], nsfw: bool, max_img_count)
     else:
         write_to_files(dirpath, base_name_list, image_data_list, mode='wb',
                        use_pb=True, total=len(base_name_list), desc='Images')
+        
+    return (base_name_list, interested_images)
+
+def _download_prompts(dirpath: str, base_name_list: List[str], images: List[Dict]):
+    if (len(images) != 0):
+        write_to_files(dirpath, base_name_list, [dumps(image, indent=2, ensure_ascii=False) for image in images])
 
 
 def _download_metadata(dirpath: str, metadata: Metadata):
@@ -173,7 +181,7 @@ def _get_filename_and_model_res(input_str: str, metadata: Metadata, api_key: Uni
     return (res, filename)
 
 
-def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str], dst_root_path: str, max_img_count: int, api_key: Union[str, None] = None):
+def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str], dst_root_path: str, max_img_count: int, with_prompt: bool, api_key: Union[str, None] = None):
     """
         Downloads the model's safetensors and json metadata files.
         create_dir_path is a callback function that takes in the following: metadata dict, specific model's data as dict, filename, and root path.
@@ -201,11 +209,11 @@ def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str
     paths = create_dir_path(
         metadata.model_dict, metadata.version_dict, filename_without_ext, dst_root_path)
 
-    if len(paths) != 3:
+    if len(paths) != 4:
         raise InputException(
             'Sorter function provided returned invalid # of paths.')
 
-    model_dir_path, metadata_dir_path, image_dir_path = paths
+    model_dir_path, metadata_dir_path, image_dir_path, prompt_dir_path = paths
 
     # Write model to the directory #
 
@@ -214,8 +222,12 @@ def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str
     _download_metadata(metadata_dir_path, metadata)
 
     # Download images
-    _download_image(
+    image_base_names, remaining_images = _download_images(
         image_dir_path, metadata.version_dict['images'], metadata.nsfw, max_img_count)
+    
+    # Download prompts
+    if with_prompt:
+        _download_prompts(prompt_dir_path, [f'{os.path.splitext(base_name)[0]}-prompt.json' for base_name in image_base_names], remaining_images)
 
     # Download file
     os.makedirs(model_dir_path, exist_ok=True)

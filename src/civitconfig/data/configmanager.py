@@ -69,8 +69,8 @@ class ConfigManager(Config):
 
         self._saveConfig(DEFAULT_CONFIG)
 
-    def setDefault(self, max_images, sorter, api_key):
-        self._defaultConfig.setDefault(max_images, sorter, api_key)
+    def setDefault(self, max_images, with_prompt, sorter, api_key):
+        self._defaultConfig.setDefault(max_images, with_prompt, sorter, api_key)
 
     def addAlias(self, alias_name: str, path: str):
         self._aliasConfig.addAlias(alias_name, path)

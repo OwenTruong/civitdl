@@ -55,8 +55,11 @@ stable-diffusion-webui/
       | extra_data-vid_75/
         | model_dict-mid_66-vid_75.json
         | 517.jpeg
+        | 517-prompt.json
         | 525.jpeg
+        | 525-prompt.json
         | 526.jpeg
+        | 526-prompt.json
 ```
 
 `basic` is the **default** sorter, and it is possible to change the parent directory name from `anythingv3_fp16` to any other name in a **custom sorter**.
@@ -90,8 +93,11 @@ stable-diffusion-webui/
             | extra_data-vid_85767/
               | model_dict-mid_80848-vid_85767.json
               | 972495.jpeg
+              | 972495-prompt.json
               | 972496.jpeg
+              | 972496-prompt.json
               | 972497.jpeg
+              | 972497-prompt.json
 ```
 
 
@@ -135,10 +141,12 @@ def sort_model(model_dict: Dict, version_dict: Dict, filename: str, root_path: s
     model_dir_path = '/path/to/model/parent/dir'
     metadata_dir_path = '/path/to/metadata/parent/dir'
     image_dir_path = '/path/to/image/parent/dir'
+    prompt_dir_path = '/path/to/prompt/parent/dir'
     return [
-      model_dir_path, # Parent dir of where the downloaded model should be in
-      metadata_dir_path, # Parent dir of where the JSON metadata should be in
-      image_dir_path # Parent dir of where the images should be in
+      model_dir_path,     # Parent dir of where the downloaded model should be in
+      metadata_dir_path,  # Parent dir of where the JSON metadata should be in
+      image_dir_path      # Parent dir of where the images should be in
+      prompt_dir_path     # Parent dir of where the images' prompt should be in
     ]
 ```
 

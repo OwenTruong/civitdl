@@ -136,13 +136,17 @@ civitdl model_id rootpath
 #### Main Program Options - civitdl
 - Run `civitdl --help` to check what options are available!
 
-Three options are available
+Four options are available
 - `-i <number>` or `--max-images <number>`
   - Specifies the max images to download for each model.
-  - Example: `civitdl 123456 ./loras -i 20`
+  - Example: `civitdl 80848 ./loras -i 20`
+- `p` or `--with-prompt`
+  - Running with the option will download an image's JSON prompt/metadata alongside the image.
+  - Example: `civitdl 80848 ./loras --with-prompt`
+  - Use `--no-with-prompt` to disable downloading JSON prompt/metadata.
 - `-s <sorter-name / path>` or `--sorter <sorter-name / path>`
   - Specifies which sorter to use. The default uses the basic sorter.
-  - See [sorter doc](./doc/sorter.md) for more infor.
+  - See [sorter doc](./doc/sorter.md) for more info.
   - Example: `civitdl 123456 ./loras -s tags`
 - `-k` or `--api-key`
   - Running with this option will prompt the user to type in their API key.

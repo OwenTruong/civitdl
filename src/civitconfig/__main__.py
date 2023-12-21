@@ -18,13 +18,15 @@ def main():
         run_in_dev(print, args)
 
         if subcommand == 'default':
-            if 'max_images' in args or 'sorter' in args or 'api_key' in args:
+            if 'max_images' in args or 'with_prompt' or 'sorter' in args or 'api_key' in args:
+                print(args['with_prompt'])
                 config_manager.setDefault(
-                    max_images=args['max_images'], sorter=args['sorter'], api_key=args['api_key'])
-            (max_images, sorter, _) = config_manager.getDefaultAsList()
+                    max_images=args['max_images'], with_prompt=args['with_prompt'], sorter=args['sorter'], api_key=args['api_key'])
+            (max_images, with_prompt, sorter, _) = config_manager.getDefaultAsList()
             print(add_colors('Default:', 'green'))
             print(add_colors(f'     Max Images:         {max_images}', 'blue'))
-            print(add_colors(f'     Sorter:             {sorter}', 'green'))
+            print(add_colors(f'     With Prompt:        {with_prompt}', 'green'))
+            print(add_colors(f'     Sorter:             {sorter}', 'blue'))
         elif subcommand == 'sorter':
             if args['add'] != None:
                 add_name, add_path = args['add']
