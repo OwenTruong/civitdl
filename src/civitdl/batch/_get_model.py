@@ -134,7 +134,7 @@ def _get_filename_and_model_res(input_str: str, metadata: Metadata, api_key: Uni
     run_in_dev(print, 'Preparing to download model by reading headers.')
     headers = {
         'Authorization': f'Bearer {api_key}',
-    }
+    } if api_key else {}
     res = requests.get(metadata.download_url, stream=True, headers=headers) if api_key else requests.get(metadata.download_url, stream=True)
     run_in_dev(print, 'Finished downloading headers.')
 
