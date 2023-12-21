@@ -22,8 +22,9 @@ def sort_model(model_dict: Dict, version_dict: Dict, filename: str, root_path: s
     extra_data_dir = os.path.join(
         parent_dir, f'extra_data-vid_{version_dict["id"]}')
     paths = [
-        parent_dir,      # model path
-        extra_data_dir,  # metadata path
-        extra_data_dir   # image path
+        parent_dir,      # model dir path
+        extra_data_dir,  # metadata dir path
+        extra_data_dir,  # image dir path
+        extra_data_dir   # prompt dir path
     ]
     return paths

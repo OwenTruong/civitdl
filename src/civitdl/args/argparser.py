@@ -135,6 +135,8 @@ parser.add_argument('-s', '--sorter', type=str,
 parser.add_argument('-i', '--max-images', metavar='INT', type=int,
                     help='Specify max images to download for each model.')
 
+parser.add_argument('-p', '--with-prompt', action=argparse.BooleanOptionalAction, help='Download images with prompt.')
+
 parser.add_argument('-k', '--api-key', action=PwdAction, type=str, nargs=0,
                     help='Prompt user for api key to download models that require users to log in.')
 
@@ -145,7 +147,7 @@ parser.add_argument(
 def get_args():
     parser_result = parser.parse_args()
     config_manager = ConfigManager()
-    d_max_imgs, d_sorter_name, d_api_key = config_manager.getDefaultAsList()
+    d_max_imgs, d_with_prompt, d_sorter_name, d_api_key = config_manager.getDefaultAsList()
     sorters = config_manager.getSortersList()
     aliases = config_manager.getAliasesList()
 
@@ -157,5 +159,6 @@ def get_args():
         "rootdir": parse_rootdir(aliases, parser_result.rootdir),
         "sorter": parse_sorter(sorters, parser_result.sorter or d_sorter_name),
         "max_imgs": parser_result.max_images or d_max_imgs,
+        "with_prompt": parser_result.with_prompt or d_with_prompt,
         "api_key": parser_result.api_key or d_api_key
     }

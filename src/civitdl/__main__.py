@@ -9,14 +9,15 @@ from .args.argparser import get_args
 
 def main():
     try:
-        ids, rootdir, sorter, max_imgs, api_key = itemgetter(
-            'ids', 'rootdir', 'sorter', 'max_imgs', 'api_key')(get_args())
+        ids, rootdir, sorter, max_imgs, with_prompt, api_key = itemgetter(
+            'ids', 'rootdir', 'sorter', 'max_imgs', 'with_prompt', 'api_key')(get_args())
 
         batch_download(
             ids,
             rootdir=rootdir,
             sorter=sorter,
             max_imgs=max_imgs,
+            with_prompt=with_prompt,
             api_key=api_key)
 
     except Exception as e:

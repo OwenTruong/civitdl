@@ -12,6 +12,7 @@ DEFAULT_CONFIG = {
     "version": "1",
     "default": {
         "max_images": 3,
+        "with_prompt": True,
         "sorter": "basic",
         "api_key": ""
     },
