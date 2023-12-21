@@ -71,6 +71,7 @@ class Metadata:
 
     def __get_metadata(self, url: str):
         run_in_dev(print, 'Requesting model metadata.')
+        run_in_dev(print, 'Metadata API Request URL: ', url)
         meta_res = requests.get(url, stream=True)
         run_in_dev(print, 'Finished requesting model metadata.')
         if meta_res.status_code != 200:
@@ -140,6 +141,7 @@ def _download_metadata(dirpath: str, metadata: Metadata):
 def _get_filename_and_model_res(input_str: str, metadata: Metadata, api_key: Union[str, None]):
     # Request model
     run_in_dev(print, 'Preparing to download model by reading headers.')
+    run_in_dev(print, 'Model Download API URL: ', metadata.download_url)
     headers = {
         'Authorization': f'Bearer {api_key}',
     } if api_key else {}
