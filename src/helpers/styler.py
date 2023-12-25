@@ -52,7 +52,8 @@ def _color_generator():
             yield 'secondary'
 
 
-_current_color_iter = _color_generator()
+_color_iter = _color_generator()
+_bgcolor_iter = _color_generator()
 
 
 # Public / Exports
@@ -60,6 +61,28 @@ _current_color_iter = _color_generator()
 
 class Styler(Enum):
     RESET = '\033[0m'  # Reset to default text and background color
+
+    @classmethod
+    def _get_main_color_attr(cls, color: str):
+        color = color.upper()
+        if color == 'MAIN':
+            color = cls._get_next_color()
+        elif color in cls._get_main_color_list():
+            raise Exception(
+                f'Can not directly access PRIMARY or SECONDARY color.')
+
+        return _Colors.get_attribute(color)
+
+    @classmethod
+    def _get_main_bgcolor_attr(cls, bgcolor: str):
+        bgcolor = bgcolor.upper()
+        if bgcolor == 'MAIN':
+            bgcolor = cls._get_next_bgcolor()
+        elif bgcolor in cls._get_main_color_list():
+            raise Exception(
+                f'Can not directly access PRIMARY or SECONDARY background color.')
+
+        return _BGColors.get_attribute(bgcolor)
 
     @classmethod
     def stylize(cls, string: str, color: str = None, bg_color: str = None, styles: List[str] = None):
@@ -75,7 +98,7 @@ class Styler(Enum):
                         f'The following style "{style}" does not exist.')
 
         if color:
-            color_attr = _Colors.get_attribute(color)
+            color_attr = cls._get_main_color_attr(color)
             if color_attr:
                 res += color_attr.value
             else:
@@ -83,7 +106,7 @@ class Styler(Enum):
                     f'The following color "{color}" does not exist.')
 
         if bg_color:
-            bg_attr = _BGColors.get_attribute(bg_color)
+            bg_attr = cls._get_main_bgcolor_attr(bg_color)
             if bg_attr:
                 res += bg_attr.value
             else:
@@ -95,5 +118,13 @@ class Styler(Enum):
         return res
 
     @staticmethod
-    def get_next_color():
-        return next(_current_color_iter)
+    def _get_next_color():
+        return next(_color_iter)
+
+    @staticmethod
+    def _get_next_bgcolor():
+        return next(_bgcolor_iter)
+
+    @staticmethod
+    def _get_main_color_list():
+        return ['PRIMARY', 'SECONDARY']

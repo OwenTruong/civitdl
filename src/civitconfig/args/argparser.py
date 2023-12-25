@@ -7,7 +7,7 @@ import argparse
 from helpers.styler import Styler
 from helpers.exceptions import InputException, UnexpectedException
 from helpers.argparse import PwdAction, ConfirmAction
-from helpers.utils import get_env, set_env
+from helpers.utils import get_env, print_in_dev, set_env
 
 __all__ = ['get_args']
 
@@ -85,7 +85,6 @@ def get_args():
     if parser_result.dev:
         set_env('development')
 
-    if get_env() == 'development':
-        print(f'Parsed Args: {parser_result}')
+    print_in_dev(f'Parsed Args: {parser_result}')
 
     return vars(parser_result)

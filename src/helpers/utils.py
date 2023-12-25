@@ -9,7 +9,7 @@ import concurrent.futures
 from tqdm import tqdm
 
 from helpers.styler import Styler
-from helpers.exceptions import UnexpectedException
+from helpers.exceptions import CustomException, UnexpectedException
 _environment = 'production'
 
 
@@ -83,6 +83,13 @@ def print_in_dev(*args, **kwargs):
     if get_env() == 'development':
         args = [Styler.stylize(arg, bg_color='info') for arg in args]
         print(*args, **kwargs)
+
+
+def print_exc(exc: Exception, **kwargs):
+    if isinstance(exc, CustomException):
+        print(exc, **kwargs)
+    else:
+        print(Styler.stylize(str(exc), color='exception'), **kwargs)
 
 
 def import_sort_model(filepath) -> Callable[[Dict, Dict, str, str], str]:

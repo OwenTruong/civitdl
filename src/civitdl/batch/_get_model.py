@@ -71,7 +71,7 @@ class Metadata:
 
     def __get_metadata(self, url: str):
         print_in_dev('Requesting model metadata.')
-        print_in_dev('Metadata API Request URL: ', url)
+        print_in_dev(f'Metadata API Request URL: {url}')
         meta_res = requests.get(url, stream=True)
         print_in_dev('Finished requesting model metadata.')
         if meta_res.status_code != 200:
@@ -116,7 +116,7 @@ def _download_images(dirpath: str, images: List[Dict], nsfw: bool, max_img_count
         base_name_list.append(os.path.basename(url))
 
     if (len(image_data_list) == 0):
-        print('No images to download...')
+        print(Styler.stylize('No images to download...', color='warning'))
     else:
         write_to_files(dirpath, base_name_list, image_data_list, mode='wb',
                        use_pb=True, total=len(base_name_list), desc='Images')
@@ -143,7 +143,7 @@ def _download_metadata(dirpath: str, metadata: Metadata):
 def _get_filename_and_model_res(input_str: str, metadata: Metadata, api_key: Union[str, None]):
     # Request model
     print_in_dev('Preparing to download model by reading headers.')
-    print_in_dev('Model Download API URL: ', metadata.download_url)
+    print_in_dev(f'Model Download API URL: {metadata.download_url}')
     headers = {
         'Authorization': f'Bearer {api_key}',
     } if api_key else {}
@@ -204,7 +204,7 @@ def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str
         f"""Now downloading \"{metadata.model_name}\"...
             - Model ID: {metadata.model_id}
             - Version ID: {metadata.version_id}\n""",
-        color=Styler.get_next_color()))
+        color='main'))
 
     model_res, filename = _get_filename_and_model_res(
         id.original, metadata, api_key)

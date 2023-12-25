@@ -5,7 +5,9 @@ import traceback
 from typing import Dict
 
 from ._get_model import download_model
-from helpers.utils import get_env, print_in_dev, run_in_dev, import_sort_model
+
+from helpers.styler import Styler
+from helpers.utils import get_env, print_exc, print_in_dev, run_in_dev, import_sort_model
 from helpers.sorter import basic, tags
 
 
@@ -22,11 +24,8 @@ def pause(sec):
     print_in_dev('Waking up!')
 
 
-def batch_download(ids, rootdir, sorter, max_imgs, with_prompt, api_key=None):
+def batch_download(ids, rootdir, sorter, max_imgs, with_prompt, retry_count=3, pause_time=3, api_key=None):
     """Batch downloads model from CivitAI one by one."""
-
-    retry_count = 3
-    pause_time = 3
 
     for id in ids:
         iter = 0
@@ -44,13 +43,14 @@ def batch_download(ids, rootdir, sorter, max_imgs, with_prompt, api_key=None):
             except Exception as e:
                 print('---------')
                 run_in_dev(traceback.print_exc)
-                print(e)
+                print_exc(e)
                 pause(pause_time)
                 iter += 1
                 if iter < retry_count:
-                    print('Retrying to download the current model...')
+                    print(Styler.stylize(
+                        'Retrying to download the current model...', color='info'))
                 else:
-                    print(
-                        f'Max retry of {retry_count} reached. Skipping the current model...')
+                    print(Styler.stylize(
+                        f'Max retry of {retry_count} reached. Skipping the current model...', color='info'))
                     break
                 print('---------')

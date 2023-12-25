@@ -2,6 +2,7 @@ import os
 import shutil
 from appdirs import AppDirs
 
+from helpers.styler import Styler
 from helpers.exceptions import InputException, UnexpectedException
 from helpers.utils import createDirsIfNotExist, getDate, print_in_dev
 
@@ -90,11 +91,12 @@ class ConfigManager(Config):
 
     def reset(self):
         self._setFallback()
-        print('Successfully resetted config.')
+        print(Styler.stylize('Successfully resetted config.', color='success'))
 
     def download(self, dst_path):
         if os.path.basename(dst_path) == '':
             dst_path = os.path.join(dst_path, 'civitdl_config')
-        print(f'Downloading zipped config to {dst_path}.zip')
+        print(Styler.stylize(
+            f'Downloading zipped config to {dst_path}.zip', color='main'))
         shutil.make_archive(dst_path, 'zip',
                             self._config_dir_path)
