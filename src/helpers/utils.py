@@ -1,6 +1,7 @@
 from datetime import datetime
 import json
 import os
+import sys
 from typing import Callable, Dict, Iterable
 import importlib.util
 import concurrent.futures
@@ -87,9 +88,10 @@ def print_in_dev(*args, **kwargs):
 
 def print_exc(exc: Exception, **kwargs):
     if isinstance(exc, CustomException):
-        print(exc, **kwargs)
+        print(exc, file=sys.stderr, **kwargs)
     else:
-        print(Styler.stylize(str(exc), color='exception'), **kwargs)
+        print(Styler.stylize(str(exc), color='exception'),
+              file=sys.stderr, **kwargs)
 
 
 def import_sort_model(filepath) -> Callable[[Dict, Dict, str, str], str]:

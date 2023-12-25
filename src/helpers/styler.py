@@ -84,6 +84,18 @@ class Styler(Enum):
 
         return _BGColors.get_attribute(bgcolor)
 
+    @staticmethod
+    def _get_next_color():
+        return next(_color_iter)
+
+    @staticmethod
+    def _get_next_bgcolor():
+        return next(_bgcolor_iter)
+
+    @staticmethod
+    def _get_main_color_list():
+        return ['PRIMARY', 'SECONDARY']
+
     @classmethod
     def stylize(cls, string: str, color: str = None, bg_color: str = None, styles: List[str] = None):
         res = ''
@@ -116,15 +128,3 @@ class Styler(Enum):
         res += string
         res += cls.RESET.value
         return res
-
-    @staticmethod
-    def _get_next_color():
-        return next(_color_iter)
-
-    @staticmethod
-    def _get_next_bgcolor():
-        return next(_bgcolor_iter)
-
-    @staticmethod
-    def _get_main_color_list():
-        return ['PRIMARY', 'SECONDARY']

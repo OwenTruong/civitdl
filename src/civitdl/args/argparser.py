@@ -1,13 +1,13 @@
+import argparse
 import os
 import re
 from typing import List, Union
 
-import argparse
 
 from civitconfig.data.configmanager import ConfigManager
 from helpers.styler import Styler
 from helpers.utils import set_env
-from helpers.argparse import PwdAction
+from helpers.argparse import PwdAction, ColoredArgParser
 from helpers.exceptions import InputException, UnexpectedException
 
 __all__ = ['Id', 'get_args']
@@ -121,7 +121,7 @@ A source can be one of the following: model ID, CivitAI URL, string list of sour
 - Example 2: civitdl ./batchfile1.txt 123456 ~/Downloads/ComfyUI/models/loras
 """
 
-parser = argparse.ArgumentParser(
+parser = ColoredArgParser(
     prog='civitdl',
     description="A CLI python script to batch download models from CivitAI with CivitAI Api V1.",
     formatter_class=argparse.RawTextHelpFormatter

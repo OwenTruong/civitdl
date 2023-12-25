@@ -6,7 +6,7 @@ import argparse
 
 from helpers.styler import Styler
 from helpers.exceptions import InputException, UnexpectedException
-from helpers.argparse import PwdAction, ConfirmAction
+from helpers.argparse import PwdAction, ConfirmAction, ColoredArgParser
 from helpers.utils import get_env, print_in_dev, set_env
 
 __all__ = ['get_args']
@@ -17,7 +17,7 @@ def add_shared_option(par):
         '-v', '--dev', action=argparse.BooleanOptionalAction, help='Prints out traceback and other useful information.')
 
 
-parser = argparse.ArgumentParser(
+parser = ColoredArgParser(
     prog='civitconfig',
     description="civitconfig is a cli program used to set configurations for the main program, civitdl.",
     formatter_class=argparse.RawTextHelpFormatter
