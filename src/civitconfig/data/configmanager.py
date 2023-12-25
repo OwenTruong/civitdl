@@ -94,8 +94,9 @@ class ConfigManager(Config):
         print(Styler.stylize('Successfully resetted config.', color='success'))
 
     def download(self, dst_path):
-        if os.path.basename(dst_path) == '':
+        if os.path.isdir(dst_path):
             dst_path = os.path.join(dst_path, 'civitdl_config')
+
         print(Styler.stylize(
             f'Downloading zipped config to {dst_path}.zip', color='main'))
         shutil.make_archive(dst_path, 'zip',
