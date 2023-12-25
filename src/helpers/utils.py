@@ -86,11 +86,11 @@ def print_in_dev(*args, **kwargs):
         print(*args, **kwargs)
 
 
-def print_exc(exc: Exception, **kwargs):
+def print_exc(exc: Exception, *args, **kwargs):
     if isinstance(exc, CustomException):
-        print(exc, file=sys.stderr, **kwargs)
+        print(exc, file=sys.stderr, *args, **kwargs)
     else:
-        print(Styler.stylize(str(exc), color='exception'),
+        print(Styler.stylize(str(exc), *args, color='exception'),
               file=sys.stderr, **kwargs)
 
 

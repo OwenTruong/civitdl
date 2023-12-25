@@ -43,14 +43,14 @@ def batch_download(ids, rootdir, sorter, max_imgs, with_prompt, retry_count=3, p
             except Exception as e:
                 print('---------')
                 run_in_dev(traceback.print_exc)
-                print_exc(e)
+                print_exc(e, '\n')
+                print('---------')
                 pause(pause_time)
-                iter += 1
                 if iter < retry_count:
                     print(Styler.stylize(
                         'Retrying to download the current model...', color='info'))
+                    iter += 1
                 else:
                     print(Styler.stylize(
                         f'Max retry of {retry_count} reached. Skipping the current model...', color='info'))
                     break
-                print('---------')
