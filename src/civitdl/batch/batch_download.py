@@ -1,4 +1,5 @@
 import importlib.util
+import itertools
 import time
 import traceback
 from typing import Dict
@@ -15,23 +16,41 @@ def choose_sorter(sorter_str: str):
         return import_sort_model(sorter_str)
 
 
+def pause(sec):
+    run_in_dev(print, 'Pausing for 3 seconds...')
+    time.sleep(sec)
+    run_in_dev(print, 'Waking up!')
+
+
 def batch_download(ids, rootdir, sorter, max_imgs, with_prompt, api_key=None):
     """Batch downloads model from CivitAI one by one."""
 
+    retry_count = 3
+    pause_time = 3
+
     for id in ids:
-        try:
-            download_model(
-                id=id,
-                create_dir_path=choose_sorter(sorter),
-                dst_root_path=rootdir,
-                max_img_count=max_imgs,
-                with_prompt=with_prompt,
-                api_key=api_key)
-            run_in_dev(print, 'Pausing for 3 seconds...')
-            time.sleep(3)
-            run_in_dev(print, 'Waking up!')
-        except Exception as e:
-            print('---------')
-            run_in_dev(traceback.print_exc)
-            print(e)
-            print('---------')
+        iter = 0
+        while True:
+            try:
+                download_model(
+                    id=id,
+                    create_dir_path=choose_sorter(sorter),
+                    dst_root_path=rootdir,
+                    max_img_count=max_imgs,
+                    with_prompt=with_prompt,
+                    api_key=api_key)
+                pause(pause_time)
+                break
+            except Exception as e:
+                print('---------')
+                run_in_dev(traceback.print_exc)
+                print(e)
+                pause(pause_time)
+                iter += 1
+                if iter < retry_count:
+                    print('Retrying to download the current model...')
+                else:
+                    print(
+                        f'Max retry of {retry_count} reached. Skipping the current model...')
+                    break
+                print('---------')
