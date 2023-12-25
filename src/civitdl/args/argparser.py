@@ -1,13 +1,14 @@
+import argparse
 import os
 import re
+import sys
 from typing import List, Union
 
-import argparse
-from termcolor import colored
 
 from civitconfig.data.configmanager import ConfigManager
+from helpers.styler import Styler
 from helpers.utils import set_env
-from helpers.argparse import PwdAction
+from helpers.argparse import PwdAction, ColoredArgParser
 from helpers.exceptions import InputException, UnexpectedException
 
 __all__ = ['Id', 'get_args']
@@ -38,7 +39,7 @@ def get_comma_list(string: str) -> List[str]:
 
 
 def use_parent_dir_if_exist(src: str, parent: Union[str, None]) -> str:
-    return os.path.join(os.path.dirname(parent), src) if parent else src
+    return os.path.normpath(os.path.join(os.path.dirname(parent), src)) if parent else src
 
 
 def parse_src(str_li: List[str], parent: Union[str, None] = None):
@@ -78,6 +79,7 @@ def parse_src(str_li: List[str], parent: Union[str, None] = None):
                 res.append(Id('site', [model_id], string))
         elif os.path.exists(use_parent_dir_if_exist(string, parent)):
             string = use_parent_dir_if_exist(string, parent)
+            print(f'after: {string}')
             file_str = None
 
             with open(string, 'r') as file:
@@ -88,7 +90,8 @@ def parse_src(str_li: List[str], parent: Union[str, None] = None):
             str_li_res = get_comma_list(file_str)
             res.extend(parse_src(str_li_res, parent=string))
         else:
-            print(colored(f'Bad source provided: {string}', 'red'))
+            raise InputException(
+                f'Bad source provided: {string}', f'   Batchfile Path: {parent}' if parent else None)
 
     return res
 
@@ -121,7 +124,7 @@ A source can be one of the following: model ID, CivitAI URL, string list of sour
 - Example 2: civitdl ./batchfile1.txt 123456 ~/Downloads/ComfyUI/models/loras
 """
 
-parser = argparse.ArgumentParser(
+parser = ColoredArgParser(
     prog='civitdl',
     description="A CLI python script to batch download models from CivitAI with CivitAI Api V1.",
     formatter_class=argparse.RawTextHelpFormatter
@@ -135,7 +138,8 @@ parser.add_argument('-s', '--sorter', type=str,
 parser.add_argument('-i', '--max-images', metavar='INT', type=int,
                     help='Specify max images to download for each model.')
 
-parser.add_argument('-p', '--with-prompt', action=argparse.BooleanOptionalAction, help='Download images with prompt.')
+parser.add_argument('-p', '--with-prompt', action=argparse.BooleanOptionalAction,
+                    help='Download images with prompt.')
 
 parser.add_argument('-k', '--api-key', action=PwdAction, type=str, nargs=0,
                     help='Prompt user for api key to download models that require users to log in.')

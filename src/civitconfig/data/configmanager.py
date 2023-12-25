@@ -2,8 +2,9 @@ import os
 import shutil
 from appdirs import AppDirs
 
+from helpers.styler import Styler
 from helpers.exceptions import InputException, UnexpectedException
-from helpers.utils import createDirsIfNotExist, getDate, run_in_dev
+from helpers.utils import createDirsIfNotExist, getDate, print_in_dev
 
 from .config.config import Config, DEFAULT_CONFIG
 from .config.aliasconfig import AliasConfig
@@ -21,7 +22,7 @@ class ConfigManager(Config):
 
     def __init__(self):
         dirs = AppDirs('civitdl', 'Owen Truong')
-        run_in_dev(print, dirs.user_config_dir)
+        print_in_dev(dirs.user_config_dir)
         config_path = os.path.join(dirs.user_config_dir, 'config.json')
         config_trash_dir_path = os.path.join(
             dirs.user_config_dir, '.trash')
@@ -70,7 +71,8 @@ class ConfigManager(Config):
         self._saveConfig(DEFAULT_CONFIG)
 
     def setDefault(self, max_images, with_prompt, sorter, api_key):
-        self._defaultConfig.setDefault(max_images, with_prompt, sorter, api_key)
+        self._defaultConfig.setDefault(
+            max_images, with_prompt, sorter, api_key)
 
     def addAlias(self, alias_name: str, path: str):
         self._aliasConfig.addAlias(alias_name, path)
@@ -89,11 +91,13 @@ class ConfigManager(Config):
 
     def reset(self):
         self._setFallback()
-        print('Successfully resetted config.')
+        print(Styler.stylize('Successfully resetted config.', color='success'))
 
     def download(self, dst_path):
-        if os.path.basename(dst_path) == '':
+        if os.path.isdir(dst_path):
             dst_path = os.path.join(dst_path, 'civitdl_config')
-        print(f'Downloading zipped config to {dst_path}.zip')
+
+        print(Styler.stylize(
+            f'Downloading zipped config to {dst_path}.zip', color='main'))
         shutil.make_archive(dst_path, 'zip',
                             self._config_dir_path)

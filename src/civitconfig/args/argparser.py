@@ -4,11 +4,10 @@ from typing import Dict, List, Union
 
 import argparse
 
-from termcolor import colored
-
+from helpers.styler import Styler
 from helpers.exceptions import InputException, UnexpectedException
-from helpers.argparse import PwdAction, ConfirmAction
-from helpers.utils import get_env, set_env
+from helpers.argparse import PwdAction, ConfirmAction, ColoredArgParser
+from helpers.utils import get_env, print_in_dev, set_env
 
 __all__ = ['get_args']
 
@@ -18,7 +17,7 @@ def add_shared_option(par):
         '-v', '--dev', action=argparse.BooleanOptionalAction, help='Prints out traceback and other useful information.')
 
 
-parser = argparse.ArgumentParser(
+parser = ColoredArgParser(
     prog='civitconfig',
     description="civitconfig is a cli program used to set configurations for the main program, civitdl.",
     formatter_class=argparse.RawTextHelpFormatter
@@ -34,7 +33,8 @@ default_parser = subparsers.add_parser(
     'default', help='Set a default value for one of the options below.\nIf no options are provided, default will print the current default.')
 default_parser.add_argument('-i', '--max-images', metavar='INT', type=int,
                             help='Set the default max number of images to download per model.')
-default_parser.add_argument('-p', '--with-prompt', action=argparse.BooleanOptionalAction, help='Toggles default behavior on whether to download prompt alongside images.')
+default_parser.add_argument('-p', '--with-prompt', action=argparse.BooleanOptionalAction,
+                            help='Toggles default behavior on whether to download prompt alongside images.')
 default_parser.add_argument('-s', '--sorter', metavar='NAME', type=str,
                             help='Set the default sorter given name of sorter (filepath not accepted).')
 default_parser.add_argument('-k', '--api-key', action=PwdAction, type=str, nargs=0,
@@ -85,7 +85,6 @@ def get_args():
     if parser_result.dev:
         set_env('development')
 
-    if get_env() == 'development':
-        print(f'Parsed Args: {parser_result}')
+    print_in_dev(f'Parsed Args: {parser_result}')
 
     return vars(parser_result)

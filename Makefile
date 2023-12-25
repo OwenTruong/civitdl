@@ -25,7 +25,10 @@ test4:
 	civitdl 80848 ./test/models/test4/without-prompt -v --no-with-prompt
 
 errortest1:
-	civitdl batchfile ./test/errortest1.txt ./test/models/test2 -d -v
+	civitdl ./test/errortest1.txt ./test/models/errortest1 -v
+
+errortest2:
+	civitdl ./test/errortest2.txt ./test/models/errortest2 -v
 
 test: install test1 test2 test4
 

@@ -2,7 +2,7 @@
 import traceback
 from operator import itemgetter
 
-from helpers.utils import run_in_dev
+from helpers.utils import run_in_dev, print_exc
 from .batch.batch_download import batch_download
 from .args.argparser import get_args
 
@@ -23,5 +23,5 @@ def main():
     except Exception as e:
         print('---------')
         run_in_dev(traceback.print_exc)
-        print(e)
+        print_exc(e)
         print('---------')

@@ -1,7 +1,7 @@
 import os
 import shutil
 from helpers.exceptions import InputException, ResourcesException
-from helpers.utils import getDate, import_sort_model
+from helpers.utils import getDate, import_sort_model, print_exc
 from .config import Config
 
 
@@ -127,7 +127,7 @@ class SorterConfig(Config):
             trashpath = self._trashPyFile(sorter_py_path)
         except Exception as e:
             if type(e).__name__ == 'ResourcesException':
-                print(e)
+                print_exc(e)
                 resources_error_was_raised = True
             else:
                 raise e
