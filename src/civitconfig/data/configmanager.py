@@ -3,7 +3,7 @@ import shutil
 from appdirs import AppDirs
 
 from helpers.exceptions import InputException, UnexpectedException
-from helpers.utils import createDirsIfNotExist, getDate, run_in_dev
+from helpers.utils import createDirsIfNotExist, getDate, print_in_dev
 
 from .config.config import Config, DEFAULT_CONFIG
 from .config.aliasconfig import AliasConfig
@@ -21,7 +21,7 @@ class ConfigManager(Config):
 
     def __init__(self):
         dirs = AppDirs('civitdl', 'Owen Truong')
-        run_in_dev(print, dirs.user_config_dir)
+        print_in_dev(dirs.user_config_dir)
         config_path = os.path.join(dirs.user_config_dir, 'config.json')
         config_trash_dir_path = os.path.join(
             dirs.user_config_dir, '.trash')
@@ -70,7 +70,8 @@ class ConfigManager(Config):
         self._saveConfig(DEFAULT_CONFIG)
 
     def setDefault(self, max_images, with_prompt, sorter, api_key):
-        self._defaultConfig.setDefault(max_images, with_prompt, sorter, api_key)
+        self._defaultConfig.setDefault(
+            max_images, with_prompt, sorter, api_key)
 
     def addAlias(self, alias_name: str, path: str):
         self._aliasConfig.addAlias(alias_name, path)

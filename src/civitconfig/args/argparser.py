@@ -4,8 +4,7 @@ from typing import Dict, List, Union
 
 import argparse
 
-from termcolor import colored
-
+from helpers.styler import Styler
 from helpers.exceptions import InputException, UnexpectedException
 from helpers.argparse import PwdAction, ConfirmAction
 from helpers.utils import get_env, set_env
@@ -34,7 +33,8 @@ default_parser = subparsers.add_parser(
     'default', help='Set a default value for one of the options below.\nIf no options are provided, default will print the current default.')
 default_parser.add_argument('-i', '--max-images', metavar='INT', type=int,
                             help='Set the default max number of images to download per model.')
-default_parser.add_argument('-p', '--with-prompt', action=argparse.BooleanOptionalAction, help='Toggles default behavior on whether to download prompt alongside images.')
+default_parser.add_argument('-p', '--with-prompt', action=argparse.BooleanOptionalAction,
+                            help='Toggles default behavior on whether to download prompt alongside images.')
 default_parser.add_argument('-s', '--sorter', metavar='NAME', type=str,
                             help='Set the default sorter given name of sorter (filepath not accepted).')
 default_parser.add_argument('-k', '--api-key', action=PwdAction, type=str, nargs=0,

@@ -1,16 +1,16 @@
 import json
-from termcolor import colored
+from .styler import Styler
 
 
 class CustomException(Exception):
     def __init__(self, error_type, *messages):
         res = ""
-        res += colored(f'\n{self.__class__.__name__} ({error_type}):',
-                       'red', attrs=['bold'])
+
+        res += Styler.stylize(f'\n{self.__class__.__name__} ({error_type}):',
+                              color='exception', styles=['bold'])
 
         for message in messages:
-            res += colored(f'\n         {message}',
-                           'red')
+            res += Styler.stylize(f'\n         {message}', color='exception')
 
         super().__init__(res)
 

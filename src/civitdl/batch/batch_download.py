@@ -5,7 +5,7 @@ import traceback
 from typing import Dict
 
 from ._get_model import download_model
-from helpers.utils import get_env, run_in_dev, import_sort_model
+from helpers.utils import get_env, print_in_dev, run_in_dev, import_sort_model
 from helpers.sorter import basic, tags
 
 
@@ -17,9 +17,9 @@ def choose_sorter(sorter_str: str):
 
 
 def pause(sec):
-    run_in_dev(print, 'Pausing for 3 seconds...')
+    print_in_dev('Pausing for 3 seconds...')
     time.sleep(sec)
-    run_in_dev(print, 'Waking up!')
+    print_in_dev('Waking up!')
 
 
 def batch_download(ids, rootdir, sorter, max_imgs, with_prompt, api_key=None):

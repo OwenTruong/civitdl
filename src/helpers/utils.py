@@ -1,15 +1,15 @@
 from datetime import datetime
 import json
 import os
-from typing import Callable, Dict, Generator, List, Union, Iterable
+from typing import Callable, Dict, Iterable
 import importlib.util
 import concurrent.futures
-import requests
+
 
 from tqdm import tqdm
-from termcolor import colored
 
-from helpers.exceptions import InputException, UnexpectedException
+from helpers.styler import Styler
+from helpers.exceptions import UnexpectedException
 _environment = 'production'
 
 
@@ -74,9 +74,15 @@ def find_in_list(li, cond_fn: Callable[[any, int], bool], default=None):
     return next((item for i, item in enumerate(li) if cond_fn(item, int)), default)
 
 
-def run_in_dev(fn, *args):
+def run_in_dev(fn, *args, **kwargs):
     if get_env() == 'development':
-        fn(*args)
+        fn(*args, **kwargs)
+
+
+def print_in_dev(*args, **kwargs):
+    if get_env() == 'development':
+        args = [Styler.stylize(arg, bg_color='info') for arg in args]
+        print(*args, **kwargs)
 
 
 def import_sort_model(filepath) -> Callable[[Dict, Dict, str, str], str]:
@@ -84,10 +90,6 @@ def import_sort_model(filepath) -> Callable[[Dict, Dict, str, str], str]:
     sorter = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(sorter)
     return sorter.sort_model
-
-
-def add_colors(message, color):
-    return colored(message, color)
 
 
 def getDate():

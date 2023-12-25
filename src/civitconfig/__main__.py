@@ -5,7 +5,7 @@ import traceback
 from operator import itemgetter
 
 from helpers.exceptions import UnexpectedException
-from helpers.utils import run_in_dev, add_colors
+from helpers.utils import run_in_dev, print_in_dev, add_colors
 from civitconfig.args.argparser import get_args
 from civitconfig.data.configmanager import ConfigManager
 
@@ -15,7 +15,7 @@ def main():
         args = get_args()
         subcommand = args['subcommand']
         config_manager = ConfigManager()
-        run_in_dev(print, args)
+        print_in_dev(args)
 
         if subcommand == 'default':
             if 'max_images' in args or 'with_prompt' or 'sorter' in args or 'api_key' in args:
@@ -25,7 +25,8 @@ def main():
             (max_images, with_prompt, sorter, _) = config_manager.getDefaultAsList()
             print(add_colors('Default:', 'green'))
             print(add_colors(f'     Max Images:         {max_images}', 'blue'))
-            print(add_colors(f'     With Prompt:        {with_prompt}', 'green'))
+            print(add_colors(
+                f'     With Prompt:        {with_prompt}', 'green'))
             print(add_colors(f'     Sorter:             {sorter}', 'blue'))
         elif subcommand == 'sorter':
             if args['add'] != None:

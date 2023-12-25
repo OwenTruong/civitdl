@@ -3,9 +3,9 @@ import re
 from typing import List, Union
 
 import argparse
-from termcolor import colored
 
 from civitconfig.data.configmanager import ConfigManager
+from helpers.styler import Styler
 from helpers.utils import set_env
 from helpers.argparse import PwdAction
 from helpers.exceptions import InputException, UnexpectedException
@@ -88,7 +88,7 @@ def parse_src(str_li: List[str], parent: Union[str, None] = None):
             str_li_res = get_comma_list(file_str)
             res.extend(parse_src(str_li_res, parent=string))
         else:
-            print(colored(f'Bad source provided: {string}', 'red'))
+            raise InputException(f'Bad source provided: {string}', 'exception')
 
     return res
 
@@ -135,7 +135,8 @@ parser.add_argument('-s', '--sorter', type=str,
 parser.add_argument('-i', '--max-images', metavar='INT', type=int,
                     help='Specify max images to download for each model.')
 
-parser.add_argument('-p', '--with-prompt', action=argparse.BooleanOptionalAction, help='Download images with prompt.')
+parser.add_argument('-p', '--with-prompt', action=argparse.BooleanOptionalAction,
+                    help='Download images with prompt.')
 
 parser.add_argument('-k', '--api-key', action=PwdAction, type=str, nargs=0,
                     help='Prompt user for api key to download models that require users to log in.')

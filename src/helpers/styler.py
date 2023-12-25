@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import List, Literal
 
+# Private
+
 
 class _FormatEnum(Enum):
     @classmethod
@@ -21,9 +23,10 @@ class _Colors(_FormatEnum):
     # Text colors
     EXCEPTION = '\033[31m'
     WARNING = '\033[33m'
-    PRIMARY = '\033[32m'
-    SECONDARY = '\033[34m'
-    SUCCESS = '\033[35m'
+    SUCCESS = '\033[32m'
+
+    PRIMARY = '\033[34m'
+    SECONDARY = '\033[35m'
     INFO = '\033[36m'
 
 
@@ -31,18 +34,35 @@ class _BGColors(_FormatEnum):
     # Background colors
     EXCEPTION = '\033[41m'
     WARNING = '\033[43m'
+    SUCCESS = '\033[42m'
 
-    PRIMARY = '\033[42m'
-    SECONDARY = '\033[44m'
-    SUCCESS = '\033[45m'
+    PRIMARY = '\033[44m'
+    SECONDARY = '\033[45m'
     INFO = '\033[46m'
+
+
+def _color_generator():
+    color = 'primary'
+    while True:
+        if color == 'primary':
+            color = 'secondary'
+            yield 'primary'
+        else:
+            color = 'primary'
+            yield 'secondary'
+
+
+_current_color_iter = _color_generator()
+
+
+# Public / Exports
 
 
 class Styler(Enum):
     RESET = '\033[0m'  # Reset to default text and background color
 
     @classmethod
-    def stylize(cls, string: str, styles: List[str] = None, color: str = None, bg_color: str = None):
+    def stylize(cls, string: str, color: str = None, bg_color: str = None, styles: List[str] = None):
         res = ''
 
         if styles:
@@ -73,3 +93,7 @@ class Styler(Enum):
         res += string
         res += cls.RESET.value
         return res
+
+    @staticmethod
+    def get_next_color():
+        return next(_current_color_iter)
