@@ -51,29 +51,25 @@ class Styler(Enum):
                 if style_attr:
                     res += style_attr.value
                 else:
-                    raise Exception(cls.stylize_exception(
-                        f'The following style "{style}" does not exist.'))
+                    raise Exception(
+                        f'The following style "{style}" does not exist.')
 
         if color:
             color_attr = _Colors.get_attribute(color)
             if color_attr:
                 res += color_attr.value
             else:
-                raise Exception(cls.stylize_exception(
-                    f'The following color "{color}" does not exist.'))
+                raise Exception(
+                    f'The following color "{color}" does not exist.')
 
         if bg_color:
             bg_attr = _BGColors.get_attribute(bg_color)
             if bg_attr:
                 res += bg_attr.value
             else:
-                raise Exception(cls.stylize_exception(
-                    f'The following background color "{bg_color}" does not exist.'))
+                raise Exception(
+                    f'The following background color "{bg_color}" does not exist.')
 
         res += string
         res += cls.RESET.value
         return res
-
-    @classmethod
-    def stylize_exception(cls, string: str):
-        return f'{_Colors.EXCEPTION.value}{string}{cls.RESET.value}'
