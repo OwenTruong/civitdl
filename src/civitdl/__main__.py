@@ -3,7 +3,7 @@ import traceback
 from operator import itemgetter
 
 from helpers.utils import run_in_dev, print_exc
-from .batch.batch_download import batch_download
+from .batch.batch_download import batch_download, Config
 from .args.argparser import get_args
 
 
@@ -15,10 +15,13 @@ def main():
         batch_download(
             ids,
             rootdir=rootdir,
-            sorter=sorter,
-            max_imgs=max_imgs,
-            with_prompt=with_prompt,
-            api_key=api_key)
+            config=Config(
+                sorter=sorter,
+                max_imgs=max_imgs,
+                with_prompt=with_prompt,
+                api_key=api_key
+            )
+        )
 
     except Exception as e:
         print('---------')

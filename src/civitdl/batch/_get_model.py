@@ -7,7 +7,7 @@ from typing import Callable, Dict, List, Union
 from helpers.styler import Styler
 
 from civitdl.args.argparser import Id
-from helpers.utils import write_to_file, write_to_files, print_in_dev, concurrent_request
+from helpers.utils import Config, write_to_file, write_to_files, print_in_dev, concurrent_request
 from helpers.exceptions import InputException, ResourcesException, UnexpectedException, APIException
 
 
@@ -86,13 +86,13 @@ class Metadata:
                 f'\nOriginal Error:\n       {e}')
 
 
-def _download_images(dirpath: str, images: List[Dict], nsfw: bool, max_img_count: int):
+def _download_images(dirpath: str, images: List[Dict], nsfw: bool, config: Config):
     def make_req(url): return requests.get(url, stream=True)
 
     image_urls = []
     interested_images = []
     for dict in images:
-        if len(image_urls) == max_img_count:
+        if len(image_urls) == config.max_imgs:
             break
         if not nsfw and dict['nsfw'] != 'None':
             continue
@@ -140,14 +140,14 @@ def _download_metadata(dirpath: str, metadata: Metadata):
         metadata.model_dict, indent=2, ensure_ascii=False)])
 
 
-def _get_filename_and_model_res(input_str: str, metadata: Metadata, api_key: Union[str, None]):
+def _get_filename_and_model_res(input_str: str, metadata: Metadata, config: Config):
     # Request model
     print_in_dev('Preparing to download model by reading headers.')
     print_in_dev(f'Model Download API URL: {metadata.download_url}')
     headers = {
-        'Authorization': f'Bearer {api_key}',
-    } if api_key else {}
-    res = requests.get(metadata.download_url, stream=True, headers=headers) if api_key else requests.get(
+        'Authorization': f'Bearer {config.api_key}',
+    } if config.api_key else {}
+    res = requests.get(metadata.download_url, stream=True, headers=headers) if config.api_key else requests.get(
         metadata.download_url, stream=True)
     print_in_dev('Finished downloading headers.')
 
@@ -186,17 +186,16 @@ def _get_filename_and_model_res(input_str: str, metadata: Metadata, api_key: Uni
     return (res, filename)
 
 
-def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str], dst_root_path: str, max_img_count: int, with_prompt: bool, api_key: Union[str, None] = None):
+def download_model(id: Id, dst_root_path: str, create_dir_path: Callable[[Dict, Dict, str, str], str], config: Config):
     """
         Downloads the model's safetensors and json metadata files.
         create_dir_path is a callback function that takes in the following: metadata dict, specific model's data as dict, filename, and root path.
     """
     if id == None or \
             create_dir_path == None or \
-            dst_root_path == None or \
-            max_img_count == None:
-        raise UnexpectedException(
-            'download_model received a None type in one of its parameter')
+            dst_root_path == None:
+        raise InputException(
+            '(download_model) Must provide an id, create_dir_path and dst_root_path')
 
     metadata = Metadata(id)
 
@@ -207,7 +206,7 @@ def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str
         color='main'))
 
     model_res, filename = _get_filename_and_model_res(
-        id.original, metadata, api_key)
+        id.original, metadata, config)
 
     # Create empty directory recursively #
     filename_without_ext, filename_ext = os.path.splitext(filename)
@@ -228,10 +227,10 @@ def download_model(id: Id, create_dir_path: Callable[[Dict, Dict, str, str], str
 
     # Download images
     image_base_names, remaining_images = _download_images(
-        image_dir_path, metadata.version_dict['images'], metadata.nsfw, max_img_count)
+        image_dir_path, metadata.version_dict['images'], metadata.nsfw, config)
 
     # Download prompts
-    if with_prompt:
+    if config.with_prompt:
         _download_prompts(prompt_dir_path, [
                           f'{os.path.splitext(base_name)[0]}-prompt.json' for base_name in image_base_names], remaining_images)
 
