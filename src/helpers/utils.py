@@ -90,7 +90,7 @@ def print_exc(exc: Exception, *args, **kwargs):
     if isinstance(exc, CustomException):
         print(exc, file=sys.stderr, *args, **kwargs)
     else:
-        print(Styler.stylize(str(exc), *args, color='exception'),
+        print(Styler.stylize(str(exc), color='exception'), *args,
               file=sys.stderr, **kwargs)
 
 

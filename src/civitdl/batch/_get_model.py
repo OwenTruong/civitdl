@@ -12,8 +12,8 @@ from helpers.exceptions import InputException, ResourcesException, UnexpectedExc
 
 
 class Metadata:
+    __config = None
     __id = None
-    __session = None
 
     model_name = None
     model_id = None
@@ -22,13 +22,14 @@ class Metadata:
     model_dict = None
     version_dict = None
 
-    download_url = None
-    images_dict_li = None
     nsfw = False
+    image_dicts = None
+    image_download_urls = None
+    model_download_url = None
 
-    def __init__(self, id: Id, session: requests.Session):
+    def __init__(self, id: Id, config: Config):
         self.__id = id
-        self.__session = session
+        self.__config = config
         self.__handler()
 
     def __handler(self):
@@ -57,10 +58,17 @@ class Metadata:
             raise InputException(
                 f'Incorrect format sent ({ids}, {type}): "{self.__id.original}"')
 
-        self.download_url = self.version_dict['downloadUrl']
-        self.images_dict_li = self.version_dict['images']
-        self.nsfw = self.model_dict['nsfw']
         self.model_name = self.model_dict['name']
+
+        self.nsfw = self.model_dict['nsfw']
+        self.image_dicts = [
+            image_dict for image_dict in self.version_dict['images']
+            if self.nsfw or image_dict['nsfw'] == 'None'
+        ][0:self.__config.max_imgs]
+        self.image_download_urls = [image_dict['url']
+                                    for image_dict in self.image_dicts]
+
+        self.model_download_url = self.version_dict['downloadUrl']
 
     def __get_model_metadata(self):
         """Returns json object if request succeeds, else print error and returns None"""
@@ -74,7 +82,7 @@ class Metadata:
     def __get_metadata(self, url: str):
         print_in_dev('Requesting model metadata.')
         print_in_dev(f'Metadata API Request URL: {url}')
-        meta_res = self.__session.get(url, stream=True)
+        meta_res = self.__config.session.get(url, stream=True)
         print_in_dev('Finished requesting model metadata.')
         if meta_res.status_code != 200:
             raise APIException(
@@ -88,48 +96,27 @@ class Metadata:
                 f'\nOriginal Error:\n       {e}')
 
 
-def _download_images(dirpath: str, images: List[Dict], nsfw: bool, config: Config):
+def _download_images(dirpath: str, image_basenames: List[str], image_urls: List[str], config: Config):
     def make_req(url): return config.session.get(url, stream=True)
 
-    image_urls = []
-    interested_images = []
-    for dict in images:
-        if len(image_urls) == config.max_imgs:
-            break
-        if not nsfw and dict['nsfw'] != 'None':
-            continue
-        else:
-            interested_images.append(dict)
-            image_urls.append(dict['url'])
-
+    # TODO: Change progress bar to be based on time length of request rather than when all the images are fetched and ready to be written.
     os.makedirs(dirpath, exist_ok=True)
-
-    base_name_list = []
-    print_in_dev('Now making request for images...')
-    image_data_list = [res.content for res in concurrent_request(
+    print_in_dev('Now requesting images...')
+    image_contents = [res.content for res in concurrent_request(
         req_fn=make_req, urls=image_urls)]
-    print_in_dev('Finished making request for images...')
+    print_in_dev('Finished requesting images...')
 
-    for url in image_urls:
-        image_res = config.session.get(url)
-        if image_res.status_code != 200:
-            raise APIException(
-                image_res.status_code, f'Downloading image from CivitAI failed for the url: {url}')
-        base_name_list.append(os.path.basename(url))
-
-    if (len(image_data_list) == 0):
+    if (len(image_contents) == 0):
         print(Styler.stylize('No images to download...', color='warning'))
     else:
-        write_to_files(dirpath, base_name_list, image_data_list, mode='wb',
-                       use_pb=True, total=len(base_name_list), desc='Images')
-
-    return (base_name_list, interested_images)
+        write_to_files(dirpath, image_basenames, image_contents, mode='wb',
+                       use_pb=True, total=len(image_basenames), desc='Images')
 
 
-def _download_prompts(dirpath: str, base_name_list: List[str], images: List[Dict]):
-    if (len(images) != 0):
-        write_to_files(dirpath, base_name_list, [dumps(
-            image, indent=2, ensure_ascii=False) for image in images])
+def _download_prompts(dirpath: str, basenames: List[str], image_dicts: List[Dict]):
+    if len(image_dicts) != 0:
+        write_to_files(dirpath, basenames, [dumps(
+            image_dict, indent=2, ensure_ascii=False) for image_dict in image_dicts])
 
 
 def _download_metadata(dirpath: str, metadata: Metadata):
@@ -142,16 +129,17 @@ def _download_metadata(dirpath: str, metadata: Metadata):
         metadata.model_dict, indent=2, ensure_ascii=False)])
 
 
+# TODO: Make it so api_key is only used when reason=download-auth is in res.url
 def _get_filename_and_model_res(input_str: str, metadata: Metadata, config: Config):
     # Request model
-    print_in_dev('Preparing to download model by reading headers.')
-    print_in_dev(f'Model Download API URL: {metadata.download_url}')
+    print_in_dev('Preparing to send download model request...')
+    print_in_dev(f'Model Download API URL: {metadata.model_download_url}')
     headers = {
         'Authorization': f'Bearer {config.api_key}',
     } if config.api_key else {}
-    res = config.session.get(metadata.download_url, stream=True, headers=headers) if config.api_key else requests.get(
-        metadata.download_url, stream=True)
-    print_in_dev('Finished downloading headers.')
+    res = config.session.get(metadata.model_download_url, stream=True, headers=headers) if config.api_key else requests.get(
+        metadata.model_download_url, stream=True)
+    print_in_dev('Download model response received.')
 
     if res.status_code != 200:
         raise APIException(
@@ -199,7 +187,7 @@ def download_model(id: Id, dst_root_path: str, create_dir_path: Callable[[Dict, 
         raise InputException(
             '(download_model) Must provide an id, create_dir_path and dst_root_path')
 
-    metadata = Metadata(id, config.session)
+    metadata = Metadata(id, config)
 
     print(Styler.stylize(
         f"""Now downloading \"{metadata.model_name}\"...
@@ -211,9 +199,9 @@ def download_model(id: Id, dst_root_path: str, create_dir_path: Callable[[Dict, 
         id.original, metadata, config)
 
     # Create empty directory recursively #
-    filename_without_ext, filename_ext = os.path.splitext(filename)
+    filename_no_ext, filename_ext = os.path.splitext(filename)
     paths = create_dir_path(
-        metadata.model_dict, metadata.version_dict, filename_without_ext, dst_root_path)
+        metadata.model_dict, metadata.version_dict, filename_no_ext, dst_root_path)
 
     if len(paths) != 4:
         raise InputException(
@@ -227,18 +215,21 @@ def download_model(id: Id, dst_root_path: str, create_dir_path: Callable[[Dict, 
 
     _download_metadata(metadata_dir_path, metadata)
 
-    # Download images
-    image_base_names, remaining_images = _download_images(
-        image_dir_path, metadata.version_dict['images'], metadata.nsfw, config)
+    # Download images & prompts
+    image_basenames = [os.path.basename(url)
+                       for url in metadata.image_download_urls]
+    prompts_basenames = [
+        f'{os.path.splitext(basename)[0]}.json' for basename in image_basenames]
 
-    # Download prompts
+    _download_images(
+        image_dir_path, image_basenames, metadata.image_download_urls, config)
     if config.with_prompt:
-        _download_prompts(prompt_dir_path, [
-                          f'{os.path.splitext(base_name)[0]}-prompt.json' for base_name in image_base_names], remaining_images)
+        _download_prompts(prompt_dir_path, prompts_basenames,
+                          metadata.image_dicts)
 
     # Download file
     os.makedirs(model_dir_path, exist_ok=True)
-    model_filename = f'{filename_without_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}{filename_ext}'
+    model_filename = f'{filename_no_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}{filename_ext}'
     model_path = os.path.join(
         model_dir_path, model_filename)
     write_to_file(model_path, model_res.iter_content(1024*1024), mode='wb',
