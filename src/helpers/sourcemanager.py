@@ -44,7 +44,7 @@ class SourceManager:
     def __use_parent_dir_if_exist(self, src: str, parent: Union[str, None]) -> str:
         return os.path.normpath(os.path.join(os.path.dirname(parent), src)) if parent else src
 
-    def parse_src(self, str_li: List[str], parent: Union[str, None] = None):
+    def parse_src(self, str_li: List[str], parent: Union[str, None] = None) -> List[Id]:
         res: List[Id] = []
         for string in str_li:
             string = string.strip()

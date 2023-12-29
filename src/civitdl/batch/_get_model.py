@@ -6,12 +6,12 @@ from typing import Callable, Dict, List, Union
 
 from helpers.styler import Styler
 from helpers.sourcemanager import Id
-from helpers.utils import Config, write_to_file, write_to_files, print_verbose, concurrent_request
+from helpers.utils import BatchOptions, write_to_file, write_to_files, print_verbose, concurrent_request
 from helpers.exceptions import InputException, ResourcesException, UnexpectedException, APIException
 
 
 class Metadata:
-    __config = None
+    __batchOptions = None
     __id = None
 
     model_name = None
@@ -26,9 +26,9 @@ class Metadata:
     image_download_urls = None
     model_download_url = None
 
-    def __init__(self, id: Id, config: Config):
+    def __init__(self, id: Id, batchOptions: BatchOptions):
         self.__id = id
-        self.__config = config
+        self.__batchOptions = batchOptions
         self.__handler()
 
     def __handler(self):
@@ -63,7 +63,7 @@ class Metadata:
         self.image_dicts = [
             image_dict for image_dict in self.version_dict['images']
             if self.nsfw or image_dict['nsfw'] == 'None'
-        ][0:self.__config.max_imgs]
+        ][0:self.__batchOptions.max_imgs]
         self.image_download_urls = [image_dict['url']
                                     for image_dict in self.image_dicts]
 
@@ -81,7 +81,7 @@ class Metadata:
     def __get_metadata(self, url: str):
         print_verbose('Requesting model metadata.')
         print_verbose(f'Metadata API Request URL: {url}')
-        meta_res = self.__config.session.get(url, stream=True)
+        meta_res = self.__batchOptions.session.get(url, stream=True)
         print_verbose('Finished requesting model metadata.')
         if meta_res.status_code != 200:
             raise APIException(
@@ -95,8 +95,8 @@ class Metadata:
                 f'\nOriginal Error:\n       {e}')
 
 
-def _download_images(dirpath: str, image_basenames: List[str], image_urls: List[str], config: Config):
-    def make_req(url): return config.session.get(url, stream=True)
+def _download_images(dirpath: str, image_basenames: List[str], image_urls: List[str], batchOptions: BatchOptions):
+    def make_req(url): return batchOptions.session.get(url, stream=True)
 
     # TODO: Change progress bar to be based on time length of request rather than when all the images are fetched and ready to be written.
     os.makedirs(dirpath, exist_ok=True)
@@ -129,14 +129,14 @@ def _download_metadata(dirpath: str, metadata: Metadata):
 
 
 # TODO: Make it so api_key is only used when reason=download-auth is in res.url
-def _get_filename_and_model_res(input_str: str, metadata: Metadata, config: Config):
+def _get_filename_and_model_res(input_str: str, metadata: Metadata, batchOptions: BatchOptions):
     # Request model
     print_verbose('Preparing to send download model request...')
     print_verbose(f'Model Download API URL: {metadata.model_download_url}')
     headers = {
-        'Authorization': f'Bearer {config.api_key}',
-    } if config.api_key else {}
-    res = config.session.get(metadata.model_download_url, stream=True, headers=headers) if config.api_key else requests.get(
+        'Authorization': f'Bearer {batchOptions.api_key}',
+    } if batchOptions.api_key else {}
+    res = batchOptions.session.get(metadata.model_download_url, stream=True, headers=headers) if batchOptions.api_key else requests.get(
         metadata.model_download_url, stream=True)
     print_verbose('Download model response received.')
 
@@ -175,7 +175,7 @@ def _get_filename_and_model_res(input_str: str, metadata: Metadata, config: Conf
     return (res, filename)
 
 
-def download_model(id: Id, dst_root_path: str, create_dir_path: Callable[[Dict, Dict, str, str], str], config: Config):
+def download_model(id: Id, dst_root_path: str, create_dir_path: Callable[[Dict, Dict, str, str], str], batchOptions: BatchOptions):
     """
         Downloads the model's safetensors and json metadata files.
         create_dir_path is a callback function that takes in the following: metadata dict, specific model's data as dict, filename, and root path.
@@ -186,7 +186,7 @@ def download_model(id: Id, dst_root_path: str, create_dir_path: Callable[[Dict, 
         raise InputException(
             '(download_model) Must provide an id, create_dir_path and dst_root_path')
 
-    metadata = Metadata(id, config)
+    metadata = Metadata(id, batchOptions)
 
     print(Styler.stylize(
         f"""Now downloading \"{metadata.model_name}\"...
@@ -195,7 +195,7 @@ def download_model(id: Id, dst_root_path: str, create_dir_path: Callable[[Dict, 
         color='main'))
 
     model_res, filename = _get_filename_and_model_res(
-        id.original, metadata, config)
+        id.original, metadata, batchOptions)
 
     # Create empty directory recursively #
     filename_no_ext, filename_ext = os.path.splitext(filename)
@@ -221,8 +221,8 @@ def download_model(id: Id, dst_root_path: str, create_dir_path: Callable[[Dict, 
         f'{os.path.splitext(basename)[0]}.json' for basename in image_basenames]
 
     _download_images(
-        image_dir_path, image_basenames, metadata.image_download_urls, config)
-    if config.with_prompt:
+        image_dir_path, image_basenames, metadata.image_download_urls, batchOptions)
+    if batchOptions.with_prompt:
         _download_prompts(prompt_dir_path, prompts_basenames,
                           metadata.image_dicts)
 

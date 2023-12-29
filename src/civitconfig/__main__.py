@@ -16,7 +16,8 @@ def main():
         args = get_args()
         subcommand = args['subcommand']
         config_manager = ConfigManager()
-        if args.verbose:
+
+        if args['verbose']:
             set_verbose(True)
         else:
             set_verbose(False)

@@ -2,32 +2,34 @@
 import traceback
 from operator import itemgetter
 
-from helpers.utils import run_verbose, print_exc
-from .batch.batch_download import batch_download, Config
+from .batch.batch_download import batch_download, BatchOptions
 from .args.argparser import get_args
+
+from helpers.exceptions import UnexpectedException
 from helpers.sourcemanager import SourceManager
+from helpers.utils import run_verbose, print_exc, set_verbose
 
 
 def main():
     try:
-        print('hi')
-        source_strings, rootdir, sorter, max_imgs, with_prompt, api_key, verbose = itemgetter(
-            'source_strings', 'rootdir', 'sorter', 'max_imgs', 'with_prompt', 'api_key', 'verbose')(get_args())
+        args = get_args()
 
-        config = Config(
-            sorter=sorter,
-            max_imgs=max_imgs,
-            with_prompt=with_prompt,
-            api_key=api_key,
-            verbose=verbose
+        if args['verbose']:
+            set_verbose(True)
+        else:
+            set_verbose(False)
+
+        batchOptions = BatchOptions(
+            sorter=args['sorter'],
+            max_imgs=args['max_imgs'],
+            with_prompt=args['with_prompt'],
+            api_key=args['api_key'],
         )
 
-        source_manager = SourceManager()
-
         batch_download(
-            ids=source_manager.parse_src(source_strings),
-            rootdir=rootdir,
-            config=config
+            source_strings=args['source_strings'],
+            rootdir=args['rootdir'],
+            batchOptions=batchOptions
         )
 
     except Exception as e:

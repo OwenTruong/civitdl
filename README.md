@@ -140,7 +140,7 @@ Four options are available
 - `-i <number>` or `--max-images <number>`
   - Specifies the max images to download for each model.
   - Example: `civitdl 80848 ./loras -i 20`
-- `p` or `--with-prompt`
+- `-p` or `--with-prompt`
   - Running with the option will download an image's JSON prompt/metadata alongside the image.
   - Example: `civitdl 80848 ./loras --with-prompt`
   - Use `--no-with-prompt` to disable downloading JSON prompt/metadata.

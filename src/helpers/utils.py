@@ -110,7 +110,7 @@ def createDirsIfNotExist(dirpaths):
 
 
 @dataclass
-class Config:
+class BatchOptions:
     sorter: str = 'basic'
     retry_count: int = 3
     pause_time: int = 3
