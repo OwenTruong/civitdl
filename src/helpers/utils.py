@@ -6,6 +6,7 @@ import sys
 from typing import Callable, Dict, Iterable, Union
 import importlib.util
 import concurrent.futures
+import requests
 from tqdm import tqdm
 
 from helpers.styler import Styler
@@ -119,3 +120,6 @@ class Config:
     max_imgs: int = 3
     with_prompt: bool = True
     api_key: Union[str, None] = None
+
+    def __post_init__(self):
+        self.session = requests.Session()

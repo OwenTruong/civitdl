@@ -13,6 +13,7 @@ from helpers.exceptions import InputException, ResourcesException, UnexpectedExc
 
 class Metadata:
     __id = None
+    __session = None
 
     model_name = None
     model_id = None
@@ -25,8 +26,9 @@ class Metadata:
     images_dict_li = None
     nsfw = False
 
-    def __init__(self, id: Id):
+    def __init__(self, id: Id, session: requests.Session):
         self.__id = id
+        self.__session = session
         self.__handler()
 
     def __handler(self):
@@ -72,7 +74,7 @@ class Metadata:
     def __get_metadata(self, url: str):
         print_in_dev('Requesting model metadata.')
         print_in_dev(f'Metadata API Request URL: {url}')
-        meta_res = requests.get(url, stream=True)
+        meta_res = self.__session.get(url, stream=True)
         print_in_dev('Finished requesting model metadata.')
         if meta_res.status_code != 200:
             raise APIException(
@@ -87,7 +89,7 @@ class Metadata:
 
 
 def _download_images(dirpath: str, images: List[Dict], nsfw: bool, config: Config):
-    def make_req(url): return requests.get(url, stream=True)
+    def make_req(url): return config.session.get(url, stream=True)
 
     image_urls = []
     interested_images = []
@@ -109,7 +111,7 @@ def _download_images(dirpath: str, images: List[Dict], nsfw: bool, config: Confi
     print_in_dev('Finished making request for images...')
 
     for url in image_urls:
-        image_res = requests.get(url)
+        image_res = config.session.get(url)
         if image_res.status_code != 200:
             raise APIException(
                 image_res.status_code, f'Downloading image from CivitAI failed for the url: {url}')
@@ -147,7 +149,7 @@ def _get_filename_and_model_res(input_str: str, metadata: Metadata, config: Conf
     headers = {
         'Authorization': f'Bearer {config.api_key}',
     } if config.api_key else {}
-    res = requests.get(metadata.download_url, stream=True, headers=headers) if config.api_key else requests.get(
+    res = config.session.get(metadata.download_url, stream=True, headers=headers) if config.api_key else requests.get(
         metadata.download_url, stream=True)
     print_in_dev('Finished downloading headers.')
 
@@ -197,7 +199,7 @@ def download_model(id: Id, dst_root_path: str, create_dir_path: Callable[[Dict, 
         raise InputException(
             '(download_model) Must provide an id, create_dir_path and dst_root_path')
 
-    metadata = Metadata(id)
+    metadata = Metadata(id, config.session)
 
     print(Styler.stylize(
         f"""Now downloading \"{metadata.model_name}\"...
