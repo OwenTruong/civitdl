@@ -7,14 +7,14 @@ import argparse
 from helpers.styler import Styler
 from helpers.exceptions import InputException, UnexpectedException
 from helpers.argparse import PwdAction, ConfirmAction, ColoredArgParser
-from helpers.utils import get_env, print_in_dev, set_env
+from helpers.utils import print_verbose
 
 __all__ = ['get_args']
 
 
 def add_shared_option(par):
     par.add_argument(
-        '-v', '--dev', action=argparse.BooleanOptionalAction, help='Prints out traceback and other useful information.')
+        '-v', '--verbose', action=argparse.BooleanOptionalAction, help='Prints out traceback and other useful information.')
 
 
 parser = ColoredArgParser(
@@ -82,9 +82,5 @@ add_shared_option(config_parser)
 
 def get_args():
     parser_result = parser.parse_args()
-    if parser_result.dev:
-        set_env('development')
-
-    print_in_dev(f'Parsed Args: {parser_result}')
 
     return vars(parser_result)

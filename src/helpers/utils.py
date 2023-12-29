@@ -3,7 +3,7 @@ from datetime import datetime
 import json
 import os
 import sys
-from typing import Callable, Dict, Iterable, Union
+from typing import Callable, Dict, Iterable, List, Union
 import importlib.util
 import concurrent.futures
 import requests
@@ -11,20 +11,18 @@ from tqdm import tqdm
 
 from helpers.styler import Styler
 from helpers.exceptions import CustomException, UnexpectedException
-_environment = 'production'
+
+_verbose = False
 
 
-def get_env():
-    return _environment
+def get_verbose():
+    return _verbose
 
 
-def set_env(env: str):
-    if env != 'production' and env != 'development':
-        raise UnexpectedException(
-            f'Program is trying to set unexpected enviornment {env}')
-    global _environment
-    _environment = env
-    return _environment
+def set_verbose(verbose: bool):
+    global _verbose
+    _verbose = verbose
+    return _verbose
 
 
 # TODO: what if a specific image have a hard time with getting a response?
@@ -75,13 +73,13 @@ def find_in_list(li, cond_fn: Callable[[any, int], bool], default=None):
     return next((item for i, item in enumerate(li) if cond_fn(item, int)), default)
 
 
-def run_in_dev(fn, *args, **kwargs):
-    if get_env() == 'development':
+def run_verbose(fn, *args, **kwargs):
+    if get_verbose():
         fn(*args, **kwargs)
 
 
-def print_in_dev(*args, **kwargs):
-    if get_env() == 'development':
+def print_verbose(*args, **kwargs):
+    if get_verbose():
         args = [Styler.stylize(arg, bg_color='info') for arg in args]
         print(*args, **kwargs)
 
@@ -121,5 +119,10 @@ class Config:
     with_prompt: bool = True
     api_key: Union[str, None] = None
 
+    verbose: Union[bool, None] = None
+
     def __post_init__(self):
         self.session = requests.Session()
+
+        if self.verbose != None:
+            set_verbose(self.verbose)

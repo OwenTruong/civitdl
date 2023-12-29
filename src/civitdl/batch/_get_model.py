@@ -5,9 +5,8 @@ import re
 from typing import Callable, Dict, List, Union
 
 from helpers.styler import Styler
-
-from civitdl.args.argparser import Id
-from helpers.utils import Config, write_to_file, write_to_files, print_in_dev, concurrent_request
+from helpers.sourcemanager import Id
+from helpers.utils import Config, write_to_file, write_to_files, print_verbose, concurrent_request
 from helpers.exceptions import InputException, ResourcesException, UnexpectedException, APIException
 
 
@@ -80,10 +79,10 @@ class Metadata:
         return self.__get_metadata(metadata_url)
 
     def __get_metadata(self, url: str):
-        print_in_dev('Requesting model metadata.')
-        print_in_dev(f'Metadata API Request URL: {url}')
+        print_verbose('Requesting model metadata.')
+        print_verbose(f'Metadata API Request URL: {url}')
         meta_res = self.__config.session.get(url, stream=True)
-        print_in_dev('Finished requesting model metadata.')
+        print_verbose('Finished requesting model metadata.')
         if meta_res.status_code != 200:
             raise APIException(
                 meta_res.status_code, f'Downloading metadata from CivitAI for "{self.__id.original}" failed when trying to request metadata from "{url}"')
@@ -101,10 +100,10 @@ def _download_images(dirpath: str, image_basenames: List[str], image_urls: List[
 
     # TODO: Change progress bar to be based on time length of request rather than when all the images are fetched and ready to be written.
     os.makedirs(dirpath, exist_ok=True)
-    print_in_dev('Now requesting images...')
+    print_verbose('Now requesting images...')
     image_contents = [res.content for res in concurrent_request(
         req_fn=make_req, urls=image_urls)]
-    print_in_dev('Finished requesting images...')
+    print_verbose('Finished requesting images...')
 
     if (len(image_contents) == 0):
         print(Styler.stylize('No images to download...', color='warning'))
@@ -132,14 +131,14 @@ def _download_metadata(dirpath: str, metadata: Metadata):
 # TODO: Make it so api_key is only used when reason=download-auth is in res.url
 def _get_filename_and_model_res(input_str: str, metadata: Metadata, config: Config):
     # Request model
-    print_in_dev('Preparing to send download model request...')
-    print_in_dev(f'Model Download API URL: {metadata.model_download_url}')
+    print_verbose('Preparing to send download model request...')
+    print_verbose(f'Model Download API URL: {metadata.model_download_url}')
     headers = {
         'Authorization': f'Bearer {config.api_key}',
     } if config.api_key else {}
     res = config.session.get(metadata.model_download_url, stream=True, headers=headers) if config.api_key else requests.get(
         metadata.model_download_url, stream=True)
-    print_in_dev('Download model response received.')
+    print_verbose('Download model response received.')
 
     if res.status_code != 200:
         raise APIException(
@@ -149,7 +148,7 @@ def _get_filename_and_model_res(input_str: str, metadata: Metadata, config: Conf
     content_disposition = res.headers.get('Content-Disposition')
 
     if 'reason=download-auth' in res.url:
-        print_in_dev('reason=download-auth status', res.status_code)
+        print_verbose('reason=download-auth status', res.status_code)
         raise InputException('Unable to download this model as it requires an API Key. Please head to "civitai.com", go to "Account Settings", then go to "API Keys" section, then add an api key to your account. After that, paste the key to the program.')
 
     if content_disposition == None:

@@ -6,7 +6,7 @@ from operator import itemgetter
 
 from helpers.styler import Styler
 from helpers.exceptions import UnexpectedException
-from helpers.utils import run_in_dev, print_in_dev, print_exc
+from helpers.utils import set_verbose, run_verbose, print_verbose, print_exc
 from civitconfig.args.argparser import get_args
 from civitconfig.data.configmanager import ConfigManager
 
@@ -16,7 +16,12 @@ def main():
         args = get_args()
         subcommand = args['subcommand']
         config_manager = ConfigManager()
-        print_in_dev(args)
+        if args.verbose:
+            set_verbose(True)
+        else:
+            set_verbose(False)
+
+        print_verbose(args)
 
         if subcommand == 'default':
             if 'max_images' in args or 'with_prompt' or 'sorter' in args or 'api_key' in args:
@@ -68,6 +73,6 @@ def main():
 
     except Exception as e:
         print('---------')
-        run_in_dev(traceback.print_exc)
+        run_verbose(traceback.print_exc)
         print_exc(e)
         print('---------')

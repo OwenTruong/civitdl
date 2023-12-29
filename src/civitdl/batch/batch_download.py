@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from ._get_model import download_model
 
 from helpers.styler import Styler
-from helpers.utils import Config, get_env, print_exc, print_in_dev, run_in_dev, import_sort_model
+from helpers.utils import Config, print_exc, print_verbose, run_verbose, import_sort_model
 from helpers.sorter import basic, tags
 
 
@@ -20,15 +20,16 @@ def _choose_sorter(sorter_str: str):
 
 
 def _pause(sec):
-    print_in_dev('Pausing for 3 seconds...')
+    print_verbose('Pausing for 3 seconds...')
     time.sleep(sec)
-    print_in_dev('Waking up!')
+    print_verbose('Waking up!')
 
 
 def batch_download(ids, rootdir, config: Config):
     """Batch downloads model from CivitAI one by one."""
 
     for id in ids:
+
         iter = 0
         while True:
             try:
@@ -42,7 +43,7 @@ def batch_download(ids, rootdir, config: Config):
                 break
             except Exception as e:
                 print('---------')
-                run_in_dev(traceback.print_exc)
+                run_verbose(traceback.print_exc)
                 print_exc(e, '\n')
                 print('---------')
                 _pause(config.pause_time)

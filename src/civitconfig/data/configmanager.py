@@ -4,7 +4,7 @@ from appdirs import AppDirs
 
 from helpers.styler import Styler
 from helpers.exceptions import InputException, UnexpectedException
-from helpers.utils import createDirsIfNotExist, getDate, print_in_dev
+from helpers.utils import createDirsIfNotExist, getDate, print_verbose
 
 from .config.config import Config, DEFAULT_CONFIG
 from .config.aliasconfig import AliasConfig
@@ -22,7 +22,7 @@ class ConfigManager(Config):
 
     def __init__(self):
         dirs = AppDirs('civitdl', 'Owen Truong')
-        print_in_dev(dirs.user_config_dir)
+        print_verbose(dirs.user_config_dir)
         config_path = os.path.join(dirs.user_config_dir, 'config.json')
         config_trash_dir_path = os.path.join(
             dirs.user_config_dir, '.trash')

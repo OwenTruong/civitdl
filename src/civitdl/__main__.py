@@ -2,29 +2,36 @@
 import traceback
 from operator import itemgetter
 
-from helpers.utils import run_in_dev, print_exc
+from helpers.utils import run_verbose, print_exc
 from .batch.batch_download import batch_download, Config
 from .args.argparser import get_args
+from helpers.sourcemanager import SourceManager
 
 
 def main():
     try:
-        ids, rootdir, sorter, max_imgs, with_prompt, api_key = itemgetter(
-            'ids', 'rootdir', 'sorter', 'max_imgs', 'with_prompt', 'api_key')(get_args())
+        print('hi')
+        source_strings, rootdir, sorter, max_imgs, with_prompt, api_key, verbose = itemgetter(
+            'source_strings', 'rootdir', 'sorter', 'max_imgs', 'with_prompt', 'api_key', 'verbose')(get_args())
+
+        config = Config(
+            sorter=sorter,
+            max_imgs=max_imgs,
+            with_prompt=with_prompt,
+            api_key=api_key,
+            verbose=verbose
+        )
+
+        source_manager = SourceManager()
 
         batch_download(
-            ids,
+            ids=source_manager.parse_src(source_strings),
             rootdir=rootdir,
-            config=Config(
-                sorter=sorter,
-                max_imgs=max_imgs,
-                with_prompt=with_prompt,
-                api_key=api_key
-            )
+            config=config
         )
 
     except Exception as e:
         print('---------')
-        run_in_dev(traceback.print_exc)
+        run_verbose(traceback.print_exc)
         print_exc(e)
         print('---------')
