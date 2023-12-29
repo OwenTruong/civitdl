@@ -1,23 +1,12 @@
-import importlib.util
-import itertools
 import time
 import traceback
-from typing import Dict, List, Union
-from dataclasses import dataclass
+from typing import List
 
 from ._get_model import download_model
 
 from helpers.styler import Styler
 from helpers.sourcemanager import SourceManager
-from helpers.utils import BatchOptions, print_exc, print_verbose, run_verbose, import_sort_model
-from helpers.sorter import basic, tags
-
-
-def _choose_sorter(sorter_str: str):
-    if sorter_str == 'basic' or sorter_str == 'tags':
-        return tags.sort_model if sorter_str == 'tags' else basic.sort_model
-    else:
-        return import_sort_model(sorter_str)
+from helpers.utils import BatchOptions, print_exc, print_verbose, run_verbose
 
 
 def _pause(sec):
@@ -39,7 +28,6 @@ def batch_download(source_strings: List[str], rootdir: str, batchOptions: BatchO
                 download_model(
                     id=id,
                     dst_root_path=rootdir,
-                    create_dir_path=_choose_sorter(batchOptions.sorter),
                     batchOptions=batchOptions
                 )
                 _pause(batchOptions.pause_time)

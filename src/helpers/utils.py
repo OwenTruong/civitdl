@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import InitVar, dataclass, field
 from datetime import datetime
 import json
 import os
@@ -9,8 +9,10 @@ import concurrent.futures
 import requests
 from tqdm import tqdm
 
+from helpers.sorter.utils import import_sort_model
+from helpers.sorter import basic, tags
 from helpers.styler import Styler
-from helpers.exceptions import CustomException, UnexpectedException
+from helpers.exceptions import CustomException, InputException, UnexpectedException
 
 _verbose = False
 
@@ -92,13 +94,6 @@ def print_exc(exc: Exception, *args, **kwargs):
               file=sys.stderr, **kwargs)
 
 
-def import_sort_model(filepath) -> Callable[[Dict, Dict, str, str], str]:
-    spec = importlib.util.spec_from_file_location('sorter', filepath)
-    sorter = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(sorter)
-    return sorter.sort_model
-
-
 def getDate():
     now = datetime.now()
     return now.strftime("%Y-%m-%d--%H:%M:%S-%f")
@@ -111,7 +106,6 @@ def createDirsIfNotExist(dirpaths):
 
 @dataclass
 class BatchOptions:
-    sorter: str = 'basic'
     retry_count: int = 3
     pause_time: int = 3
 
@@ -121,8 +115,57 @@ class BatchOptions:
 
     verbose: Union[bool, None] = None
 
+    sorter: property
+    _sorter: Callable[[Dict, Dict, str, str],
+                      List[str]] = field(init=False, repr=False)
+
+    @property
+    def sorter(self):
+        return self._sorter
+
+    @sorter.getter
+    def sorter(self):
+        return self._sorter
+
+    @sorter.setter
+    def sorter(self, sorter: Union[property, str, None]):
+        if not isinstance(sorter, property) and not isinstance(sorter, str):
+            raise InputException(
+                'Sorter provided is not a string in BatchOptions.')
+
+        sorter_str = 'basic' if isinstance(sorter, property) else sorter
+        if sorter_str == 'basic' or sorter_str == 'tags':
+            self._sorter = tags.sort_model if sorter_str == 'tags' else basic.sort_model
+        else:
+            self._sorter = import_sort_model(sorter_str)
+
+        return self._sorter
+
     def __post_init__(self):
         self.session = requests.Session()
 
         if self.verbose != None:
+            if not isinstance(self.verbose, bool):
+                raise InputException(
+                    'Argument "verbose" provided is not a boolean.')
             set_verbose(self.verbose)
+
+        if not isinstance(self.retry_count, int) or self.retry_count < 0:
+            raise InputException(
+                'Argument "retry_count" provided is either not an integer or below 0.')
+
+        if not isinstance(self.pause_time, int) or self.pause_time < 1:
+            raise InputException(
+                'Argument "pause_time" provided is either not an integer or below 1.')
+
+        if not isinstance(self.max_imgs, int) or self.max_imgs < 0:
+            raise InputException(
+                'Argument "max_imgs" provided is either not an integer or below 0.')
+
+        if not isinstance(self.with_prompt, bool):
+            raise InputException(
+                'Argument "with_prompt" provided is not a boolean.')
+
+        if not isinstance(self.api_key, str) and self.api_key != None:
+            raise InputException(
+                f'Argument "with_prompt" provided is of invalid type: {type(self.with_prompt)}.')

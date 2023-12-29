@@ -175,16 +175,14 @@ def _get_filename_and_model_res(input_str: str, metadata: Metadata, batchOptions
     return (res, filename)
 
 
-def download_model(id: Id, dst_root_path: str, create_dir_path: Callable[[Dict, Dict, str, str], str], batchOptions: BatchOptions):
+def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
     """
         Downloads the model's safetensors and json metadata files.
         create_dir_path is a callback function that takes in the following: metadata dict, specific model's data as dict, filename, and root path.
     """
-    if id == None or \
-            create_dir_path == None or \
-            dst_root_path == None:
-        raise InputException(
-            '(download_model) Must provide an id, create_dir_path and dst_root_path')
+    # if id == None or dst_root_path == None:
+    #     raise InputException(
+    #         '(download_model) Must provide an id, create_dir_path and dst_root_path')
 
     metadata = Metadata(id, batchOptions)
 
@@ -199,7 +197,7 @@ def download_model(id: Id, dst_root_path: str, create_dir_path: Callable[[Dict, 
 
     # Create empty directory recursively #
     filename_no_ext, filename_ext = os.path.splitext(filename)
-    paths = create_dir_path(
+    paths = batchOptions.sorter(
         metadata.model_dict, metadata.version_dict, filename_no_ext, dst_root_path)
 
     if len(paths) != 4:

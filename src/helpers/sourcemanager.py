@@ -4,7 +4,7 @@ import json
 import os
 import re
 import sys
-from typing import Callable, Dict, Iterable, List, Union
+from typing import Callable, Dict, Iterable, List, Literal, Union
 import importlib.util
 import concurrent.futures
 import requests
@@ -14,23 +14,32 @@ from helpers.styler import Styler
 from helpers.exceptions import CustomException, InputException, UnexpectedException
 
 
+@dataclass
 class Id:
+    type: Literal['id', 'site', 'api']
+    data: List[str]
+    original: str
+
     def __init__(self, type, data: List[str], original: str):
         if type != 'id' and type != 'site' and type != 'api':
             raise UnexpectedException(
                 f'Unknown type provided for Id class: {type}')
 
-        for el in data:
-            if not isinstance(el, str):
-                raise UnexpectedException(
-                    f'Wrong data type for {el} in {data}')
-
-        if not isinstance(original, str):
-            raise UnexpectedException(f'Wrong data type for {original}')
-
         self.type = type
         self.data = data
         self.original = original
+
+    def __post_init__(self):
+        if self.type != 'id' and self.type != 'site' and self.type != 'api':
+            raise UnexpectedException(
+                f'Unknown type provided for Id class: {self.type}')
+        for el in self.data:
+            if not isinstance(el, str):
+                raise UnexpectedException(
+                    f'Wrong data type for {el} in {self.data}')
+
+        if not isinstance(self.original, str):
+            raise UnexpectedException(f'Wrong data type for {self.original}')
 
 
 class SourceManager:
