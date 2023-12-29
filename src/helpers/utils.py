@@ -1,12 +1,12 @@
+from dataclasses import dataclass
 from datetime import datetime
 import json
 import os
 import sys
-from typing import Callable, Dict, Iterable
+from typing import Callable, Dict, Iterable, Union
 import importlib.util
 import concurrent.futures
-
-
+import requests
 from tqdm import tqdm
 
 from helpers.styler import Styler
@@ -30,10 +30,10 @@ def set_env(env: str):
 # TODO: what if a specific image have a hard time with getting a response?
 
 
-def concurrent_request(req_fn, urls):
+def concurrent_request(req_fn, urls, max_workers=16):
     res_list = None
 
-    with concurrent.futures.ThreadPoolExecutor() as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = [executor.submit(req_fn, url) for url in urls]
         res_list = [future.result() for future in futures]
 
@@ -90,7 +90,7 @@ def print_exc(exc: Exception, *args, **kwargs):
     if isinstance(exc, CustomException):
         print(exc, file=sys.stderr, *args, **kwargs)
     else:
-        print(Styler.stylize(str(exc), *args, color='exception'),
+        print(Styler.stylize(str(exc), color='exception'), *args,
               file=sys.stderr, **kwargs)
 
 
@@ -109,3 +109,17 @@ def getDate():
 def createDirsIfNotExist(dirpaths):
     for dirpath in dirpaths:
         os.makedirs(dirpath, exist_ok=True)
+
+
+@dataclass
+class Config:
+    sorter: str = 'basic'
+    retry_count: int = 3
+    pause_time: int = 3
+
+    max_imgs: int = 3
+    with_prompt: bool = True
+    api_key: Union[str, None] = None
+
+    def __post_init__(self):
+        self.session = requests.Session()
