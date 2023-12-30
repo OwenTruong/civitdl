@@ -94,6 +94,8 @@ class Metadata:
                 'Unable to parse metadata from CivitAI (incorrect format provided by Civitai).', 'CivitAI might be under maintainence.',
                 f'\nOriginal Error:\n       {e}')
 
+# TODO: what if a specific image have a hard time with getting a response?
+
 
 def _download_images(dirpath: str, image_basenames: List[str], image_urls: List[str], batchOptions: BatchOptions):
     def make_req(url): return batchOptions.session.get(url, stream=True)

@@ -14,6 +14,8 @@ from helpers.sorter import basic, tags
 from helpers.styler import Styler
 from helpers.exceptions import CustomException, InputException, UnexpectedException
 
+# Level 0
+
 _verbose = False
 
 
@@ -27,7 +29,38 @@ def set_verbose(verbose: bool):
     return _verbose
 
 
-# TODO: what if a specific image have a hard time with getting a response?
+def getDate():
+    now = datetime.now()
+    return now.strftime("%Y-%m-%d--%H:%M:%S-%f")
+
+
+# Level 1
+
+
+def run_verbose(fn, *args, **kwargs):
+    if get_verbose():
+        fn(*args, **kwargs)
+
+
+def print_verbose(*args, **kwargs):
+    if get_verbose():
+        args = [Styler.stylize(arg, bg_color='info') for arg in args]
+        print(*args, **kwargs)
+
+
+def print_exc(exc: Exception, *args, **kwargs):
+    if isinstance(exc, CustomException):
+        print(exc, file=sys.stderr, *args, **kwargs)
+    else:
+        print(Styler.stylize(str(exc), color='exception'), *args,
+              file=sys.stderr, **kwargs)
+
+
+def safe_run(callback: Callable[..., any], *values: any) -> dict:
+    try:
+        return {"success": True, "data": callback(*values)}
+    except Exception as e:
+        return {"success": False, "error": e}
 
 
 def concurrent_request(req_fn, urls, max_workers=16):
@@ -43,6 +76,19 @@ def concurrent_request(req_fn, urls, max_workers=16):
 def get_progress_bar(total: float, desc: str):
     return tqdm(total=total, desc=desc,
                 unit='iB', unit_scale=True)
+
+
+def find_in_list(li, cond_fn: Callable[[any, int], bool], default=None):
+    """Given a list and a condition function, where the first argument is the index of the item and the second argument is the value of the item, it returns the first value in the list when the condition is true"""
+    return next((item for i, item in enumerate(li) if cond_fn(item, int)), default)
+
+
+def createDirsIfNotExist(dirpaths):
+    for dirpath in dirpaths:
+        os.makedirs(dirpath, exist_ok=True)
+
+
+# Level 2
 
 
 def write_to_file(filepath: str, content_chunks: Iterable, mode: str = None, use_pb: bool = False, total: float = 0, desc: str = None):
@@ -70,38 +116,36 @@ def write_to_files(dirpath: str, basenames: Iterable, contents: Iterable, mode: 
         progress_bar.close()
 
 
-def find_in_list(li, cond_fn: Callable[[any, int], bool], default=None):
-    """Given a list and a condition function, where the first argument is the index of the item and the second argument is the value of the item, it returns the first value in the list when the condition is true"""
-    return next((item for i, item in enumerate(li) if cond_fn(item, int)), default)
+def parse_bytes(size: str, arg_name: str):
+    units = {"k": 10**3, "m": 10**6, "g": 10**9, "t": 10**12}
 
+    def validate_positive_bytes(number: int) -> None:
+        if number <= 0:
+            raise ValueError(
+                f'({arg_name}) Bytes cannot be zero or negative: {size}')
 
-def run_verbose(fn, *args, **kwargs):
-    if get_verbose():
-        fn(*args, **kwargs)
-
-
-def print_verbose(*args, **kwargs):
-    if get_verbose():
-        args = [Styler.stylize(arg, bg_color='info') for arg in args]
-        print(*args, **kwargs)
-
-
-def print_exc(exc: Exception, *args, **kwargs):
-    if isinstance(exc, CustomException):
-        print(exc, file=sys.stderr, *args, **kwargs)
+    res = safe_run(float, size)
+    if res["success"] == True:
+        number = round(res["data"])
+        validate_positive_bytes(number)
+        return number
     else:
-        print(Styler.stylize(str(exc), color='exception'), *args,
-              file=sys.stderr, **kwargs)
+        number, unit = (size[0:-1], size[-1:].lower())
+
+        num_res = safe_run(float, number)
+        if num_res["success"] == False:
+            raise ValueError(f'({arg_name}) Invalid byte value: {size}')
+        else:
+            number = round(num_res["data"])
+            validate_positive_bytes(number)
+
+        if unit not in units:
+            raise ValueError(f'({arg_name}) Invalid byte value: {unit}')
+        else:
+            return number * units[unit]
 
 
-def getDate():
-    now = datetime.now()
-    return now.strftime("%Y-%m-%d--%H:%M:%S-%f")
-
-
-def createDirsIfNotExist(dirpaths):
-    for dirpath in dirpaths:
-        os.makedirs(dirpath, exist_ok=True)
+# Level 3
 
 
 @dataclass
