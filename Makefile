@@ -1,5 +1,9 @@
 install: uninstall
-	pip3 install .
+	# echo "Now building dev..."
+	python3 -m build
+	pip3 install -r ./requirements.txt
+	pip3 install --upgrade dist/*.whl
+	# echo "Building dev complete."
 
 test1:
 	civitdl 123456 '78901,23456' ./test/models/test1 -v
