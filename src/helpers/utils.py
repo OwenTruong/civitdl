@@ -183,6 +183,7 @@ class BatchOptions:
         else:
             self._sorter = import_sort_model(sorter_str)
 
+        print_verbose("Chosen Sorter Description: ", self._sorter.__doc__)
         return self._sorter
 
     def __post_init__(self):

@@ -1,9 +1,10 @@
 install: uninstall
-	# echo "Now building dev..."
+	pip3 install .
+
+install2: uninstall
 	python3 -m build
 	pip3 install -r ./requirements.txt
 	pip3 install --upgrade dist/*.whl
-	# echo "Building dev complete."
 
 test1:
 	civitdl 123456 '78901,23456' ./test/models/test1 -v
@@ -36,6 +37,8 @@ errortest2:
 
 test: install test1 test2 test4
 
+quicktest: install
+	civitdl 123456 ./test/models/quicktest -v
 
 clean:
 	rm -rf **/*.egg-info

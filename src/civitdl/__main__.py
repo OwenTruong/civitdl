@@ -7,7 +7,7 @@ from .args.argparser import get_args
 
 from helpers.exceptions import UnexpectedException
 from helpers.sourcemanager import SourceManager
-from helpers.utils import run_verbose, print_exc, set_verbose
+from helpers.utils import print_verbose, run_verbose, print_exc, set_verbose
 
 
 def main():
@@ -18,6 +18,8 @@ def main():
             set_verbose(True)
         else:
             set_verbose(False)
+
+        print_verbose('Arguments: ', str(args))
 
         batchOptions = BatchOptions(
             sorter=args['sorter'],
