@@ -24,8 +24,14 @@ def main():
         batchOptions = BatchOptions(
             sorter=args['sorter'],
             max_imgs=args['max_imgs'],
-            with_prompt=args['with_prompt'],
             api_key=args['api_key'],
+
+            with_prompt=args['with_prompt'],
+            limit_rate=args['limit_rate'],
+            retry_count=args['retry_count'],
+            pause_time=args['pause_time'],
+
+            verbose=args['verbose']
         )
 
         batch_download(

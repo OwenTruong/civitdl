@@ -1,9 +1,11 @@
+
 import argparse
 import os
 
 
 from civitconfig.data.configmanager import ConfigManager
 from helpers.argparse import PwdAction, ColoredArgParser
+from helpers.utils import get_version
 
 
 def parse_sorter(sorters, sorter_str):
@@ -43,34 +45,61 @@ parser.add_argument('srcmodels', type=str, action="extend", nargs='+',
                     help=HELP_MESSAGE_FOR_SRC_MODEL)
 parser.add_argument('rootdir', type=str,
                     help='Root directory of where the downloaded model should go.')
+
+
 parser.add_argument('-s', '--sorter', type=str,
                     help='Specify which sorter function to use.\nDefault is "basic" sorter.\nProvide file path to sorter function if you wish to use a custom sorter.')
 parser.add_argument('-i', '--max-images', metavar='INT', type=int,
                     help='Specify max images to download for each model.')
 
-parser.add_argument('-p', '--with-prompt', action=argparse.BooleanOptionalAction,
-                    help='Download images with prompt.')
-
-parser.add_argument('-k', '--api-key', action=PwdAction, type=str, nargs=0,
+parser.add_argument('-k', '--api-key', action=PwdAction, type=str, required=False,
                     help='Prompt user for api key to download models that require users to log in.')
 
 parser.add_argument(
-    '-v', '--verbose', action=argparse.BooleanOptionalAction, help='Prints out traceback and other useful information.')
+    '--with-prompt', action=argparse.BooleanOptionalAction, help='Download images with prompt.'
+)
+
+parser.add_argument(
+    '--limit-rate', type=str, help='Limit the download speed/rate of resources downloaded from CivitAI.'
+)
+
+parser.add_argument(
+    '--retry-count', type=int, help='Specify max number of times to retry downloading a model if it fails.'
+)
+
+parser.add_argument(
+    '--pause-time', type=float, help='Specify the number of seconds to pause between each model\'s download'
+)
+
+
+parser.add_argument(
+    '--verbose', action=argparse.BooleanOptionalAction, help='Prints out traceback and other useful information.'
+)
+
+parser.add_argument(
+    '-v', '--version', action='version', version=f'civitdl v{get_version()}', help='Prints out the version of the program.'
+)
 
 
 def get_args():
     parser_result = parser.parse_args()
     config_manager = ConfigManager()
-    d_max_imgs, d_with_prompt, d_sorter_name, d_api_key = config_manager.getDefaultAsList()
+    d_max_imgs, d_sorter_name, d_api_key, d_with_prompt, d_limit_rate, d_retry_count, d_pause_time = config_manager.getDefaultAsList()
     sorters = config_manager.getSortersList()
     aliases = config_manager.getAliasesList()
 
     return {
         "source_strings": parser_result.srcmodels,
         "rootdir": parse_rootdir(aliases, parser_result.rootdir),
+
         "sorter": parse_sorter(sorters, parser_result.sorter or d_sorter_name),
         "max_imgs": parser_result.max_images or d_max_imgs,
-        "with_prompt": parser_result.with_prompt or d_with_prompt,
         "api_key": parser_result.api_key or d_api_key,
+
+        "with_prompt": parser_result.with_prompt or d_with_prompt,
+        "limit_rate": parser_result.limit_rate or d_limit_rate,
+        "retry_count": parser_result.retry_count or d_retry_count,
+        "pause_time": parser_result.pause_time or d_pause_time,
+
         "verbose": False if parser_result.verbose == None else parser_result.verbose
     }

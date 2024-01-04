@@ -6,7 +6,9 @@ from ._get_model import download_model
 
 from helpers.styler import Styler
 from helpers.sourcemanager import SourceManager
-from helpers.utils import BatchOptions, print_exc, print_verbose, run_verbose
+from helpers.utils import BatchOptions, get_version, print_exc, print_verbose, run_verbose
+
+__version__ = get_version()
 
 
 def _pause(sec):

@@ -3,6 +3,7 @@ from datetime import datetime
 import json
 import os
 import sys
+import pkg_resources
 from typing import Callable, Dict, Iterable, List, Union
 import importlib.util
 import concurrent.futures
@@ -34,7 +35,11 @@ def getDate():
     return now.strftime("%Y-%m-%d--%H:%M:%S-%f")
 
 
-# Level 1
+def get_version():
+    return pkg_resources.get_distribution('civitdl').version
+
+
+# Level 1 - Currently or in the future might depends on level 0
 
 
 def run_verbose(fn, *args, **kwargs):
@@ -88,7 +93,7 @@ def createDirsIfNotExist(dirpaths):
         os.makedirs(dirpath, exist_ok=True)
 
 
-# Level 2
+# Level 2 - Currently or in the future might depends on level 0 and 1
 
 
 def write_to_file(filepath: str, content_chunks: Iterable, mode: str = None, use_pb: bool = False, total: float = 0, desc: str = None):
@@ -116,39 +121,8 @@ def write_to_files(dirpath: str, basenames: Iterable, contents: Iterable, mode: 
         progress_bar.close()
 
 
-def parse_bytes(size: str, arg_name: str):
-    units = {"k": 10**3, "m": 10**6, "g": 10**9, "t": 10**12}
+# Level 3 - Currently or in the future might depends on level 0, 1 and 2
 
-    def validate_positive_bytes(number: int) -> None:
-        if number <= 0:
-            raise ValueError(
-                f'({arg_name}) Bytes cannot be zero or negative: {size}')
-
-    res = safe_run(float, size)
-    if res["success"] == True:
-        number = round(res["data"])
-        validate_positive_bytes(number)
-        return number
-    else:
-        number, unit = (size[0:-1], size[-1:].lower())
-
-        num_res = safe_run(float, number)
-        if num_res["success"] == False:
-            raise ValueError(f'({arg_name}) Invalid byte value: {size}')
-        else:
-            number = round(num_res["data"])
-            validate_positive_bytes(number)
-
-        if unit not in units:
-            raise ValueError(f'({arg_name}) Invalid byte value: {unit}')
-        else:
-            return number * units[unit]
-
-
-# Level 3
-
-
-@dataclass
 class BatchOptions:
     retry_count: int = 3
     pause_time: int = 3
@@ -159,20 +133,12 @@ class BatchOptions:
 
     verbose: Union[bool, None] = None
 
-    sorter: property
-    _sorter: Callable[[Dict, Dict, str, str],
-                      List[str]] = field(init=False, repr=False)
+    sorter: Callable[[Dict, Dict, str, str],
+                     List[str]] = basic.sort_model
 
-    @property
-    def sorter(self):
-        return self._sorter
+    limit_rate: int = 0
 
-    @sorter.getter
-    def sorter(self):
-        return self._sorter
-
-    @sorter.setter
-    def sorter(self, sorter: Union[property, str, None]):
+    def __get_sorter(self, sorter: str):
         if not isinstance(sorter, property) and not isinstance(sorter, str):
             raise InputException(
                 'Sorter provided is not a string in BatchOptions.')
@@ -186,31 +152,89 @@ class BatchOptions:
         print_verbose("Chosen Sorter Description: ", self._sorter.__doc__)
         return self._sorter
 
-    def __post_init__(self):
+    def __parse_bytes(self, size: Union[str, int, float], arg_name: str):
+        units = {"k": 10**3, "m": 10**6, "g": 10**9, "t": 10**12}
+
+        def validate_positive_bytes(number: int) -> None:
+            if number <= 0:
+                raise InputException(
+                    f'({arg_name}) Bytes cannot be zero or negative: {size}')
+
+        res = safe_run(float, size)
+        if res["success"] == True:
+            number = round(res["data"])
+            validate_positive_bytes(number)
+            return number
+        else:
+            number, unit = (size[0:-1], size[-1:].lower())
+
+            num_res = safe_run(float, number)
+            if num_res["success"] == False:
+                raise InputException(
+                    f'({arg_name}) Invalid byte value: {size}')
+            else:
+                number = round(num_res["data"])
+                validate_positive_bytes(number)
+
+            if unit not in units:
+                raise InputException(
+                    f'({arg_name}) Invalid byte value: {unit}')
+            else:
+                return number * units[unit]
+
+    def __init__(self, retry_count, pause_time, max_imgs, with_prompt, api_key, verbose, sorter, limit_rate):
         self.session = requests.Session()
 
-        if self.verbose != None:
-            if not isinstance(self.verbose, bool):
+        if verbose != None:
+            if not isinstance(verbose, bool):
                 raise InputException(
                     'Argument "verbose" provided is not a boolean.')
+            self.verbose = verbose
             set_verbose(self.verbose)
 
-        if not isinstance(self.retry_count, int) or self.retry_count < 0:
-            raise InputException(
-                'Argument "retry_count" provided is either not an integer or below 0.')
+        if retry_count != None:
+            if not isinstance(retry_count, int) or retry_count < 0:
+                raise InputException(
+                    'Argument "retry_count" provided is either not an integer or below 0.')
+            else:
+                self.retry_count = retry_count
 
-        if not isinstance(self.pause_time, int) or self.pause_time < 1:
-            raise InputException(
-                'Argument "pause_time" provided is either not an integer or below 1.')
+        if pause_time != None:
+            if not isinstance(pause_time, int) or pause_time < 1:
+                raise InputException(
+                    'Argument "pause_time" provided is either not an integer or below 1.')
+            else:
+                self.pause_time = pause_time
 
-        if not isinstance(self.max_imgs, int) or self.max_imgs < 0:
-            raise InputException(
-                'Argument "max_imgs" provided is either not an integer or below 0.')
+        if max_imgs != None:
+            if not isinstance(max_imgs, int) or max_imgs < 0:
+                raise InputException(
+                    'Argument "max_imgs" provided is either not an integer or below 0.')
+            else:
+                self.max_imgs = max_imgs
+        if with_prompt != None:
+            if not isinstance(with_prompt, bool):
+                raise InputException(
+                    'Argument "with_prompt" provided is not a boolean.')
+            else:
+                self.with_prompt = with_prompt
+        if api_key != None:
+            if not isinstance(api_key, str) and api_key != None:
+                raise InputException(
+                    f'Argument "api_key" provided is not a string.')
+            else:
+                self.api_key = api_key
 
-        if not isinstance(self.with_prompt, bool):
-            raise InputException(
-                'Argument "with_prompt" provided is not a boolean.')
+        if sorter != None:
+            if not isinstance(sorter, str):
+                raise InputException(
+                    'Argument "sorter" provided is not a string.')
+            else:
+                self.sorter = self.__get_sorter(sorter)
 
-        if not isinstance(self.api_key, str) and self.api_key != None:
-            raise InputException(
-                f'Argument "with_prompt" provided is of invalid type: {type(self.with_prompt)}.')
+        if limit_rate != None:
+            if not (isinstance(limit_rate, str, int, float)):
+                raise InputException(
+                    'Argument "limit_rate" provided is a string, int or float.')
+            else:
+                self.limit_rate = self.__parse_bytes(limit_rate, "limit_rate")

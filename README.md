@@ -63,8 +63,8 @@ pip3 install civitdl
 ```bash
 git clone https://github.com/OwenTruong/civitdl.git # Clone the project
 cd civitdl # CD into project directory
-pip install -r requirements.txt # use pip3 if pip is not found
 make install # Now program is installed globally unless you are using a virtual env
+# make install2 # Run this if make install fails
 ```
 
 <br/>

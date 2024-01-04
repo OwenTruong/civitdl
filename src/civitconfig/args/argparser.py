@@ -7,7 +7,7 @@ import argparse
 from helpers.styler import Styler
 from helpers.exceptions import InputException, UnexpectedException
 from helpers.argparse import PwdAction, ConfirmAction, ColoredArgParser
-from helpers.utils import print_verbose
+from helpers.utils import get_version, print_verbose
 
 __all__ = ['get_args']
 
@@ -15,6 +15,12 @@ __all__ = ['get_args']
 def add_shared_option(par):
     par.add_argument(
         '-v', '--verbose', action=argparse.BooleanOptionalAction, help='Prints out traceback and other useful information.')
+    par.add_argument(
+        '--verbose', action=argparse.BooleanOptionalAction, help='Prints out traceback and other useful information.'
+    )
+    par.add_argument(
+        '-v', '--version', action='version', version=f'civitdl v{get_version()}', help='Prints out the version of the program.'
+    )
 
 
 parser = ColoredArgParser(
@@ -31,14 +37,30 @@ subparsers = parser.add_subparsers(
 
 default_parser = subparsers.add_parser(
     'default', help='Set a default value for one of the options below.\nIf no options are provided, default will print the current default.')
+
 default_parser.add_argument('-i', '--max-images', metavar='INT', type=int,
                             help='Set the default max number of images to download per model.')
-default_parser.add_argument('-p', '--with-prompt', action=argparse.BooleanOptionalAction,
-                            help='Toggles default behavior on whether to download prompt alongside images.')
+
 default_parser.add_argument('-s', '--sorter', metavar='NAME', type=str,
                             help='Set the default sorter given name of sorter (filepath not accepted).')
+
 default_parser.add_argument('-k', '--api-key', action=PwdAction, type=str, nargs=0,
                             help='Prompts the user for their api key to use for model downloads that require users to log in.')
+
+default_parser.add_argument('--with-prompt', action=argparse.BooleanOptionalAction,
+                            help='Toggles default behavior on whether to download prompt alongside images.')
+
+default_parser.add_argument('--limit-rate', type=str,
+                            help='Set the default limit for the download speed/rate of resources downloaded from CivitAI. Set it to 0 to disable limit.'
+                            )
+
+default_parser.add_argument('--retry-count', type=int,
+                            help='Set the default max number of times to retry downloading a model if it fails.'
+                            )
+
+default_parser.add_argument('--pause-time', type=float,
+                            help='Set the default number of seconds to pause between each model\'s download'
+                            )
 add_shared_option(default_parser)
 
 
