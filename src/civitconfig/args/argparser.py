@@ -14,10 +14,7 @@ __all__ = ['get_args']
 
 def add_shared_option(par):
     par.add_argument(
-        '-v', '--verbose', action=argparse.BooleanOptionalAction, help='Prints out traceback and other useful information.')
-    par.add_argument(
-        '--verbose', action=argparse.BooleanOptionalAction, help='Prints out traceback and other useful information.'
-    )
+        '--verbose', action=argparse.BooleanOptionalAction, help='Prints out traceback and other useful information.')
     par.add_argument(
         '-v', '--version', action='version', version=f'civitdl v{get_version()}', help='Prints out the version of the program.'
     )
