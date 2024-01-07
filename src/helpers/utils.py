@@ -3,6 +3,7 @@ from datetime import datetime
 import json
 import os
 import sys
+import time
 import pkg_resources
 from typing import Callable, Dict, Iterable, List, Union, Optional
 import importlib.util
@@ -97,14 +98,27 @@ def createDirsIfNotExist(dirpaths):
 # Level 2 - Currently or in the future might depends on level 0 and 1
 
 
-def write_to_file(filepath: str, content_chunks: Iterable, mode: str = None, use_pb: bool = False, total: float = 0, desc: str = None):
+def write_to_file(filepath: str, content_chunks: Iterable, mode: str = None, limit_rate: Union[int, None] = 0, use_pb: bool = False, total: float = 0, desc: str = None):
     """Uses content_chunks to write to filepath bit by bit. If use_pb is enabled, it is recommended to set total kwarg to the length of the file to be written."""
     progress_bar = get_progress_bar(total, desc) if use_pb else None
     with open(filepath, mode if mode != None else 'w') as file:
+        last_chunk_time = time.perf_counter()
         for content in content_chunks:
             file.write(content)
+            bytes_downloaded = len(content)
+
+            download_time = time.perf_counter() - last_chunk_time
+            speed = bytes_downloaded / download_time
+            if limit_rate is not None and limit_rate is not 0 and speed > limit_rate:
+                time_to_sleep = (bytes_downloaded / limit_rate) - download_time
+                if time_to_sleep > 0:
+                    time.sleep(time_to_sleep)
+
             if (progress_bar):
-                progress_bar.update(len(content))
+                progress_bar.update(bytes_downloaded)
+
+            last_chunk_time = time.perf_counter()
+
     if (progress_bar):
         progress_bar.close()
 
@@ -229,7 +243,6 @@ class DefaultOptions:
     pause_time: Optional[int] = None
 
     def __init__(self, sorter=None, max_images=None, api_key=None, with_prompt=None, limit_rate=None, retry_count=None, pause_time=None):
-        # FIXME: something is wrong with this sorter validation
         if sorter is not None:
             Validation.validate_string(
                 sorter, 'sorter')

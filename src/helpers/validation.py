@@ -33,7 +33,6 @@ class Validation:
     def validate_string(cls, value, arg_name: str, min_len: Union[int, None] = None, max_len: Union[int, None] = None, whitelist: Iterable[str] = [], blacklist: Iterable[str] = []) -> str:
         # Validate keyword arguments
 
-        # FIXME: Make sure to check for min_len and max_len in validate keyword arguments and validate value to make sure they are not None before comparison.
         cls.__validate_arg_name(arg_name)
         cls.__validate_range(min_len, max_len)
         if min_len is not None and min_len < 0:

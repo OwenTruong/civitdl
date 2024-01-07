@@ -3,6 +3,7 @@ import requests
 import os
 import re
 from typing import Callable, Dict, List, Union
+from math import ceil
 
 from helpers.styler import Styler
 from helpers.sourcemanager import Id
@@ -231,7 +232,9 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
     model_filename = f'{filename_no_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}{filename_ext}'
     model_path = os.path.join(
         model_dir_path, model_filename)
-    write_to_file(model_path, model_res.iter_content(1024*1024), mode='wb',
+    content_chunks = model_res.iter_content(ceil(
+        batchOptions.limit_rate / 8) if batchOptions.limit_rate is not None and batchOptions.limit_rate is not 0 else 1024*1024)
+    write_to_file(model_path, content_chunks, mode='wb', limit_rate=batchOptions.limit_rate,
                   use_pb=True, total=float(model_res.headers.get('content-length', 0)), desc='Model')
 
     print(Styler.stylize(
