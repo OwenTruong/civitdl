@@ -23,7 +23,7 @@ def main():
 
         batchOptions = BatchOptions(
             sorter=args['sorter'],
-            max_imgs=args['max_imgs'],
+            max_images=args['max_images'],
             api_key=args['api_key'],
 
             with_prompt=args['with_prompt'],

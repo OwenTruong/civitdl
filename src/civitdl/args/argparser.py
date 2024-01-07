@@ -84,7 +84,7 @@ parser.add_argument(
 def get_args():
     parser_result = parser.parse_args()
     config_manager = ConfigManager()
-    d_max_imgs, d_sorter_name, d_api_key, d_with_prompt, d_limit_rate, d_retry_count, d_pause_time = config_manager.getDefaultAsList()
+    config_defaults = config_manager.getDefault()
     sorters = config_manager.getSortersList()
     aliases = config_manager.getAliasesList()
 
@@ -92,14 +92,14 @@ def get_args():
         "source_strings": parser_result.srcmodels,
         "rootdir": parse_rootdir(aliases, parser_result.rootdir),
 
-        "sorter": parse_sorter(sorters, parser_result.sorter or d_sorter_name),
-        "max_imgs": parser_result.max_images or d_max_imgs,
-        "api_key": parser_result.api_key or d_api_key,
+        "sorter": parse_sorter(sorters, parser_result.sorter or config_defaults['sorter']),
+        "max_images": parser_result.max_images or config_defaults['max_images'],
+        "api_key": parser_result.api_key or config_defaults['api_key'],
 
-        "with_prompt": parser_result.with_prompt or d_with_prompt,
-        "limit_rate": parser_result.limit_rate or d_limit_rate,
-        "retry_count": parser_result.retry_count or d_retry_count,
-        "pause_time": parser_result.pause_time or d_pause_time,
+        "with_prompt": parser_result.with_prompt or config_defaults['with_prompt'],
+        "limit_rate": parser_result.limit_rate or config_defaults['limit_rate'],
+        "retry_count": parser_result.retry_count or config_defaults['retry_count'],
+        "pause_time": parser_result.pause_time or config_defaults['pause_time'],
 
         "verbose": False if parser_result.verbose == None else parser_result.verbose
     }

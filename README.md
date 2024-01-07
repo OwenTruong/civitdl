@@ -143,7 +143,7 @@ Four options are available
 - `-p` or `--with-prompt`
   - Running with the option will download an image's JSON prompt/metadata alongside the image.
   - Example: `civitdl 80848 ./loras --with-prompt`
-  - Use `--no-with-prompt` to disable downloading JSON prompt/metadata.
+  - Use `--no-with-prompt` to disable downloading images' JSON prompt/metadata.
 - `-s <sorter-name / path>` or `--sorter <sorter-name / path>`
   - Specifies which sorter to use. The default uses the basic sorter.
   - See [sorter doc](./doc/sorter.md) for more info.

@@ -4,7 +4,7 @@ from appdirs import AppDirs
 
 from helpers.styler import Styler
 from helpers.exceptions import InputException, UnexpectedException
-from helpers.utils import createDirsIfNotExist, getDate, print_verbose
+from helpers.utils import DefaultOptions, createDirsIfNotExist, getDate, print_verbose
 
 from .config.config import Config, DEFAULT_CONFIG
 from .config.aliasconfig import AliasConfig
@@ -22,7 +22,6 @@ class ConfigManager(Config):
 
     def __init__(self):
         dirs = AppDirs('civitdl', 'Owen Truong')
-        print_verbose(dirs.user_config_dir)
         config_path = os.path.join(dirs.user_config_dir, 'config.json')
         config_trash_dir_path = os.path.join(
             dirs.user_config_dir, '.trash')
@@ -31,6 +30,8 @@ class ConfigManager(Config):
             sorters_dir_path, '.trash')
         args = [config_path, dirs.user_config_dir, config_trash_dir_path,
                 sorters_dir_path, sorters_trash_dir_path]
+
+        print_verbose(f'Config Directory: {dirs.user_config_dir}')
 
         super(ConfigManager, self).__init__(*args)
         self._aliasConfig = AliasConfig(*args)
@@ -70,9 +71,9 @@ class ConfigManager(Config):
 
         self._saveConfig(DEFAULT_CONFIG)
 
-    def setDefault(self, max_images, with_prompt, sorter, api_key):
+    def setDefault(self, default_options: DefaultOptions):
         self._defaultConfig.setDefault(
-            max_images, with_prompt, sorter, api_key)
+            default_options)
 
     def addAlias(self, alias_name: str, path: str):
         self._aliasConfig.addAlias(alias_name, path)
@@ -85,7 +86,7 @@ class ConfigManager(Config):
 
     def deleteSorter(self, name):
         self._sorterConfig.deleteSorter(name)
-        default_sorter_name = self.getDefaultSorterName()
+        default_sorter_name = self.getDefault('sorter')
         if (default_sorter_name == name):
             self._defaultConfig.setDefault(sorter='basic')
 

@@ -63,7 +63,7 @@ class Metadata:
         self.image_dicts = [
             image_dict for image_dict in self.version_dict['images']
             if self.nsfw or image_dict['nsfw'] == 'None'
-        ][0:self.__batchOptions.max_imgs]
+        ][0:self.__batchOptions.max_images]
         self.image_download_urls = [image_dict['url']
                                     for image_dict in self.image_dicts]
 

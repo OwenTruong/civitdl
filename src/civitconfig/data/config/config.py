@@ -3,24 +3,34 @@ import os
 import json
 from datetime import datetime
 import shutil
+from typing import Dict, List, Union
 
 from helpers.sorter import basic, tags
 from helpers.exceptions import UnexpectedException
+from helpers.styler import Styler
 from helpers.utils import getDate
+from helpers.validation import Validation
 
 DEFAULT_CONFIG = {
     "version": "1",
     "default": {
-        "max_images": 3,
-        "with_prompt": True,
         "sorter": "basic",
-        "api_key": ""
+        "max_images": 3,
+        "api_key": "",
+
+        "with_prompt": True,
+        "limit_rate": '0',
+        "retry_count": 3,
+        "pause_time": 3.0,
     },
     "sorters": [["basic", basic.sort_model.__doc__, 'basic'], ["tags", tags.sort_model.__doc__, 'tags']],
     "aliases": [["@example", "~/.models"]]
 }
 
+
 CURRENT_VERSION = "1"
+
+_config = None  # Do not do async operations with this
 
 
 class Config:
@@ -46,35 +56,61 @@ class Config:
         return os.path.exists(self._config_path)
 
     def _getConfig(self):
-        data = None
+        global _config
+        if not _config:
+            with open(self._config_path) as file:
+                _config = json.load(file)
+            if _config == None:
+                raise UnexpectedException('JSON config file was not read...')
 
-        with open(self._config_path) as file:
-            data = json.load(file)
-        if data == None:
-            raise UnexpectedException('JSON config file was not read...')
+        return _config
 
-        return data
-
-    def _saveConfig(self, dic: dict):
+    def _saveConfig(self, dic: Dict):
+        global _config
         with open(self._config_path, 'w') as file:
             json.dump(dic, file, indent=2)
+            _config = dic
+
+    def _get_valid_keys(self):
+        return DEFAULT_CONFIG['default'].keys()
 
     # Public Methods #
 
-    def getDefaultAsList(self) -> list:
-        return self._getConfig()['default'].values()
+    def getDefault(self, key=None):
+        config = self._getConfig()
+        if key == None:
+            return config['default']
+        else:
+            Validation.validate_string(key, 'getDefault', min_len=1)
+            return config['default'][key]
 
-    def getDefaultMaxImages(self):
-        return self._getConfig()['default']['max_images']
-
-    def getDefaultSorterName(self):
-        return self._getConfig()['default']['sorter']
-
-    def getDefaultApiKey(self):
-        return self._getConfig()['default']['api_key']
-
-    def getSortersList(self) -> list:
+    def getSortersList(self) -> List:
         return self._getConfig()['sorters']
 
-    def getAliasesList(self) -> list:
+    def getAliasesList(self) -> List:
         return self._getConfig()['aliases']
+
+    def print_defaults(self):
+        blacklisted_keys = ['api_key']
+        print(Styler.stylize('Default:', color='main'))
+        for key, value in self.getDefault().items():
+            if key in blacklisted_keys:
+                continue
+            key = key.replace('_', ' ').title()
+            print(Styler.stylize(
+                f'     {key}:  { "N/A" if str(value) == "" else value }', color='main'))
+
+    def print_sorters(self):
+        for i, [name, docstr, _] in enumerate(self.getSortersList()):
+            print(
+                Styler.stylize(
+                    f'Sorter #{i + 1}, "{name}":  {f"{docstr[:300 - 3]}..." if len(docstr) > 300 else docstr}', color='main')
+            )
+
+    def print_aliases(self):
+        for i, [alias_name, path] in enumerate(self.getAliasesList()):
+            print(
+                Styler.stylize(
+                    f'Alias #{i + 1}, "{alias_name}":  {path}', color='main'
+                )
+            )
