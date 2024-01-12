@@ -7,9 +7,9 @@
 - [README Page](/README.md)
 - [Alias Page](/doc/alias.md)
 - [API Key Page](/doc/api_key.md)
-- [Configuration Page](/doc/configuration.md)
+- [Civitconfig / Configuration Page](/doc/civitconfig.md)
+- [Civitdl Page](/doc/civitdl.md)
 - [Sorter Page](/doc/sorter.md)
-
 
 <br/>
 

@@ -1,7 +1,8 @@
 import os
 import shutil
 from helpers.exceptions import InputException, ResourcesException
-from helpers.utils import getDate, import_sort_model, print_exc
+from helpers.utils import getDate, print_exc
+from helpers.sorter.utils import import_sort_model
 from .config import Config
 
 

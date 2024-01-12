@@ -18,7 +18,7 @@ def sort_model(model_dict: Dict, version_dict: Dict, filename: str, root_path: s
         path = os.path.join(
             path, tags[-1] if len(matched_tags) == 0 else matched_tags[0])
 
-    parent_dir = os.path.join(root_path, model_dict['name'])
+    parent_dir = os.path.join(path, model_dict['name'])
     extra_data_dir = os.path.join(
         parent_dir, f'extra_data-vid_{version_dict["id"]}')
     paths = [

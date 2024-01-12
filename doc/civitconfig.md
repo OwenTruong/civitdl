@@ -1,5 +1,5 @@
-# Config
-- In this page, we will go over three types of configurations: default, sorters, and aliases.
+# Civitconfig
+- In this page, we will go over on how to configure the program with civitconfig command.
 - Run `civitconfig --help` when you need help on some options!
 
 <br/>
@@ -8,23 +8,24 @@
 - [README Page](/README.md)
 - [Alias Page](/doc/alias.md)
 - [API Key Page](/doc/api_key.md)
-- [Configuration Page](/doc/configuration.md)
+- [Civitconfig / Configuration Page](/doc/civitconfig.md)
+- [Civitdl Page](/doc/civitdl.md)
 - [Sorter Page](/doc/sorter.md)
-
 
 <br/>
 
 ## Table Of Contents
-- [Config](#config)
+- [Civitconfig](#civitconfig)
   - [Navigate](#navigate)
   - [Table Of Contents](#table-of-contents)
   - [Defaults](#defaults)
-    - [Set max image](#set-max-image)
-    - [Set with prompt](#set-with-prompt)
     - [Set sorter](#set-sorter)
       - [What is a sorter?](#what-is-a-sorter)
+    - [Set max image](#set-max-image)
     - [Set api key](#set-api-key)
       - [Why do we need an api key?](#why-do-we-need-an-api-key)
+    - [Set with prompt](#set-with-prompt)
+    - [Other possible defaults to set](#other-possible-defaults-to-set)
   - [Sorters](#sorters)
     - [List sorters](#list-sorters)
     - [Add a sorter](#add-a-sorter)
@@ -41,29 +42,7 @@
 
 ## Defaults
 Defaults set the defaults for options that are used in `civitdl` command.
-
-<br/>
-
-### Set max image
-- This sets the default max images to download from civitai when `civitdl` is run without the option `-i` or `--max-images`
-
-To set the default max images to N (N >= 0): 
-- Shorthand: `civitconfig default -i N`
-- Longhand: `civitconfig default --max-images N`
-
-Set the default max image to a number you are comfortable with when you run `civitdl`
-
-<br/>
-
-### Set with prompt
-- This sets the default attribute `with-prompt` on whether to download images when `civitdl` is run without the option `-p` or `--with-prompt` or `--no-with-prompt`
-
-To set the default attribute for enabling `with-prompt`:
-- Shorthand: `civitconfig default -p`
-- Longhand: `civitconfig default --with-prompt`
-
-To set the default attribute for disabling `with-prompt`:
-- Longhand: `civitconfig default --no-with-prompt`
+- See `civitconfig default --help`
 
 <br/>
 
@@ -83,6 +62,17 @@ Do note that you can only set sorters that have been added to the config.
 
 <br/>
 
+### Set max image
+- This sets the default max images to download from civitai when `civitdl` is run without the option `-i` or `--max-images`
+
+To set the default max images to N (N >= 0): 
+- Shorthand: `civitconfig default -i N`
+- Longhand: `civitconfig default --max-images N`
+
+Set the default max image to a number you are comfortable with when you run `civitdl`
+
+<br/>
+
 ### Set api key
 - This sets the default api key to use when `civitdl` is run without the option `-k` or `--api-key`
 
@@ -95,6 +85,26 @@ To set the default api key, use the below option and the program will securely p
 - Longhand: `civitconfig default --api-key`
 
 <br/>
+
+### Set with prompt
+- This sets the default attribute `with-prompt` on whether to download images when `civitdl` is run without the option `-p` or `--with-prompt` or `--no-with-prompt`
+
+To set the default attribute for enabling `with-prompt`:
+- Shorthand: `civitconfig default -p`
+- Longhand: `civitconfig default --with-prompt`
+
+To set the default attribute for disabling `with-prompt`:
+- Longhand: `civitconfig default --no-with-prompt`
+
+<br>
+
+### Other possible defaults to set
+- There are options like `--with-prompt`, `--limit-rate`, `--retry-count` and `--pause-time` that you can set defaults for!
+- See `civitconfig default --help` for more info.
+- See [civitdl doc](./civitdl.md#options) on what each option do.
+
+<br>
+
 
 ## Sorters
 - List, add, and remove sorters from program.

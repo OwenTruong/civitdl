@@ -2,29 +2,46 @@
 import traceback
 from operator import itemgetter
 
-from helpers.utils import run_in_dev, print_exc
-from .batch.batch_download import batch_download, Config
+from .batch.batch_download import batch_download, BatchOptions
 from .args.argparser import get_args
+
+from helpers.exceptions import UnexpectedException
+from helpers.sourcemanager import SourceManager
+from helpers.utils import print_verbose, run_verbose, print_exc, set_verbose
 
 
 def main():
     try:
-        ids, rootdir, sorter, max_imgs, with_prompt, api_key = itemgetter(
-            'ids', 'rootdir', 'sorter', 'max_imgs', 'with_prompt', 'api_key')(get_args())
+        args = get_args()
+
+        if args['verbose']:
+            set_verbose(True)
+        else:
+            set_verbose(False)
+
+        print_verbose('Arguments: ', str(args))
+
+        batchOptions = BatchOptions(
+            sorter=args['sorter'],
+            max_images=args['max_images'],
+            api_key=args['api_key'],
+
+            with_prompt=args['with_prompt'],
+            limit_rate=args['limit_rate'],
+            retry_count=args['retry_count'],
+            pause_time=args['pause_time'],
+
+            verbose=args['verbose']
+        )
 
         batch_download(
-            ids,
-            rootdir=rootdir,
-            config=Config(
-                sorter=sorter,
-                max_imgs=max_imgs,
-                with_prompt=with_prompt,
-                api_key=api_key
-            )
+            source_strings=args['source_strings'],
+            rootdir=args['rootdir'],
+            batchOptions=batchOptions
         )
 
     except Exception as e:
         print('---------')
-        run_in_dev(traceback.print_exc)
+        run_verbose(traceback.print_exc)
         print_exc(e)
         print('---------')

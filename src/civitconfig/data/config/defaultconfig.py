@@ -1,4 +1,5 @@
-from helpers.exceptions import InputException
+from helpers.exceptions import InputException, UnexpectedException
+from helpers.utils import BatchOptions, DefaultOptions
 from .config import Config
 
 
@@ -7,36 +8,24 @@ class DefaultConfig(Config):
     def __init__(self, *args):
         super(DefaultConfig, self).__init__(*args)
 
-    def _setMaxImages(self, config, max_images):
-        config['default']['max_images'] = max_images
+    def __validate_valid_sorter(self, target_sorter_name):
+        if len([True for [name, _, _] in self.getSortersList() if name == target_sorter_name]) == 0:
+            raise InputException(
+                f'Setting the default sorter {target_sorter_name} failed due to being undefined. Run "civitconfig sorter" to check for valid sorters.')
 
-    def _setWithPrompt(self, config, with_prompt):
-        if with_prompt == True:
-            config['default']['with_prompt'] = True
-        else:
-            config['default']['with_prompt'] = False
-
-    def _setSorter(self, config, sorter):
-        config['default']['sorter'] = sorter
-
-    def _setApiKey(self, config, key):
-        config['default']['api_key'] = key
-
-    def setDefault(self, max_images=None, with_prompt=None, sorter=None, api_key=None):
+    def setDefault(self, default_options: DefaultOptions):
         config = self._getConfig()
-        if max_images != None:
-            if type(max_images) != int or max_images < 0:
-                raise InputException(
-                    f'max_images argument is not type int or max_images is below 0. The following was provided: {max_images}')
-            self._setMaxImages(config, max_images)
-        if with_prompt != None:
-            if type(with_prompt) != bool:
-                raise InputException(f'with_prompt argument is not of type bool.')
-            self._setWithPrompt(config, with_prompt)
-        if sorter != None:
-            if len([s for s in self.getSortersList() if s[0] == sorter]) != 1:
-                raise InputException(f'Sorter "{sorter}" does not exist')
-            self._setSorter(config, sorter)
-        if api_key != None:
-            self._setApiKey(config, api_key)
+        options = {key: value for key, value in
+                   vars(default_options).items() if value is not None}
+        valid_keys = self._get_valid_keys()
+
+        for key, value in options.items():
+            if key in valid_keys:
+                if key == 'sorter':
+                    self.__validate_valid_sorter(value)
+
+                config['default'][key] = value
+            else:
+                raise UnexpectedException(
+                    'Unknown key found while configuring default options!!!')
         self._saveConfig(config)
