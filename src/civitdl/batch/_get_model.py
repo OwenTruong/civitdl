@@ -104,14 +104,14 @@ def _download_images(dirpath: str, image_basenames: List[str], image_urls: List[
     # TODO: Change progress bar to be based on time length of request rather than when all the images are fetched and ready to be written.
     os.makedirs(dirpath, exist_ok=True)
     print_verbose('Now requesting images...')
-    image_contents = [res.content for res in concurrent_request(
+    image_content_chunks_list = [res.iter_content(1024*1024) for res in concurrent_request(
         req_fn=make_req, urls=image_urls)]
     print_verbose('Finished requesting images...')
 
-    if (len(image_contents) == 0):
+    if (len(image_content_chunks_list) == 0):
         print(Styler.stylize('No images to download...', color='warning'))
     else:
-        write_to_files(dirpath, image_basenames, image_contents, mode='wb',
+        write_to_files(dirpath, image_basenames, image_content_chunks_list, mode='wb',
                        use_pb=True, total=len(image_basenames), desc='Images')
 
 
@@ -232,8 +232,10 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
     model_filename = f'{filename_no_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}{filename_ext}'
     model_path = os.path.join(
         model_dir_path, model_filename)
-    content_chunks = model_res.iter_content(ceil(
-        batchOptions.limit_rate / 8) if batchOptions.limit_rate is not None and batchOptions.limit_rate is not 0 else 1024*1024)
+    content_chunks = model_res.iter_content(
+        ceil(batchOptions.limit_rate / 8)
+        if batchOptions.limit_rate is not None and batchOptions.limit_rate is not 0
+        else 1024*1024)
     write_to_file(model_path, content_chunks, mode='wb', limit_rate=batchOptions.limit_rate,
                   use_pb=True, total=float(model_res.headers.get('content-length', 0)), desc='Model')
 

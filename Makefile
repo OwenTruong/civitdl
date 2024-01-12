@@ -29,16 +29,22 @@ test4:
 	civitdl 80848 ./test/models/test4/with-prompt --verbose --with-prompt
 	civitdl 80848 ./test/models/test4/without-prompt --verbose --no-with-prompt
 
+test5:
+	civitdl 123456 ./test/models/test5/500000 --limit-rate 500000 --verbose
+	civitdl 123456 ./test/models/test5/500k --limit-rate 500k --verbose
+	civitdl 123456 ./test/models/test5/1m --limit-rate 1M --verbose
+	civitdl 123456 ./test/models/test5/5m --limit-rate 5m --verbose
+
 errortest1:
 	civitdl ./test/errortest1.txt ./test/models/errortest1 --verbose
 
 errortest2:
 	civitdl ./test/errortest2.txt ./test/models/errortest2 --verbose
 
-test: install test1 test2 test4
+test: install test1 test2 test4 test5
 
 quicktest: install
-	civitdl 123456 ./test/models/quicktest --verbose
+	civitdl 80848 ./test/models/quicktest --verbose
 
 clean:
 	rm -rf **/*.egg-info
