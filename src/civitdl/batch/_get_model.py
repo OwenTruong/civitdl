@@ -11,7 +11,7 @@ from helpers.utils import BatchOptions, write_to_file, write_to_files, print_ver
 from helpers.exceptions import InputException, ResourcesException, UnexpectedException, APIException
 from helpers.validation import Validation
 
-from civitdl.sorter_api import SorterConfig
+from civitdl.sorter_api import SorterData
 
 
 class Metadata:
@@ -203,17 +203,17 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
 
     # Create empty directory recursively #
     filename_no_ext, filename_ext = os.path.splitext(filename)
-    sorter_config = batchOptions.sorter(
+    sorter_data = batchOptions.sorter(
         metadata.model_dict, metadata.version_dict, filename_no_ext, dst_root_path)
 
-    if not isinstance(sorter_config, SorterConfig):
+    if not isinstance(sorter_data, SorterData):
         raise InputException(
             f'The following sorter, "{batchOptions.sorter_name}", returned the incorrect type.')
 
     # Write model to the directory #
 
     # Download metadata
-    _download_metadata(sorter_config.metadata_dir_path, metadata)
+    _download_metadata(sorter_data.metadata_dir_path, metadata)
 
     # Download images & prompts
     image_basenames = [os.path.basename(url)
@@ -222,16 +222,16 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
         f'{os.path.splitext(basename)[0]}.json' for basename in image_basenames]
 
     _download_images(
-        sorter_config.image_dir_path, image_basenames, metadata.image_download_urls, batchOptions)
+        sorter_data.image_dir_path, image_basenames, metadata.image_download_urls, batchOptions)
     if batchOptions.with_prompt:
-        _download_prompts(sorter_config.prompt_dir_path, prompts_basenames,
+        _download_prompts(sorter_data.prompt_dir_path, prompts_basenames,
                           metadata.image_dicts)
 
     # Download file
-    os.makedirs(sorter_config.parent_dir_path, exist_ok=True)
+    os.makedirs(sorter_data.parent_dir_path, exist_ok=True)
     model_filename = f'{filename_no_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}{filename_ext}'
     model_path = os.path.join(
-        sorter_config.parent_dir_path, model_filename)
+        sorter_data.parent_dir_path, model_filename)
     content_chunks = model_res.iter_content(
         ceil(batchOptions.limit_rate / 8)
         if batchOptions.limit_rate is not None and batchOptions.limit_rate is not 0
