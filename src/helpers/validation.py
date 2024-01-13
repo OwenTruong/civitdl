@@ -1,4 +1,5 @@
-from .exceptions import InputException, UnexpectedException
+from .styler import Styler
+from .exceptions import CustomException, InputException, UnexpectedException
 import sys
 from typing import Iterable, Union
 
@@ -163,5 +164,60 @@ class Validation:
         if not (isinstance(value, tuple(types))):
             raise InputException(
                 f'Value provided for {arg_name} is not one of the expected types (value: {value}, types: {types})')
+
+        return value
+
+    @classmethod
+    def validate_dir_name(cls, value, arg_name):
+        cls.__validate_arg_name(arg_name)
+
+        # Validate value
+        blacklist = ['<', '>', ':', '"', '/', '\\', '|', '?', '*']
+
+        value = str(value)
+
+        if len(value) == 0:
+            raise InputException(
+                f'Directory name provided by {arg_name} is empty.')
+
+        if len(value.strip()) is not len(value):
+            print(Styler.stylize(
+                f'Directory name provided by {arg_name} contains leading and trailing space. Proceeding to trim the following "{value}"', color='WARNING'))
+            value = value.trim()
+
+        for el in value:
+            if el in blacklist:
+                raise InputException(
+                    f'Directory name provided by {arg_name} is invalid. It may not contain the illegal character, "{el}".',
+                    f'The provided directory name is "{value}".',
+                    f'The list of blacklisted characters are {blacklist}.',
+                    f'If this directory path is generated from a sorter, please report or change to a different sorter.'
+                )
+
+        return value
+
+    @classmethod
+    def validate_dir_path(cls, value, arg_name):
+        cls.__validate_arg_name(arg_name)
+
+        # Validate value
+        value = str(value)
+
+        if len(value) == 0:
+            raise InputException(
+                f'Directory path provided by {arg_name} is empty.')
+
+        if len(value.strip()) is not len(value):
+            print(Styler.stylize(
+                f'Directory path provided by {arg_name} contains leading and trailing space. Proceeding to trim the following "{value}"', color='WARNING'))
+            value = value.trim()
+
+        dir_names = value.split('/')
+        for dir_name in dir_names:
+            try:
+                cls.validate_dir_name(dir_name, arg_name)
+            except InputException as e:
+                raise InputException(
+                    e, f'The invalid directory path is {value}')
 
         return value

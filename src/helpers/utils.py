@@ -172,6 +172,7 @@ def parse_bytes(size: Union[str, int, float], name: str):
 # Level 3 - Currently or in the future might depends on level 0, 1 and 2
 
 class BatchOptions:
+    sorter_name: str
     sorter: Callable[[Dict, Dict, str, str],
                      List[str]] = basic.sort_model
     max_images: int = 3
@@ -209,6 +210,7 @@ class BatchOptions:
         if sorter is not None:
             Validation.validate_string(sorter, 'sorter')
             self.sorter = self.__get_sorter(sorter)
+            self.sorter_name = sorter
 
         if max_images is not None:
             Validation.validate_integer(max_images, 'max_images', min_value=0)
