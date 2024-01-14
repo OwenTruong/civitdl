@@ -4,7 +4,7 @@ import json
 import os
 import sys
 import time
-import pkg_resources
+import importlib.metadata
 from typing import IO, Callable, Dict, Iterable, List, Union, Optional
 import concurrent.futures
 import requests
@@ -37,7 +37,7 @@ def getDate():
 
 
 def get_version():
-    return pkg_resources.get_distribution('civitdl').version
+    return importlib.metadata.version('civitdl')
 
 
 # Level 1 - Currently or in the future might depends on level 0

@@ -15,6 +15,8 @@ def import_sort_model(path: str) -> Callable[[Dict, Dict, str, str], List[str]]:
 
 # TODO: I don't need parent_dir_name so get rid of that
 # TODO: Check Windows for behavior of / and \.... I think Windows uses \ so I might be interested in splitting by that for validate_dir_path.
+# TODO: pkg_resources not found on Windows
+# TODO: Add instruction for windows path
 
 
 @dataclass
