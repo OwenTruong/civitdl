@@ -8,10 +8,9 @@ from math import ceil
 from helpers.styler import Styler
 from helpers.sourcemanager import Id
 from helpers.utils import BatchOptions, write_to_file, write_to_files, print_verbose, concurrent_request
+from helpers.sorter.utils import SorterData
 from helpers.exceptions import InputException, ResourcesException, UnexpectedException, APIException
 from helpers.validation import Validation
-
-from civitdl.sorter_api import SorterData
 
 
 class Metadata:

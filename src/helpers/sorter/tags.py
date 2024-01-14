@@ -1,7 +1,7 @@
 from typing import Dict
 import os
 
-from civitdl.sorter_api import SorterData
+from civitdl.api.sorter import SorterData, DirName
 
 
 def sort_model(model_dict: Dict, version_dict: Dict, filename: str, root_path: str):
@@ -20,13 +20,12 @@ def sort_model(model_dict: Dict, version_dict: Dict, filename: str, root_path: s
         path = os.path.join(
             path, tags[-1] if len(matched_tags) == 0 else matched_tags[0])
 
-    parent_dir_name = model_dict['name']
+    parent_dir_name = DirName.replace_with_rule_1(model_dict['name'])
     parent_dir_path = os.path.join(path, parent_dir_name)
     extra_data_dir_path = os.path.join(
         parent_dir_path, f'extra_data-vid_{version_dict["id"]}')
 
     return SorterData(
-        parent_dir_name,
         parent_dir_path,
         metadata_dir_path=extra_data_dir_path,
         image_dir_path=extra_data_dir_path,

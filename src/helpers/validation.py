@@ -1,5 +1,6 @@
 from .styler import Styler
 from .exceptions import CustomException, InputException, UnexpectedException
+from .constants import BLACKLISTED_DIR_CHARS
 import sys
 from typing import Iterable, Union
 
@@ -186,11 +187,11 @@ class Validation:
             value = value.trim()
 
         for el in value:
-            if el in blacklist:
+            if el in BLACKLISTED_DIR_CHARS:
                 raise InputException(
                     f'Directory name provided by {arg_name} is invalid. It may not contain the illegal character, "{el}".',
                     f'The provided directory name is "{value}".',
-                    f'The list of blacklisted characters are {blacklist}.',
+                    f'The list of blacklisted characters are {BLACKLISTED_DIR_CHARS}.',
                     f'If this directory path is generated from a sorter, please report or change to a different sorter.'
                 )
 
