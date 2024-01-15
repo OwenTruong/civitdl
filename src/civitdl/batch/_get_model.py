@@ -227,10 +227,10 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
                           metadata.image_dicts)
 
     # Download file
-    os.makedirs(sorter_data.parent_dir_path, exist_ok=True)
+    os.makedirs(sorter_data.model_dir_path, exist_ok=True)
     model_filename = f'{filename_no_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}{filename_ext}'
     model_path = os.path.join(
-        sorter_data.parent_dir_path, model_filename)
+        sorter_data.model_dir_path, model_filename)
     content_chunks = model_res.iter_content(
         ceil(batchOptions.limit_rate / 8)
         if batchOptions.limit_rate is not None and batchOptions.limit_rate is not 0

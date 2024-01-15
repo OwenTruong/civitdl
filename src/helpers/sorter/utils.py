@@ -13,23 +13,20 @@ def import_sort_model(path: str) -> Callable[[Dict, Dict, str, str], List[str]]:
     spec.loader.exec_module(sorter)
     return sorter.sort_model
 
-# TODO: I don't need parent_dir_name so get rid of that
-# TODO: Check Windows for behavior of / and \.... I think Windows uses \ so I might be interested in splitting by that for validate_dir_path.
-# TODO: pkg_resources not found on Windows
 # TODO: Add instruction for windows path
 
 
 @dataclass
 class SorterData:
-    parent_dir_path: str
+    model_dir_path: str
     metadata_dir_path: str
     image_dir_path: str
     prompt_dir_path: str
 
     def __post_init__(self):
 
-        self.parent_dir_path = Validation.validate_dir_path(
-            self.parent_dir_path, 'sorter')
+        self.model_dir_path = Validation.validate_dir_path(
+            self.model_dir_path, 'sorter')
 
         self.metadata_dir_path = Validation.validate_dir_path(
             self.metadata_dir_path, 'sorter')

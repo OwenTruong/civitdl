@@ -127,29 +127,35 @@ stable-diffusion-webui/
 2. Create a function named exactly `sort_model`
    1. There should be four parameter:
       1. `(model_dict: Dict, version_dict: Dict, filename: str, root_path: str)`
-   2. The return type should be a list of exactly three string paths.
+   2. The return type should be a class imported from civitai as shown below. The parameters for the class are the following.
       1. Model Parent Directory Path string
       2. Metadata Parent Directory Path string
       3. Images Parent Directory Path string
+      4. Image Prompts Parent Directory Path string
    3. Please also add some description, or doc string, to your custom sort_model as that would be printed out to the terminal when a user runs `civitconfig sorter`
 
 Example image of running `civitconfig` to display description of sorters.
 ![Image of running civitconfig sorter and seeing the description of each sorter](./images/sorter/printing-out-available-sorters.png)
 
 ```python
+from civitdl.api.sorter import SorterData
+
 def sort_model(model_dict: Dict, version_dict: Dict, filename: str, root_path: str):
     """This string here describes the following model."""
     model_dir_path = '/path/to/model/parent/dir'
     metadata_dir_path = '/path/to/metadata/parent/dir'
     image_dir_path = '/path/to/image/parent/dir'
     prompt_dir_path = '/path/to/prompt/parent/dir'
-    return [
+    return SorterData(
       model_dir_path,     # Parent dir of where the downloaded model should be in
       metadata_dir_path,  # Parent dir of where the JSON metadata should be in
       image_dir_path      # Parent dir of where the images should be in
       prompt_dir_path     # Parent dir of where the images' prompt should be in
-    ]
+    )
 ```
+
+Also feel free to use `DirName` class offered in civitai.api.sorter for help with removing illegal characters in directory paths. The ones used in sort.py, basic.py and tags.py is `DirName.replace_with_rule_1("string")`. It will remove/convert all illegal characters in the string to safe characters.
+- The following characters are forbidden: `<`, `>`, `:`, `"`, `/`, `\\`, `|`, `?`, `*`
 
 Please see [sort.py](/custom/sort.py) in custom folder for an example.
 - Also see [model_dict-example.json](/custom/model_dict-example.json) for an example of the values in model_dict.
