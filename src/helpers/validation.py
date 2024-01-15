@@ -2,6 +2,7 @@ from .styler import Styler
 from .exceptions import CustomException, InputException, UnexpectedException
 from .constants import BLACKLISTED_DIR_CHARS
 import sys
+import os
 from typing import Iterable, Union
 
 
@@ -213,7 +214,8 @@ class Validation:
                 f'Directory path provided by {arg_name} contains leading and trailing space. Proceeding to trim the following "{value}"', color='WARNING'))
             value = value.trim()
 
-        dir_names = value.split('/')
+        modified_value = value.replace('/', '\\') if os.name == 'nt' else value
+        dir_names = modified_value.split(os.path.sep)
         for dir_name in dir_names:
             try:
                 cls.validate_dir_name(dir_name, arg_name)
@@ -221,4 +223,4 @@ class Validation:
                 raise InputException(
                     e, f'The invalid directory path is {value}')
 
-        return value
+        return modified_value
