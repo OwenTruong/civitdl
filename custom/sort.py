@@ -1,6 +1,8 @@
 from typing import Dict
 import os
 
+from civitdl.api.sorter import SorterData, DirName
+
 # See custom/model_dict-example.json and custom/version_dict-example.json for examples of the kind of data model_dict and version_dict parameters provide.
 
 
@@ -18,13 +20,14 @@ def sort_model(model_dict: Dict, version_dict: Dict, filename: str, root_path: s
     sub_dir = os.path.join(root_path, chosen)  # Example: /A-F
     # Here you specify the names and paths of the parent directory that is going to be used to store the model, json and images
 
-    parent_dir = os.path.join(sub_dir, model_dict['name'])
-    extra_data_dir = os.path.join(
-        parent_dir, f'extra_data-vid_{version_dict["id"]}')
-    paths = [
-        parent_dir,      # model dir path
-        extra_data_dir,  # metadata dir path
-        extra_data_dir,  # image dir path
-        extra_data_dir   # prompt dir path
-    ]
-    return paths
+    model_dir_name = DirName.replace_with_rule_1(model_dict['name'])
+    model_dir_path = os.path.join(sub_dir, model_dir_name)
+    extra_data_dir_path = os.path.join(
+        model_dir_path, f'extra_data-vid_{version_dict["id"]}')
+
+    return SorterData(
+        model_dir_path=model_dir_path,
+        metadata_dir_path=extra_data_dir_path,
+        image_dir_path=extra_data_dir_path,
+        prompt_dir_path=extra_data_dir_path
+    )

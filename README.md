@@ -99,17 +99,19 @@ civitdl model_id rootpath
 
 ------
 
-If you encounter the following warning on Linux while building and installing manually:
+If you encounter similar warning on Linux/Windows while building and installing manually:
 ```bash
   WARNING: The script civitdl is installed in '/home/OwenTruong/.local/bin' which is not on PATH.
   Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
 ```
 
-Please concat the path to your PATH env, example:
+For Linux, please concat the path to your PATH env, example:
 ```bash
 echo 'PATH="$HOME/.local/bin:"$PATH' >> ~/.bashrc
 source ~/.bashrc
 ```
+
+For Windows, this may help: https://www.computerhope.com/issues/ch000549.htm
 
 If you are building from source and the following packages are not available `setuptools, wheel, build`, please install them with `pip install setuptools wheel build`
 
