@@ -166,7 +166,6 @@ def _download_hashes(dirpath: str, filename_no_ext: str, hashes: Dict):
     write_to_file(hashes_dict_path, [data.rstrip()])
 
 
-# TODO: Make it so api_key is only used when reason=download-auth is in res.url
 def _get_filename_and_model_res(input_str: str, metadata: Metadata, batchOptions: BatchOptions):
     # Request model
     print_verbose('Preparing to send download model request...')

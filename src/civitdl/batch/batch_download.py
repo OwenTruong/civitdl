@@ -2,6 +2,8 @@ import time
 import traceback
 from typing import List
 
+from helpers.exceptions import APIException
+
 from ._get_model import download_model
 
 from helpers.styler import Styler
@@ -40,6 +42,8 @@ def batch_download(source_strings: List[str], rootdir: str, batchOptions: BatchO
                 print_exc(e, '\n')
                 print('---------')
                 _pause(batchOptions.pause_time)
+                if not isinstance(e, APIException):
+                    break
                 if iter < batchOptions.retry_count:
                     print(Styler.stylize(
                         'Retrying to download the current model...', color='info'))
