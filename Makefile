@@ -51,5 +51,5 @@ clean:
 	rm -rf dist build
 	rm -rf ./test/models
 
-uninstall: clean
+uninstall:
 	pip3 uninstall civitdl -y

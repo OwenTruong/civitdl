@@ -2,10 +2,13 @@ from dataclasses import InitVar, dataclass, field
 from datetime import datetime
 import json
 import os
+import shutil
 import sys
 import time
+import math
+import csv
 import importlib.metadata
-from typing import IO, Callable, Dict, Iterable, List, Union, Optional
+from typing import IO, Callable, Dict, Iterable, List, Literal, Union, Optional
 import concurrent.futures
 import requests
 from tqdm import tqdm
@@ -13,7 +16,7 @@ from tqdm import tqdm
 from helpers.sorter.utils import import_sort_model
 from helpers.sorter import basic, tags
 from helpers.styler import Styler
-from helpers.exceptions import CustomException, InputException, UnexpectedException
+from helpers.exceptions import CustomException, InputException, NotImplementedException, UnexpectedException
 from helpers.validation import Validation
 
 # Level 0
@@ -111,10 +114,35 @@ def write_contents(file: IO, content_chunks: Iterable, limit_rate: Union[int, No
             update_pb(bytes_downloaded)
         last_chunk_time = time.perf_counter()
 
+
+def delete_file_if_exists(file_path):
+    if os.path.exists(file_path):
+        try:
+            os.remove(file_path)
+        except OSError as e:
+            raise UnexpectedException(f"Error deleting file {file_path}: {e}")
+
+
+def read_dict_from_csv(filepath: str):
+    csv_dict = {}
+
+    with open(filepath, 'r') as f:
+        csv_iterator = csv.reader(f)
+        next(csv_iterator)
+        for row in csv_iterator:
+            try:
+                row[2]
+                raise InputException(
+                    f'CSV file is invalid. File contains rows with more than two columns.\nThe filepath for the invalid csv is "{filepath}"')
+            except:
+                csv_dict[row[0]] = row[1]
+
+    return csv_dict
+
 # Level 2 - Currently or in the future might depends on level 0 and 1
 
 
-def write_to_file(filepath: str, content_chunks: Iterable, mode: str = None, limit_rate: Union[int, None] = 0, use_pb: bool = False, total: float = 0, desc: str = None):
+def write_to_file(filepath: str, content_chunks: Iterable, mode: str = None, limit_rate: Union[int, None] = 0, overwrite: bool = True, use_pb: bool = False, total: float = 0, desc: str = None):
     """Uses content_chunks to write to filepath bit by bit. If use_pb is enabled, it is recommended to set total kwarg to the length of the file to be written."""
     progress_bar = get_progress_bar(total, desc) if use_pb else None
 
@@ -122,11 +150,27 @@ def write_to_file(filepath: str, content_chunks: Iterable, mode: str = None, lim
         if progress_bar:
             progress_bar.update(bytes_downloaded)
 
-    with open(filepath, mode if mode != None else 'w') as file:
-        write_contents(file, content_chunks, limit_rate, update_progress_bar)
-
-    if (progress_bar):
-        progress_bar.close()
+    if not overwrite and os.path.exists(filepath):
+        if (progress_bar):
+            progress_bar.close()
+        print(Styler.stylize(
+            f'File already exists at "{filepath}"', color='info'))
+    else:
+        temp_dirpath = os.path.join(os.path.dirname(
+            filepath), '.tmp')
+        temp_filepath = os.path.join(temp_dirpath, os.path.basename(filepath))
+        os.makedirs(temp_dirpath, exist_ok=True)
+        try:
+            with open(temp_filepath, mode if mode != None else 'w') as file:
+                write_contents(file, content_chunks,
+                               limit_rate, update_progress_bar)
+            shutil.move(temp_filepath, filepath)
+            shutil.rmtree(temp_dirpath)
+        except Exception as e:
+            shutil.rmtree(temp_dirpath)
+            raise e
+        if (progress_bar):
+            progress_bar.close()
 
 
 def write_to_files(dirpath: str, basenames: Iterable, content_chunks_list: Iterable[Iterable], mode: str = None, use_pb: bool = False, total: float = 0, desc: str = None):
@@ -182,6 +226,9 @@ class BatchOptions:
     retry_count: int = 3
     pause_time: int = 3
 
+    cache_mode: Literal['0', '1', '2'] = '1'
+    model_overwrite: bool = False
+
     verbose: Optional[bool] = None
 
     def __get_sorter(self, sorter: str):
@@ -198,7 +245,7 @@ class BatchOptions:
         print_verbose("Chosen Sorter Description: ", self._sorter.__doc__)
         return self._sorter
 
-    def __init__(self, retry_count, pause_time, max_images, with_prompt, api_key, verbose, sorter, limit_rate):
+    def __init__(self, retry_count, pause_time, max_images, with_prompt, api_key, verbose, sorter, limit_rate, cache_mode, model_overwrite):
         self.session = requests.Session()
 
         if verbose is not None:
@@ -237,6 +284,18 @@ class BatchOptions:
             Validation.validate_float(pause_time, 'pause_time', min_value=0)
             self.pause_time = pause_time
 
+        if cache_mode is not None:
+            Validation.validate_string(
+                cache_mode, 'cache_mode', whitelist=['0', '1', '2'])
+            if cache_mode is '2':
+                raise NotImplementedException(
+                    'cache mode of 2 has not been implemented yet')
+            self.cache_mode = cache_mode
+
+        if model_overwrite is not None:
+            Validation.validate_bool(model_overwrite, 'model_overwrite')
+            self.model_overwrite = model_overwrite
+
  # TODO: Where are we planning on using DefaultOptions and BatchOptions?... I think I should consider argparse and __main__ to be in the same context...
 
 
@@ -250,7 +309,10 @@ class DefaultOptions:
     retry_count: Optional[int] = None
     pause_time: Optional[int] = None
 
-    def __init__(self, sorter=None, max_images=None, api_key=None, with_prompt=None, limit_rate=None, retry_count=None, pause_time=None):
+    cache_mode: Optional[int] = None
+    model_overwrite: Optional[bool] = None
+
+    def __init__(self, sorter=None, max_images=None, api_key=None, with_prompt=None, limit_rate=None, retry_count=None, pause_time=None, cache_mode=None, model_overwrite=None):
         if sorter is not None:
             Validation.validate_string(
                 sorter, 'sorter')
@@ -287,3 +349,16 @@ class DefaultOptions:
                 pause_time, 'pause_time', min_value=0
             )
             self.pause_time = pause_time
+
+        if cache_mode is not None:
+            Validation.validate_string(
+                cache_mode, 'cache_mode', whitelist=['0', '1', '2']
+            )
+            if cache_mode is '2':
+                raise NotImplementedException(
+                    'cache mode of 2 has not been implemented yet')
+            self.cache_mode = cache_mode
+
+        if model_overwrite is not None:
+            Validation.validate_bool(model_overwrite, 'model_overwrite')
+            self.model_overwrite = model_overwrite

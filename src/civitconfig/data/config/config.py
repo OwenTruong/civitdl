@@ -22,6 +22,9 @@ DEFAULT_CONFIG = {
         "limit_rate": '0',
         "retry_count": 3,
         "pause_time": 3.0,
+
+        "cache_mode": '1',
+        "model_overwrite": False
     },
     "sorters": [["basic", basic.sort_model.__doc__, 'basic'], ["tags", tags.sort_model.__doc__, 'tags']],
     "aliases": [["@example", "~/.models"]]

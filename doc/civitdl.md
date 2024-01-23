@@ -99,6 +99,28 @@
 - Specifies how many seconds to pause between each model download. The default is 3 seconds.
 - Example: `civitdl 123456 6 ./loras --pause-time 5`
 
+`--cache-mode <0 | 1 | 2>`
+- Specifies the cache mode for each model. The default is `1`.
+- Cache modes:
+  - `0` - no cache mode
+    -  Program will not add the current model's file path and hashes to cache.
+    -  Program will not use stored cache to check if current model has already been downloaded before.
+  - `1` - lax mode
+    - Program will add the current model's file path and hashes to cache.
+    - Program will check cache if the current model has been downloaded before.
+      - If so, program will attemp to copy the model locally given path to the local model.
+  - `2` - strict mode
+    - Does what `1` does, but also validate the local model by creating SHA256 and BLAKE3 hashes for the previously downloaded model to make sure that the file path given by the cache is actually the correct model (and to make sure it has not been corrupted).
+    - Warning that this will be slower than `1` because hashes will be computed for each check.
+    - `NOT IMPLEMENTED YET`
+
+`--model-overwrite` | `--no-model-overwrite`
+- Running with the option will download model even if it already exists at the destination path. By default, civitdl will not overwrite models.
+- Use `--no-model-overwrite` to disable overwriting model that already exist at the destination path.
+- Example: `civitdl 80848 ./loras --model-overwrite`
+
+
+
 `--verbose`
 - Prints out traceback and other logs.
 

@@ -60,15 +60,23 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    '--limit-rate', type=str, help='Limit the download speed/rate of resources downloaded from CivitAI.'
+    '--limit-rate', metavar='BYTE', type=str, help='Limit the download speed/rate of resources downloaded from CivitAI.'
 )
 
 parser.add_argument(
-    '--retry-count', type=int, help='Specify max number of times to retry downloading a model if it fails.'
+    '--retry-count', metavar='INT', type=int, help='Specify max number of times to retry downloading a model if it fails.'
 )
 
 parser.add_argument(
-    '--pause-time', type=float, help='Specify the number of seconds to pause between each model\'s download'
+    '--pause-time', metavar='FLOAT', type=float, help='Specify the number of seconds to pause between each model\'s download.'
+)
+
+parser.add_argument(
+    '--cache-mode', metavar='MODE', type=str, help='Specify the cache mode. 0 to not use cache. 1 to use cache and copy existant models based on file path. 2 to use cache and copy existant models based on file path + hashes of model. Note that mode 2 has not been implemented yet. See documentation on github for more info.'
+)
+
+parser.add_argument(
+    '--model-overwrite', action=argparse.BooleanOptionalAction, help='Determine whether to overwrite or skip model download if model is already in path. model=overwrite to overwrite model. no-model-overwrite to skip model.'
 )
 
 
@@ -92,14 +100,17 @@ def get_args():
         "source_strings": parser_result.srcmodels,
         "rootdir": parse_rootdir(aliases, parser_result.rootdir),
 
-        "sorter": parse_sorter(sorters, parser_result.sorter or config_defaults['sorter']),
-        "max_images": parser_result.max_images or config_defaults['max_images'],
-        "api_key": parser_result.api_key or config_defaults['api_key'],
+        "sorter": parse_sorter(sorters, parser_result.sorter or config_defaults.get('sorter', None)),
+        "max_images": parser_result.max_images or config_defaults.get('max_images', None),
+        "api_key": parser_result.api_key or config_defaults.get('api_key', None),
 
-        "with_prompt": parser_result.with_prompt or config_defaults['with_prompt'],
-        "limit_rate": parser_result.limit_rate or config_defaults['limit_rate'],
-        "retry_count": parser_result.retry_count or config_defaults['retry_count'],
-        "pause_time": parser_result.pause_time or config_defaults['pause_time'],
+        "with_prompt": parser_result.with_prompt or config_defaults.get('with_prompt', None),
+        "limit_rate": parser_result.limit_rate or config_defaults.get('limit_rate', None),
+        "retry_count": parser_result.retry_count or config_defaults.get('retry_count', None),
+        "pause_time": parser_result.pause_time or config_defaults.get('pause_time', None),
+
+        "cache_mode": parser_result.cache_mode or config_defaults.get('cache_mode', None),
+        "model_overwrite": parser_result.model_overwrite or config_defaults.get('model_overwrite', None),
 
         "verbose": False if parser_result.verbose == None else parser_result.verbose
     }

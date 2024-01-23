@@ -21,7 +21,7 @@ class DefaultConfig(Config):
 
         for key, value in options.items():
             if key in valid_keys:
-                if key == 'sorter':
+                if key == 'sorter':  # special case
                     self.__validate_valid_sorter(value)
 
                 config['default'][key] = value

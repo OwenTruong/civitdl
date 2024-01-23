@@ -33,6 +33,8 @@ def main():
                 limit_rate=args['limit_rate'],
                 retry_count=args['retry_count'],
                 pause_time=args['pause_time'],
+                cache_mode=args['cache_mode'],
+                model_overwrite=args['model_overwrite']
             ))
             config_manager.print_defaults()
         elif subcommand == 'sorter':
