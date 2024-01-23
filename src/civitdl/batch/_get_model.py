@@ -1,4 +1,5 @@
 from json import dumps
+import shutil
 import requests
 import os
 import re
@@ -7,10 +8,11 @@ from math import ceil
 
 from helpers.styler import Styler
 from helpers.sourcemanager import Id
-from helpers.utils import BatchOptions, write_to_file, write_to_files, print_verbose, concurrent_request
+from helpers.utils import BatchOptions, delete_file_if_exists, write_to_file, write_to_files, print_verbose, concurrent_request
 from helpers.sorter.utils import SorterData
 from helpers.exceptions import InputException, ResourcesException, UnexpectedException, APIException
 from helpers.validation import Validation
+from helpers.hashmanager import HashManager
 
 
 class Metadata:
@@ -20,6 +22,7 @@ class Metadata:
     model_name = None
     model_id = None
     version_id = None
+    version_hashes = None
 
     model_dict = None
     version_dict = None
@@ -72,6 +75,26 @@ class Metadata:
 
         self.model_download_url = self.version_dict['downloadUrl']
 
+        self.version_hashes = self.__get_version_hashes(
+            self.version_dict, self.model_download_url)
+
+    def __get_version_hashes(self, version_dict, download_url):
+        files = version_dict['files']
+        hashes = {}
+        for file in files:
+            if "downloadUrl" in file and file['downloadUrl'] == download_url:
+                if isinstance(file['hashes'], dict):
+                    hashes = file['hashes']
+                else:
+                    print(Styler.stylize(
+                        'Hashes found in metadata is not a dictionary! There is an error with the API!', color='error'))
+                break
+        if hashes is {}:
+            print(Styler.stylize('Hash not found in metadata.', color='warning'))
+        elif "SHA256" not in hashes:
+            print(Styler.stylize('SHA256 hash not found.', color='warning'))
+        return hashes
+
     def __get_model_metadata(self):
         """Returns json object if request succeeds, else print error and returns None"""
         metadata_url = f'https://civitai.com/api/v1/models/{self.model_id}'
@@ -96,6 +119,7 @@ class Metadata:
             raise UnexpectedException(
                 'Unable to parse metadata from CivitAI (incorrect format provided by Civitai).', 'CivitAI might be under maintainence.',
                 f'\nOriginal Error:\n       {e}')
+
 
 # TODO: what if a specific image have a hard time with getting a response?
 
@@ -131,6 +155,15 @@ def _download_metadata(dirpath: str, metadata: Metadata):
     os.makedirs(dirpath, exist_ok=True)
     write_to_file(model_dict_path, [dumps(
         metadata.model_dict, indent=2, ensure_ascii=False)])
+
+
+def _download_hashes(dirpath: str, filename_no_ext: str, hashes: Dict):
+    hashes_dict_path = os.path.join(dirpath, filename_no_ext + '.csv')
+    os.makedirs(dirpath, exist_ok=True)
+    data = 'hash_name, hash_id\n'
+    for key, value in hashes.items():
+        data += f'{key}, {value}\n'
+    write_to_file(hashes_dict_path, [data.rstrip()])
 
 
 # TODO: Make it so api_key is only used when reason=download-auth is in res.url
@@ -226,17 +259,35 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
         _download_prompts(sorter_data.prompt_dir_path, prompts_basenames,
                           metadata.image_dicts)
 
-    # Download file
+    # Download model & hashes
     os.makedirs(sorter_data.model_dir_path, exist_ok=True)
-    model_filename = f'{filename_no_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}{filename_ext}'
+    model_filename_no_ext = f'{filename_no_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}'
+
+    _download_hashes(sorter_data.model_dir_path,
+                     model_filename_no_ext,
+                     metadata.version_hashes)
+
+    model_filename = model_filename_no_ext + filename_ext
     model_path = os.path.join(
         sorter_data.model_dir_path, model_filename)
-    content_chunks = model_res.iter_content(
-        ceil(batchOptions.limit_rate / 8)
-        if batchOptions.limit_rate is not None and batchOptions.limit_rate is not 0
-        else 1024*1024)
-    write_to_file(model_path, content_chunks, mode='wb', limit_rate=batchOptions.limit_rate,
-                  use_pb=True, total=float(model_res.headers.get('content-length', 0)), desc='Model')
+
+    hash_manager = HashManager(metadata.version_id)
+    cached_model_path = hash_manager.get_local_model_path()
+
+    if cached_model_path and cached_model_path != model_path:
+        print(Styler.stylize(f"""Model already existed at the following path:
+            - Path: {cached_model_path}""", color='info'))
+        print(Styler.stylize(f"Copying to new path...", color='info'))
+        shutil.copy(cached_model_path, model_path)
+    else:
+        content_chunks = model_res.iter_content(
+            ceil(batchOptions.limit_rate / 8)
+            if batchOptions.limit_rate is not None and batchOptions.limit_rate is not 0
+            else 1024*1024)
+        write_to_file(model_path, content_chunks, mode='wb', limit_rate=batchOptions.limit_rate, overwrite=False,
+                      use_pb=True, total=float(model_res.headers.get('content-length', 0)), desc='Model')
+
+    hash_manager.set_local_model_cache(model_path, metadata.version_hashes)
 
     print(Styler.stylize(
         f"""\nDownload completed for \"{metadata.model_name}\" 

@@ -1,10 +1,12 @@
 import os
 import shutil
+
 from appdirs import AppDirs
 
 from helpers.styler import Styler
 from helpers.exceptions import InputException, UnexpectedException
 from helpers.utils import DefaultOptions, createDirsIfNotExist, getDate, print_verbose
+from helpers.vars.program_constants import app_dirs
 
 from .config.config import Config, DEFAULT_CONFIG
 from .config.aliasconfig import AliasConfig
@@ -21,17 +23,16 @@ class ConfigManager(Config):
     _sorterConfig: SorterConfig
 
     def __init__(self):
-        dirs = AppDirs('civitdl', 'Owen Truong')
-        config_path = os.path.join(dirs.user_config_dir, 'config.json')
+        config_path = os.path.join(app_dirs.user_config_dir, 'config.json')
         config_trash_dir_path = os.path.join(
-            dirs.user_config_dir, '.trash')
-        sorters_dir_path = os.path.join(dirs.user_config_dir, 'sorters')
+            app_dirs.user_config_dir, '.trash')
+        sorters_dir_path = os.path.join(app_dirs.user_config_dir, 'sorters')
         sorters_trash_dir_path = os.path.join(
             sorters_dir_path, '.trash')
-        args = [config_path, dirs.user_config_dir, config_trash_dir_path,
+        args = [config_path, app_dirs.user_config_dir, config_trash_dir_path,
                 sorters_dir_path, sorters_trash_dir_path]
 
-        print_verbose(f'Config Directory: {dirs.user_config_dir}')
+        print_verbose(f'Config Directory: {app_dirs.user_config_dir}')
 
         super(ConfigManager, self).__init__(*args)
         self._aliasConfig = AliasConfig(*args)
