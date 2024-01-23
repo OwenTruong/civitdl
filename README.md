@@ -92,6 +92,11 @@ civitdl model_id rootpath
   - See [civitdl doc](/doc/civitdl.md)
 - Added configuration to set defaults for options, and to create alias + sorters.
   - See [civitconfig doc](/doc/civitconfig.md) 
+- Concurrently download images.
+- Isolates each image's prompt/metadata from the model's metadata.
+- Able to retry download if model fails initially.
+- Faster requests.
+- Added features to skip model download if model already exists in path, or locally in cache.
 
 <br/>
 
