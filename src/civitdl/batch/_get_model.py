@@ -171,12 +171,22 @@ def _get_filename_and_model_res(input_str: str, metadata: Metadata, batchOptions
     # Request model
     print_verbose('Preparing to send download model request...')
     print_verbose(f'Model Download API URL: {metadata.model_download_url}')
-    headers = {
-        'Authorization': f'Bearer {batchOptions.api_key}',
-    } if batchOptions.api_key else {}
-    res = batchOptions.session.get(metadata.model_download_url, stream=True, headers=headers) if batchOptions.api_key else requests.get(
-        metadata.model_download_url, stream=True)
-    print_verbose('Download model response received.')
+    res = batchOptions.session.get(metadata.model_download_url, stream=True)
+
+    if 'reason=download-auth' in res.url:
+        api_key_needed = True
+        if batchOptions.api_key:
+            headers = {
+                'Authorization': f'Bearer {batchOptions.api_key}',
+            }
+            res = batchOptions.session.get(
+                metadata.model_download_url, stream=True, headers=headers)
+            api_key_needed = 'reason=download-auth' in res.url
+
+        if api_key_needed:
+            print_verbose('reason=download-auth status', res.status_code)
+            raise InputException(
+                'Unable to download this model as it requires a correct API Key. Please head to "civitai.com", go to "Account Settings", then go to "API Keys" section, then add an api key to your account. After that, paste the key to the program.')
 
     if res.status_code != 200:
         raise APIException(
@@ -184,10 +194,6 @@ def _get_filename_and_model_res(input_str: str, metadata: Metadata, batchOptions
 
     # Find filename from content disposition
     content_disposition = res.headers.get('Content-Disposition')
-
-    if 'reason=download-auth' in res.url:
-        print_verbose('reason=download-auth status', res.status_code)
-        raise InputException('Unable to download this model as it requires an API Key. Please head to "civitai.com", go to "Account Settings", then go to "API Keys" section, then add an api key to your account. After that, paste the key to the program.')
 
     if content_disposition == None:
         raise ResourcesException(
@@ -276,9 +282,6 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
     if batchOptions.cache_mode is not '0':
         hash_manager = HashManager(metadata.version_id)
         cached_model_path = hash_manager.get_local_model_path()
-
-    print(batchOptions.cache_mode)
-    print(hash_manager)
 
     if hash_manager and cached_model_path and cached_model_path != model_path:
         print(Styler.stylize(f"""Model already existed at the following path:
