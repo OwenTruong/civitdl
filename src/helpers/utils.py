@@ -8,7 +8,7 @@ import time
 import math
 import csv
 import importlib.metadata
-from typing import IO, Callable, Dict, Iterable, List, Union, Optional
+from typing import IO, Callable, Dict, Iterable, List, Literal, Union, Optional
 import concurrent.futures
 import requests
 from tqdm import tqdm
@@ -16,7 +16,7 @@ from tqdm import tqdm
 from helpers.sorter.utils import import_sort_model
 from helpers.sorter import basic, tags
 from helpers.styler import Styler
-from helpers.exceptions import CustomException, InputException, UnexpectedException
+from helpers.exceptions import CustomException, InputException, NotImplementedException, UnexpectedException
 from helpers.validation import Validation
 
 # Level 0
@@ -226,6 +226,9 @@ class BatchOptions:
     retry_count: int = 3
     pause_time: int = 3
 
+    cache_mode: Literal['0', '1', '2'] = '1'
+    model_overwrite: bool = False
+
     verbose: Optional[bool] = None
 
     def __get_sorter(self, sorter: str):
@@ -242,7 +245,7 @@ class BatchOptions:
         print_verbose("Chosen Sorter Description: ", self._sorter.__doc__)
         return self._sorter
 
-    def __init__(self, retry_count, pause_time, max_images, with_prompt, api_key, verbose, sorter, limit_rate):
+    def __init__(self, retry_count, pause_time, max_images, with_prompt, api_key, verbose, sorter, limit_rate, cache_mode, model_overwrite):
         self.session = requests.Session()
 
         if verbose is not None:
@@ -281,6 +284,18 @@ class BatchOptions:
             Validation.validate_float(pause_time, 'pause_time', min_value=0)
             self.pause_time = pause_time
 
+        if cache_mode is not None:
+            Validation.validate_string(
+                cache_mode, 'cache_mode', whitelist=['0', '1', '2'])
+            if cache_mode is '2':
+                raise NotImplementedException(
+                    'cache mode of 2 has not been implemented yet')
+            self.cache_mode = cache_mode
+
+        if model_overwrite is not None:
+            Validation.validate_bool(model_overwrite, 'model_overwrite')
+            self.model_overwrite = model_overwrite
+
  # TODO: Where are we planning on using DefaultOptions and BatchOptions?... I think I should consider argparse and __main__ to be in the same context...
 
 
@@ -294,7 +309,10 @@ class DefaultOptions:
     retry_count: Optional[int] = None
     pause_time: Optional[int] = None
 
-    def __init__(self, sorter=None, max_images=None, api_key=None, with_prompt=None, limit_rate=None, retry_count=None, pause_time=None):
+    cache_mode: Optional[int] = None
+    model_overwrite: Optional[bool] = None
+
+    def __init__(self, sorter=None, max_images=None, api_key=None, with_prompt=None, limit_rate=None, retry_count=None, pause_time=None, cache_mode=None, model_overwrite=None):
         if sorter is not None:
             Validation.validate_string(
                 sorter, 'sorter')
@@ -331,3 +349,16 @@ class DefaultOptions:
                 pause_time, 'pause_time', min_value=0
             )
             self.pause_time = pause_time
+
+        if cache_mode is not None:
+            Validation.validate_string(
+                cache_mode, 'cache_mode', whitelist=['0', '1', '2']
+            )
+            if cache_mode is '2':
+                raise NotImplementedException(
+                    'cache mode of 2 has not been implemented yet')
+            self.cache_mode = cache_mode
+
+        if model_overwrite is not None:
+            Validation.validate_bool(model_overwrite, 'model_overwrite')
+            self.model_overwrite = model_overwrite

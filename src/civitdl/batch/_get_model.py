@@ -271,10 +271,16 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
     model_path = os.path.join(
         sorter_data.model_dir_path, model_filename)
 
-    hash_manager = HashManager(metadata.version_id)
-    cached_model_path = hash_manager.get_local_model_path()
+    hash_manager = None
+    cached_model_path = None
+    if batchOptions.cache_mode is not '0':
+        hash_manager = HashManager(metadata.version_id)
+        cached_model_path = hash_manager.get_local_model_path()
 
-    if cached_model_path and cached_model_path != model_path:
+    print(batchOptions.cache_mode)
+    print(hash_manager)
+
+    if hash_manager and cached_model_path and cached_model_path != model_path:
         print(Styler.stylize(f"""Model already existed at the following path:
             - Path: {cached_model_path}""", color='info'))
         print(Styler.stylize(f"Copying to new path...", color='info'))
@@ -284,10 +290,11 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
             ceil(batchOptions.limit_rate / 8)
             if batchOptions.limit_rate is not None and batchOptions.limit_rate is not 0
             else 1024*1024)
-        write_to_file(model_path, content_chunks, mode='wb', limit_rate=batchOptions.limit_rate, overwrite=False,
+        write_to_file(model_path, content_chunks, mode='wb', limit_rate=batchOptions.limit_rate, overwrite=batchOptions.model_overwrite,
                       use_pb=True, total=float(model_res.headers.get('content-length', 0)), desc='Model')
 
-    hash_manager.set_local_model_cache(model_path, metadata.version_hashes)
+    if hash_manager:
+        hash_manager.set_local_model_cache(model_path, metadata.version_hashes)
 
     print(Styler.stylize(
         f"""\nDownload completed for \"{metadata.model_name}\" 
