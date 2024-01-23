@@ -65,25 +65,34 @@
 - Run `civitdl --help` to check what options are available!
 - To change the default for each options, see [ciitconfig doc](./civitconfig.md)
 
+<br/>
 
 `--sorter <sorter-name / path>` | `-s <sorter-name / path>`
 - Specifies which sorter to use. The default uses the basic sorter.
 - See [sorter doc](./doc/sorter.md) for more info.
 - Example: `civitdl 123456 ./loras -s tags`
 
+<br/>
+
 `--max-images <number>` | `-i <number>`
 - Specifies the max images to download for each model. The default is 3 images.
 - Example: `civitdl 80848 ./loras -i 20`
+
+<br/>
 
 `--api-key` | `-k`
 - Running with this option will prompt the user to type in their API key.
 - See [api key doc](/doc/api_key.md) for help on how to get and use API key.
 - Example: `civitdl 123456 ./loras -k`
 
+<br/>
+
 `--with-prompt` | `-p` | `--no-with-prompt`
 - Running with the option will download an image's JSON prompt/metadata alongside the image. By default, civitdl downloads with prompt.
 - Use `--no-with-prompt` to disable downloading images' JSON prompt/metadata.
 - Example: `civitdl 80848 ./loras --with-prompt`
+
+<br/>
 
 `--limit-rate <byte-value>`
 - Limit the number of bytes downloaded per second for models only. By default, no limit rate is applied.
@@ -91,13 +100,19 @@
 - Example: `civitdl 80848 ./loras --limit-rate 5M`
   - `1K` for 1 KB/s, `1M` for 1 MB/s, `1G` for 1 GB/s.
 
+<br/>
+
 `--retry-count <number>`
 - Specifies the number of times to retry downloading the same model if it fails. Default is 3.
 - Example: `civitdl 80848 ./loras --retry-count 10`
 
+<br/>
+
 `--pause-time <seconds>`
 - Specifies how many seconds to pause between each model download. The default is 3 seconds.
 - Example: `civitdl 123456 6 ./loras --pause-time 5`
+
+<br/>
 
 `--cache-mode <0 | 1 | 2>`
 - Specifies the cache mode for each model. The default is `1`.
@@ -114,15 +129,19 @@
     - Warning that this will be slower than `1` because hashes will be computed for each check.
     - `NOT IMPLEMENTED YET`
 
+<br/>
+
 `--model-overwrite` | `--no-model-overwrite`
 - Running with the option will download model even if it already exists at the destination path. By default, civitdl will not overwrite models.
 - Use `--no-model-overwrite` to disable overwriting model that already exist at the destination path.
 - Example: `civitdl 80848 ./loras --model-overwrite`
 
-
+<br/>
 
 `--verbose`
 - Prints out traceback and other logs.
+
+<br/>
 
 `--version` | `-v`
 - Get version of the program.
