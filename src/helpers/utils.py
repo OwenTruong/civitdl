@@ -296,8 +296,6 @@ class BatchOptions:
             Validation.validate_bool(model_overwrite, 'model_overwrite')
             self.model_overwrite = model_overwrite
 
- # TODO: Where are we planning on using DefaultOptions and BatchOptions?... I think I should consider argparse and __main__ to be in the same context...
-
 
 class DefaultOptions:
     sorter: Optional[str] = None
