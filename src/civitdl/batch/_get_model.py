@@ -167,6 +167,13 @@ def _download_hashes(dirpath: str, filename_no_ext: str, hashes: Dict):
 
 
 def _get_filename_and_model_res(input_str: str, metadata: Metadata, batchOptions: BatchOptions):
+    def get_version_file():
+        for file in metadata.version_dict['files']:
+            file_version_id = re.search(
+                r'(?<=models\/)\d+', file['downloadUrl'])
+            if file_version_id != None and file_version_id.group(0) == metadata.version_id:
+                return file
+
     # Request model
     print_verbose('Preparing to send download model request...')
     print_verbose(f'Model Download API URL: {metadata.model_download_url}')
@@ -192,24 +199,21 @@ def _get_filename_and_model_res(input_str: str, metadata: Metadata, batchOptions
             res.status_code, f'Downloading model from CivitAI failed for model id, {metadata.model_id}, and version id, {metadata.version_id}')
 
     # Find filename from content disposition
+    version_file = get_version_file()
     content_disposition = res.headers.get('Content-Disposition')
-
-    if content_disposition == None:
-        raise ResourcesException(
-            f'Downloaded model from CivitAI has no content disposition header available.')
     filename = None
 
-    try:
-        filename = content_disposition.split(
-            'filename=')[-1].strip('"').encode('latin-1').decode('utf-8')
-    except UnicodeDecodeError:
-        # Alternative solution for finding filename
-        for file in metadata.version_dict['files']:
-            file_version_id = re.search(
-                r'(?<=models\/)\d+', file['downloadUrl'])
-            if file_version_id != None and file_version_id.group(0) == metadata.version_id:
-                filename = file['name']
-                break
+    if content_disposition == None:
+        print(Styler.stylize(
+            f'Downloaded model from CivitAI has no content disposition header available.', color='warning'))
+        filename = f'{metadata.model_name}--{version_file["name"]}'
+    else:
+        try:
+            filename = content_disposition.split(
+                'filename=')[-1].strip('"').encode('latin-1').decode('utf-8')
+        except UnicodeDecodeError:
+            # Alternative solution for finding filename
+            filename = f'{metadata.model_name}--{version_file["name"]}'
 
     if filename == None:
         raise UnexpectedException(
