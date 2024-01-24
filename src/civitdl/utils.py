@@ -7,7 +7,6 @@ from .exceptions import UnexpectedException
 
 
 def write_to_file(path, content, mode: Union[str, None] = None, encoding: Union[str, None] = None):
-    """Write to file. Specify mode and encoding (UTF-8) depending on the type of file being downloaded"""
     f = open(path, mode, encoding=encoding) if mode != None else open(
         path, 'w', encoding=encoding)
     f.write(content)
