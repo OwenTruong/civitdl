@@ -104,7 +104,8 @@ def write_contents(file: IO, content_chunks: Iterable, limit_rate: Union[int, No
         bytes_downloaded = len(content)
 
         download_time = time.perf_counter() - last_chunk_time
-        speed = bytes_downloaded / download_time
+        speed = bytes_downloaded / \
+            download_time if download_time != 0 else float('inf')
         if limit_rate is not None and limit_rate is not 0 and speed > limit_rate:
             time_to_sleep = (bytes_downloaded / limit_rate) - download_time
             if time_to_sleep > 0:
