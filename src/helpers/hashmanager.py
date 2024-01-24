@@ -45,16 +45,13 @@ class HashManager:
             csv_reader = csv.reader(f)
             next(csv_reader)
             for row in csv_reader:
-                try:
-                    row[3]
-                    raise ResourcesException(
-                        f'Hash file is invalid. File contains rows with more than 3 columns.\nThe filepath for the invalid csv is "{self.__filepath}"')
-                except:
-                    hashes_dict[row[0]] = {
-                        'model_filepath': row[1],
-                        'SHA256': row[2],
-                        'BLAKE3': row[3]
-                    }
+                if row == []:
+                    continue
+                hashes_dict[row[0]] = {
+                    'model_filepath': row[1],
+                    'SHA256': row[2],
+                    'BLAKE3': row[3]
+                }
         return hashes_dict
 
     def __write_to_csv(self):
