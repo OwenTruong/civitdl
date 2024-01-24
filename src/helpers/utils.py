@@ -127,7 +127,7 @@ def delete_file_if_exists(file_path):
 def read_dict_from_csv(filepath: str):
     csv_dict = {}
 
-    with open(filepath, 'r') as f:
+    with open(filepath, 'r', encoding='UTF-8') as f:
         csv_iterator = csv.reader(f)
         next(csv_iterator)
         for row in csv_iterator:
