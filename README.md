@@ -68,10 +68,10 @@ To get started quickly, copy the command below.
 - See [civitdl doc](/doc/civitdl.md) for more info.
 
 ``` bash
-civitdl model_id rootpath
+civitdl 123456 ./models
 ```
-- Replace `model_id` your model of choice.
-- Replace `rootpath` with the directory you wish to download the model to.
+- Replace `123456` your model of choice (it can be a civitai.com url or model id).
+- Replace `./models` with the directory you wish to download the model to.
 
 <br/>
 
