@@ -1,13 +1,14 @@
 import json
-from typing import Callable, List
+from typing import Callable, List, Union
 
 from tqdm import tqdm
 
 from .exceptions import UnexpectedException
 
 
-def write_to_file(path, content, mode: str = None):
-    f = open(path, mode) if mode != None else open(path, 'w')
+def write_to_file(path, content, mode: Union[str, None] = None, encoding: Union[str, None] = None):
+    f = open(path, mode, encoding=encoding) if mode != None else open(
+        path, 'w', encoding=encoding)
     f.write(content)
     f.close()
 

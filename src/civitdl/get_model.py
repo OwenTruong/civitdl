@@ -215,7 +215,7 @@ def download_model(input_str: str, create_dir_path: Callable[[Dict, Dict, str, s
     model_path = os.path.join(
         dst_dir_path, f'{filename_without_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}{filename_ext}')
     write_to_file(json_path, dumps(
-        metadata.model_dict, indent=2, ensure_ascii=False))
+        metadata.model_dict, indent=2, ensure_ascii=False), encoding='UTF-8')
     write_to_file_with_progress_bar(model_path, model_res, 'wb')
     if download_image:
         _download_image(
