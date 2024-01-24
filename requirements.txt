@@ -1,4 +1,4 @@
-requests
-build
-termcolor
-tqdm
+requests>=2.31.0,<3
+tqdm>=4.66.1,<5
+appdirs>=1.4.4,<2
+argparse>=1.4,<2
