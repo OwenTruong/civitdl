@@ -136,9 +136,9 @@ Thanks for the interest in the project!
 
 Please create an issue if you encounter any problem, bugs or if you have a feature request.
 
-To debug things, it is recommended to run with `-v` or `--verbose` option.
+To debug things, it is recommended to run with `--verbose` option.
 * Running in verbose allows users to print tracebacks and other messages useful for debugging.
-* Example: `civitdl 123456 ./models -d`
+* Example: `civitdl 123456 ./models --verbose`
 
 To work on an issue:
 * Please create a fork.
