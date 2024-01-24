@@ -142,7 +142,7 @@ def read_dict_from_csv(filepath: str):
 # Level 2 - Currently or in the future might depends on level 0 and 1
 
 
-def write_to_file(filepath: str, content_chunks: Iterable, mode: str = None, limit_rate: Union[int, None] = 0, overwrite: bool = True, use_pb: bool = False, total: float = 0, desc: str = None):
+def write_to_file(filepath: str, content_chunks: Iterable, mode: str = None, limit_rate: Union[int, None] = 0, encoding: Union[str, None] = None, overwrite: bool = True, use_pb: bool = False, total: float = 0, desc: str = None):
     """Uses content_chunks to write to filepath bit by bit. If use_pb is enabled, it is recommended to set total kwarg to the length of the file to be written."""
     progress_bar = get_progress_bar(total, desc) if use_pb else None
 
@@ -161,7 +161,7 @@ def write_to_file(filepath: str, content_chunks: Iterable, mode: str = None, lim
         temp_filepath = os.path.join(temp_dirpath, os.path.basename(filepath))
         os.makedirs(temp_dirpath, exist_ok=True)
         try:
-            with open(temp_filepath, mode if mode != None else 'w') as file:
+            with open(temp_filepath, mode if mode != None else 'w', encoding=encoding) as file:
                 write_contents(file, content_chunks,
                                limit_rate, update_progress_bar)
             shutil.move(temp_filepath, filepath)
@@ -173,12 +173,12 @@ def write_to_file(filepath: str, content_chunks: Iterable, mode: str = None, lim
             progress_bar.close()
 
 
-def write_to_files(dirpath: str, basenames: Iterable, content_chunks_list: Iterable[Iterable], mode: str = None, use_pb: bool = False, total: float = 0, desc: str = None):
+def write_to_files(dirpath: str, basenames: Iterable, content_chunks_list: Iterable[Iterable], mode: str = None, encoding: Union[str, None] = None, use_pb: bool = False, total: float = 0, desc: str = None):
     """Write content to multiple files in dirpath. If use_pb is enabled, it is recommended to set total kwarg to the number of files being written."""
     progress_bar = get_progress_bar(total, desc) if use_pb else None
     for basename, content_chunks in zip(basenames, content_chunks_list):
         filepath = os.path.join(dirpath, basename)
-        with open(filepath, mode if mode != None else 'w') as file:
+        with open(filepath, mode if mode != None else 'w', encoding=encoding) as file:
             write_contents(file, content_chunks)
             if (progress_bar):
                 progress_bar.update(1)

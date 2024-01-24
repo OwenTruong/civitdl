@@ -144,7 +144,7 @@ def _download_images(dirpath: str, image_basenames: List[str], image_urls: List[
 def _download_prompts(dirpath: str, basenames: List[str], image_dicts: List[Dict]):
     if len(image_dicts) != 0:
         write_to_files(dirpath, basenames, [dumps(
-            image_dict, indent=2, ensure_ascii=False) for image_dict in image_dicts])
+            image_dict, indent=2, ensure_ascii=False) for image_dict in image_dicts], encoding='UTF-8')
 
 
 def _download_metadata(dirpath: str, metadata: Metadata):
@@ -154,7 +154,7 @@ def _download_metadata(dirpath: str, metadata: Metadata):
         dirpath, model_dict_filename)
     os.makedirs(dirpath, exist_ok=True)
     write_to_file(model_dict_path, [dumps(
-        metadata.model_dict, indent=2, ensure_ascii=False)])
+        metadata.model_dict, indent=2, ensure_ascii=False)], encoding='UTF-8')
 
 
 def _download_hashes(dirpath: str, filename_no_ext: str, hashes: Dict):
@@ -163,7 +163,7 @@ def _download_hashes(dirpath: str, filename_no_ext: str, hashes: Dict):
     data = 'hash_name, hash_id\n'
     for key, value in hashes.items():
         data += f'{key}, {value}\n'
-    write_to_file(hashes_dict_path, [data.rstrip()])
+    write_to_file(hashes_dict_path, [data.rstrip()], encoding='UTF-8')
 
 
 def _get_filename_and_model_res(input_str: str, metadata: Metadata, batchOptions: BatchOptions):
