@@ -33,7 +33,7 @@ class HashManager:
         self.__filepath = os.path.join(dirpath, filename)
         if not os.path.isfile(self.__filepath):
             os.makedirs(os.path.dirname(self.__filepath), exist_ok=True)
-            with open(self.__filepath, 'w') as file:
+            with open(self.__filepath, 'w', encoding='UTF-8') as file:
                 csv_writer = csv.writer(file)
                 csv_writer.writerow(self.__CACHE_COLUMNS)
 
@@ -41,7 +41,7 @@ class HashManager:
 
     def __read_from_csv(self):
         hashes_dict = {}
-        with open(self.__filepath, 'r') as f:
+        with open(self.__filepath, 'r', encoding='UTF-8') as f:
             csv_reader = csv.reader(f)
             next(csv_reader)
             for row in csv_reader:
@@ -55,7 +55,7 @@ class HashManager:
         return hashes_dict
 
     def __write_to_csv(self):
-        with open(self.__filepath, 'w') as f:
+        with open(self.__filepath, 'w', encoding='UTF-8') as f:
             csv_writer = csv.writer(f)
             csv_writer.writerow(
                 self.__CACHE_COLUMNS)

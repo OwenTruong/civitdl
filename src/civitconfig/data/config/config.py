@@ -61,7 +61,7 @@ class Config:
     def _getConfig(self):
         global _config
         if not _config:
-            with open(self._config_path) as file:
+            with open(self._config_path, encoding='UTF-8') as file:
                 _config = json.load(file)
             if _config == None:
                 raise UnexpectedException('JSON config file was not read...')
@@ -70,7 +70,7 @@ class Config:
 
     def _saveConfig(self, dic: Dict):
         global _config
-        with open(self._config_path, 'w') as file:
+        with open(self._config_path, 'w', encoding='UTF-8') as file:
             json.dump(dic, file, indent=2)
             _config = dic
 

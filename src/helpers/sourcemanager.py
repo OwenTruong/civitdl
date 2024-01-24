@@ -93,7 +93,7 @@ class SourceManager:
                 print(f'after: {string}')
                 file_str = None
 
-                with open(string, 'r') as file:
+                with open(string, 'r', encoding='UTF-8') as file:
                     file_str = file.read().strip()
                 if file_str == None:
                     raise UnexpectedException(
