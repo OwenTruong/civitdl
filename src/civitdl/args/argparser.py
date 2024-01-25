@@ -52,11 +52,15 @@ parser.add_argument('-s', '--sorter', type=str,
 parser.add_argument('-i', '--max-images', metavar='INT', type=int,
                     help='Specify max images to download for each model.')
 
-parser.add_argument('-k', '--api-key', action=PwdAction, type=str, required=False,
+parser.add_argument('-k', '--api-key', action=PwdAction, type=str, required=False, nargs=0,
                     help='Prompt user for api key to download models that require users to log in.')
 
 parser.add_argument(
     '--with-prompt', action=argparse.BooleanOptionalAction, help='Download images with prompt.'
+)
+
+parser.add_argument(
+    '--without-model', action=argparse.BooleanOptionalAction, help='Download only extra details like metadata, images and hashes.'
 )
 
 parser.add_argument(
@@ -105,6 +109,7 @@ def get_args():
         "api_key": parser_result.api_key or config_defaults.get('api_key', None),
 
         "with_prompt": parser_result.with_prompt or config_defaults.get('with_prompt', None),
+        "without_model": parser_result.without_model or config_defaults.get('without_model', None),
         "limit_rate": parser_result.limit_rate or config_defaults.get('limit_rate', None),
         "retry_count": parser_result.retry_count or config_defaults.get('retry_count', None),
         "pause_time": parser_result.pause_time or config_defaults.get('pause_time', None),

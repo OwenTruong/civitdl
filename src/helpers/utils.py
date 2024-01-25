@@ -223,6 +223,7 @@ class BatchOptions:
     api_key: Optional[str] = None
 
     with_prompt: bool = True
+    without_model: bool = False
     limit_rate: int = 0
     retry_count: int = 3
     pause_time: int = 3
@@ -246,7 +247,7 @@ class BatchOptions:
         print_verbose("Chosen Sorter Description: ", self._sorter.__doc__)
         return self._sorter
 
-    def __init__(self, retry_count, pause_time, max_images, with_prompt, api_key, verbose, sorter, limit_rate, cache_mode, model_overwrite):
+    def __init__(self, retry_count, pause_time, max_images, with_prompt, without_model, api_key, verbose, sorter, limit_rate, cache_mode, model_overwrite):
         self.session = requests.Session()
 
         if verbose is not None:
@@ -270,6 +271,10 @@ class BatchOptions:
         if with_prompt is not None:
             Validation.validate_bool(with_prompt, 'with_prompt')
             self.with_prompt = with_prompt
+
+        if without_model is not None:
+            Validation.validate_bool(without_model, 'without_model')
+            self.without_model = without_model
 
         if limit_rate is not None:
             Validation.validate_types(
@@ -304,6 +309,7 @@ class DefaultOptions:
     api_key: Optional[str] = None
 
     with_prompt: Optional[bool] = None
+    without_model: Optional[bool] = None
     limit_rate: Optional[str] = None
     retry_count: Optional[int] = None
     pause_time: Optional[int] = None
@@ -311,7 +317,7 @@ class DefaultOptions:
     cache_mode: Optional[int] = None
     model_overwrite: Optional[bool] = None
 
-    def __init__(self, sorter=None, max_images=None, api_key=None, with_prompt=None, limit_rate=None, retry_count=None, pause_time=None, cache_mode=None, model_overwrite=None):
+    def __init__(self, sorter=None, max_images=None, api_key=None, with_prompt=None, without_model=None, limit_rate=None, retry_count=None, pause_time=None, cache_mode=None, model_overwrite=None):
         if sorter is not None:
             Validation.validate_string(
                 sorter, 'sorter')
@@ -331,6 +337,10 @@ class DefaultOptions:
         if with_prompt is not None:
             Validation.validate_bool(with_prompt, 'with_prompt')
             self.with_prompt = with_prompt
+
+        if without_model is not None:
+            Validation.validate_bool(without_model, 'without_model')
+            self.without_model = without_model
 
         if limit_rate is not None:
             Validation.validate_string(limit_rate, 'limit_rate')

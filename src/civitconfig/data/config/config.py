@@ -19,6 +19,7 @@ DEFAULT_CONFIG = {
         "api_key": "",
 
         "with_prompt": True,
+        "without_model": False,
         "limit_rate": '0',
         "retry_count": 3,
         "pause_time": 3.0,

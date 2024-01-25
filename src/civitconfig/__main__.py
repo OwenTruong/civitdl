@@ -30,6 +30,7 @@ def main():
                 max_images=args['max_images'],
                 api_key=args['api_key'],
                 with_prompt=args['with_prompt'],
+                without_model=args['without_model'],
                 limit_rate=args['limit_rate'],
                 retry_count=args['retry_count'],
                 pause_time=args['pause_time'],

@@ -47,6 +47,9 @@ default_parser.add_argument('-k', '--api-key', action=PwdAction, type=str, nargs
 default_parser.add_argument('--with-prompt', action=argparse.BooleanOptionalAction,
                             help='Toggles default behavior on whether to download prompt alongside images.')
 
+default_parser.add_argument('--without-model', action=argparse.BooleanOptionalAction,
+                            help='Toggles default behavior on whether to download model or not.')
+
 default_parser.add_argument('--limit-rate', type=str,
                             help='Set the default limit for the download speed/rate of resources downloaded from CivitAI. Set it to 0 to disable limit.'
                             )
