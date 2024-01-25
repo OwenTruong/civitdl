@@ -41,7 +41,7 @@ default_parser.add_argument('-i', '--max-images', metavar='INT', type=int,
 default_parser.add_argument('-s', '--sorter', metavar='NAME', type=str,
                             help='Set the default sorter given name of sorter (filepath not accepted).')
 
-default_parser.add_argument('-k', '--api-key', action=PwdAction, type=str, nargs=0,
+default_parser.add_argument('-k', '--api-key', action=PwdAction, type=str, required=False, nargs='?',
                             help='Prompts the user for their api key to use for model downloads that require users to log in.')
 
 default_parser.add_argument('--with-prompt', action=argparse.BooleanOptionalAction,
