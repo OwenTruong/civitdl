@@ -106,7 +106,7 @@ def write_contents(file: IO, content_chunks: Iterable, limit_rate: Union[int, No
         download_time = time.perf_counter() - last_chunk_time
         speed = bytes_downloaded / \
             download_time if download_time != 0 else float('inf')
-        if limit_rate is not None and limit_rate is not 0 and speed > limit_rate:
+        if limit_rate is not None and limit_rate != 0 and speed > limit_rate:
             time_to_sleep = (bytes_downloaded / limit_rate) - download_time
             if time_to_sleep > 0:
                 time.sleep(time_to_sleep)
@@ -264,7 +264,7 @@ class BatchOptions:
             Validation.validate_integer(max_images, 'max_images', min_value=0)
             self.max_images = max_images
 
-        if api_key is not None and api_key is not '':
+        if api_key is not None and api_key != '':
             Validation.validate_string(api_key, 'api_key')
             self.api_key = api_key
 
@@ -293,7 +293,7 @@ class BatchOptions:
         if cache_mode is not None:
             Validation.validate_string(
                 cache_mode, 'cache_mode', whitelist=['0', '1', '2'])
-            if cache_mode is '2':
+            if cache_mode == '2':
                 raise NotImplementedException(
                     'cache mode of 2 has not been implemented yet')
             self.cache_mode = cache_mode
@@ -363,7 +363,7 @@ class DefaultOptions:
             Validation.validate_string(
                 cache_mode, 'cache_mode', whitelist=['0', '1', '2']
             )
-            if cache_mode is '2':
+            if cache_mode == '2':
                 raise NotImplementedException(
                     'cache mode of 2 has not been implemented yet')
             self.cache_mode = cache_mode

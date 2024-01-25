@@ -101,7 +101,8 @@ class Metadata:
         return self.__get_metadata(metadata_url)
 
     def __get_version_metadata(self):
-        metadata_url = f'https://civitai.com/api/v1/model-versions/{self.version_id}'
+        metadata_url = f'https://civitai.com/api/v1/model-versions/{
+            self.version_id}'
         return self.__get_metadata(metadata_url)
 
     def __get_metadata(self, url: str):
@@ -149,7 +150,8 @@ def _download_prompts(dirpath: str, basenames: List[str], image_dicts: List[Dict
 
 def _download_metadata(dirpath: str, metadata: Metadata):
 
-    model_dict_filename = f'model_dict-mid_{metadata.model_id}-vid_{metadata.version_id}.json'
+    model_dict_filename = f'model_dict-mid_{
+        metadata.model_id}-vid_{metadata.version_id}.json'
     model_dict_path = os.path.join(
         dirpath, model_dict_filename)
     os.makedirs(dirpath, exist_ok=True)
@@ -270,7 +272,8 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
 
     # Download model & hashes
     os.makedirs(sorter_data.model_dir_path, exist_ok=True)
-    model_filename_no_ext = f'{filename_no_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}'
+    model_filename_no_ext = f'{
+        filename_no_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}'
 
     _download_hashes(sorter_data.model_dir_path,
                      model_filename_no_ext,
@@ -284,7 +287,7 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
 
         hash_manager = None
         cached_model_path = None
-        if batchOptions.cache_mode is not '0':
+        if batchOptions.cache_mode != '0':
             hash_manager = HashManager(metadata.version_id)
             cached_model_path = hash_manager.get_local_model_path()
 
@@ -296,7 +299,7 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
         else:
             content_chunks = model_res.iter_content(
                 ceil(batchOptions.limit_rate / 8)
-                if batchOptions.limit_rate is not None and batchOptions.limit_rate is not 0
+                if batchOptions.limit_rate is not None and batchOptions.limit_rate != 0
                 else 1024*1024)
             write_to_file(model_path, content_chunks, mode='wb', limit_rate=batchOptions.limit_rate, overwrite=batchOptions.model_overwrite,
                           use_pb=True, total=float(model_res.headers.get('content-length', 0)), desc='Model')
@@ -311,7 +314,7 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
             'Program configured to disable download for model, because option "without-model" is enabled.')
 
     print(Styler.stylize(
-        f"""\nDownload completed for \"{metadata.model_name}\" 
+        f"""\nDownload completed for \"{metadata.model_name}\"
             - Model ID: {metadata.model_id}
             - Version ID: {metadata.version_id}
             - Model Path: {model_path}
