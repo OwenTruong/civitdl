@@ -276,36 +276,48 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
                      model_filename_no_ext,
                      metadata.version_hashes)
 
-    model_filename = model_filename_no_ext + filename_ext
-    model_path = os.path.join(
-        sorter_data.model_dir_path, model_filename)
+    model_path = 'N/A'
+    if not batchOptions.without_model:
+        model_filename = model_filename_no_ext + filename_ext
+        model_path = os.path.join(
+            sorter_data.model_dir_path, model_filename)
 
-    hash_manager = None
-    cached_model_path = None
-    if batchOptions.cache_mode is not '0':
-        hash_manager = HashManager(metadata.version_id)
-        cached_model_path = hash_manager.get_local_model_path()
+        hash_manager = None
+        cached_model_path = None
+        if batchOptions.cache_mode is not '0':
+            hash_manager = HashManager(metadata.version_id)
+            cached_model_path = hash_manager.get_local_model_path()
 
-    if hash_manager and cached_model_path and cached_model_path != model_path:
-        print(Styler.stylize(f"""Model already existed at the following path:
-            - Path: {cached_model_path}""", color='info'))
-        print(Styler.stylize(f"Copying to new path...", color='info'))
-        shutil.copy(cached_model_path, model_path)
+        if hash_manager and cached_model_path and cached_model_path != model_path:
+            print(Styler.stylize(f"""Model already existed at the following path:
+                - Path: {cached_model_path}""", color='info'))
+            print(Styler.stylize(f"Copying to new path...", color='info'))
+            shutil.copy(cached_model_path, model_path)
+        else:
+            content_chunks = model_res.iter_content(
+                ceil(batchOptions.limit_rate / 8)
+                if batchOptions.limit_rate is not None and batchOptions.limit_rate is not 0
+                else 1024*1024)
+            write_to_file(model_path, content_chunks, mode='wb', limit_rate=batchOptions.limit_rate, overwrite=batchOptions.model_overwrite,
+                          use_pb=True, total=float(model_res.headers.get('content-length', 0)), desc='Model')
+
+        if hash_manager:
+            hash_manager.set_local_model_cache(
+                model_path, metadata.version_hashes)
     else:
-        content_chunks = model_res.iter_content(
-            ceil(batchOptions.limit_rate / 8)
-            if batchOptions.limit_rate is not None and batchOptions.limit_rate is not 0
-            else 1024*1024)
-        write_to_file(model_path, content_chunks, mode='wb', limit_rate=batchOptions.limit_rate, overwrite=batchOptions.model_overwrite,
-                      use_pb=True, total=float(model_res.headers.get('content-length', 0)), desc='Model')
-
-    if hash_manager:
-        hash_manager.set_local_model_cache(model_path, metadata.version_hashes)
+        print(Styler.stylize(
+            'Program configured to disable download for model.', color='info'))
+        print_verbose(
+            'Program configured to disable download for model, because option "without-model" is enabled.')
 
     print(Styler.stylize(
         f"""\nDownload completed for \"{metadata.model_name}\" 
             - Model ID: {metadata.model_id}
             - Version ID: {metadata.version_id}
-            - Path: {model_path}\n""", color='success'))
+            - Model Path: {model_path}
+            - Hashes Directory Path: {sorter_data.model_dir_path}
+            - Metadata Directory Path: {sorter_data.metadata_dir_path}
+            - Images Directory Path: {sorter_data.image_dir_path}
+            - Images Prompt/Metadata Directory Path: {sorter_data.prompt_dir_path}\n""", color='success'))
 
     print('---------------------------\n')

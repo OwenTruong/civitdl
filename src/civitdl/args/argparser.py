@@ -60,6 +60,10 @@ parser.add_argument(
 )
 
 parser.add_argument(
+    '--without-model', action=argparse.BooleanOptionalAction, help='Download only extra details like metadata, images and hashes.'
+)
+
+parser.add_argument(
     '--limit-rate', metavar='BYTE', type=str, help='Limit the download speed/rate of resources downloaded from CivitAI.'
 )
 
@@ -105,6 +109,7 @@ def get_args():
         "api_key": parser_result.api_key or config_defaults.get('api_key', None),
 
         "with_prompt": parser_result.with_prompt or config_defaults.get('with_prompt', None),
+        "without_model": parser_result.without_model or config_defaults.get('without_model', None),
         "limit_rate": parser_result.limit_rate or config_defaults.get('limit_rate', None),
         "retry_count": parser_result.retry_count or config_defaults.get('retry_count', None),
         "pause_time": parser_result.pause_time or config_defaults.get('pause_time', None),
