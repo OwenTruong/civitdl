@@ -52,7 +52,7 @@ parser.add_argument('-s', '--sorter', type=str,
 parser.add_argument('-i', '--max-images', metavar='INT', type=int,
                     help='Specify max images to download for each model.')
 
-parser.add_argument('-k', '--api-key', action=PwdAction, type=str, required=False,
+parser.add_argument('-k', '--api-key', action=PwdAction, type=str, required=False, nargs=0,
                     help='Prompt user for api key to download models that require users to log in.')
 
 parser.add_argument(
