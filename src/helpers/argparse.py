@@ -10,7 +10,7 @@ from helpers.styler import Styler
 class PwdAction(argparse.Action):
 
     def __call__(self, parser, namespace, values, option_string=None):
-        mypass = getpass.getpass(prompt='Key: ')
+        mypass = getpass.getpass(prompt='Key: ') if not values else values
         setattr(namespace, self.dest, mypass)
 
 
