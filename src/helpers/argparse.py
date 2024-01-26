@@ -1,16 +1,39 @@
 
 import argparse
-import getpass
 from gettext import gettext
+import os
 import sys
+import getpass
+try:
+    import msvcrt
+except:
+    None
 
 from helpers.styler import Styler
+
+
+def windows_getpass(prompt=""):
+    api_key = ""
+    while True:
+        char = msvcrt.getch().decode('utf-8')
+        if char == '\r' or char == '\n':
+            break
+        elif char == '\x03':  # Ctrl+C
+            raise KeyboardInterrupt
+        elif char == '\b':
+            api_key = api_key[:-1]
+        else:
+            api_key += char
+    return api_key
 
 
 class PwdAction(argparse.Action):
 
     def __call__(self, parser, namespace, values, option_string=None):
-        mypass = getpass.getpass(prompt='Key: ') if not values else values
+        mypass = values
+        if mypass is None:
+            mypass = windows_getpass(prompt='Key: ') if os.name == 'nt' else getpass.getpass(
+                prompt='Key: ')
         setattr(namespace, self.dest, mypass)
 
 
