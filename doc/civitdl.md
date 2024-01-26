@@ -94,6 +94,13 @@
 
 <br/>
 
+`--without-model` | `--no-without-model`
+- Running with `without-model` will disable download for models (metadata, image and etc. will still be downloaded like normal). By default, civitdl download models.
+- Use `--no-without-model` to enable downloading model.
+- Example: `civitdl 80848 ./loras --without-model`
+
+<br/>
+
 `--limit-rate <byte-value>`
 - Limit the number of bytes downloaded per second for models only. By default, no limit rate is applied.
   - Images are not included for now since the size per image is usually really small. Might be added later on in v2.

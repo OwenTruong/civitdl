@@ -1,5 +1,7 @@
 # civitdl (civitai-batch-download)
 
+(QUICK NOTE: CivitAI seems to have changed their API so that it will require an API key for all model downloads, please see [API Key Page](/doc/api_key.md) for instructions)
+
 **Note v2 has some changes regarding the cli args of the program. Please read the README below or run `civitdl --help` for the new arguments!**
 - To see changes to v2, go to [Changes in v2](#changes-in-v2-from-v1) section.
 
