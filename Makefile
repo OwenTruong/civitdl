@@ -2,6 +2,7 @@ install: uninstall
 	pip3 install .
 
 install2: uninstall
+	rm -rf dist build
 	python3 -m build
 	pip3 install -r ./requirements.txt
 	pip3 install --upgrade dist/*.whl
