@@ -12,14 +12,18 @@ except:
 from helpers.styler import Styler
 
 
-def windows_getpass():
-    api_key = ''
+def windows_getpass(prompt=""):
+    api_key = ""
     while True:
-        x = msvcrt.getch()
-        if x == '\r':
+        char = msvcrt.getch().decode('utf-8')
+        if char == '\r' or char == '\n':
             break
-        sys.stdout.write('*')
-        api_key += x
+        elif char == '\x03':  # Ctrl+C
+            raise KeyboardInterrupt
+        elif char == '\b':
+            api_key = api_key[:-1]
+        else:
+            api_key += char
     return api_key
 
 
@@ -28,7 +32,7 @@ class PwdAction(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         mypass = values
         if mypass is None:
-            mypass = windows_getpass() if os.name == 'nt' else getpass.getpass(
+            mypass = windows_getpass(prompt='Key: ') if os.name == 'nt' else getpass.getpass(
                 prompt='Key: ')
         setattr(namespace, self.dest, mypass)
 
