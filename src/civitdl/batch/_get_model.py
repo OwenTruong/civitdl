@@ -101,8 +101,7 @@ class Metadata:
         return self.__get_metadata(metadata_url)
 
     def __get_version_metadata(self):
-        metadata_url = f'https://civitai.com/api/v1/model-versions/{
-            self.version_id}'
+        metadata_url = f'https://civitai.com/api/v1/model-versions/{self.version_id}'  # nopep8 # Linux issue
         return self.__get_metadata(metadata_url)
 
     def __get_metadata(self, url: str):
