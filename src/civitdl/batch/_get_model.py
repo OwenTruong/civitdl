@@ -149,8 +149,7 @@ def _download_prompts(dirpath: str, basenames: List[str], image_dicts: List[Dict
 
 def _download_metadata(dirpath: str, metadata: Metadata):
 
-    model_dict_filename = f'model_dict-mid_{
-        metadata.model_id}-vid_{metadata.version_id}.json'
+    model_dict_filename = f'model_dict-mid_{metadata.model_id}-vid_{metadata.version_id}.json'  # nopep8 # Linux issue
     model_dict_path = os.path.join(
         dirpath, model_dict_filename)
     os.makedirs(dirpath, exist_ok=True)
@@ -271,8 +270,7 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
 
     # Download model & hashes
     os.makedirs(sorter_data.model_dir_path, exist_ok=True)
-    model_filename_no_ext = f'{
-        filename_no_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}'
+    model_filename_no_ext = f'{filename_no_ext}-mid_{metadata.model_id}-vid_{metadata.version_id}'  # nopep8 # Linux issue
 
     _download_hashes(sorter_data.model_dir_path,
                      model_filename_no_ext,
