@@ -72,7 +72,7 @@ class HashManager:
 
     def set_local_model_cache(self, model_filepath: str, hashes: Dict[str, str]) -> None:
         self.__hashes_dict[self.__version_id] = {
-            'model_filepath': model_filepath,
+            'model_filepath': os.path.abspath(model_filepath),
             'SHA256': hashes.get('SHA256', ''),
             'BLAKE3': hashes.get('BLAKE3', '')
         }
