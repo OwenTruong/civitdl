@@ -35,8 +35,7 @@ test_failed = False
 
 subprocess.run(
     ['python', '-m', 'venv', testvenv_dirpath])
-activate_cmd = 'testvenv\\Scripts\\activate' if subprocess.run(
-    ['uname'], capture_output=True, text=True).stdout.strip() == 'Windows' else 'source testvenv/bin/activate'
+activate_cmd = 'testvenv\\Scripts\\activate' if os.name == 'nt' else 'source testvenv/bin/activate'
 subprocess.run(['pip', 'install', root_dirpath])
 
 

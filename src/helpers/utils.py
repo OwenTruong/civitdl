@@ -36,7 +36,7 @@ def set_verbose(verbose: bool):
 
 def getDate():
     now = datetime.now()
-    return now.strftime("%Y-%m-%d--%H:%M:%S-%f")
+    return now.strftime("%Y_%m_%d-%Hm_%Mm_%Ss_%f")
 
 
 def get_version():
