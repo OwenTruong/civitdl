@@ -9,7 +9,7 @@ from math import ceil
 
 from helpers.styler import Styler
 from helpers.sourcemanager import Id
-from helpers.utils import BatchOptions, delete_file_if_exists, sprint, write_to_file, write_to_files, print_verbose, concurrent_request
+from helpers.utils import BatchOptions, delete_file_if_exists, print_newlines, sprint, write_to_file, write_to_files, print_verbose, concurrent_request
 from helpers.sorter.utils import SorterData
 from helpers.exceptions import InputException, ResourcesException, UnexpectedException, APIException
 from helpers.validation import Validation
@@ -234,7 +234,7 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
 
     metadata = Metadata(id, batchOptions)
 
-    sprint(Styler.stylize(
+    print_newlines(Styler.stylize(
         f"""Now downloading \"{metadata.model_name}\"...
             - Model ID: {metadata.model_id}
             - Version ID: {metadata.version_id}\n""",
@@ -290,7 +290,7 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
             cached_model_path = hash_manager.get_local_model_path()
 
         if hash_manager and cached_model_path and cached_model_path != model_path:
-            sprint(Styler.stylize(f"""Model already existed at the following path:
+            print_newlines(Styler.stylize(f"""Model already existed at the following path:
                 - Path: {cached_model_path}""", color='info'))
             sprint(Styler.stylize(f"Copying to new path...", color='info'))
             shutil.copy(cached_model_path, model_path)
@@ -311,7 +311,7 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
         print_verbose(
             'Program configured to disable download for model, because option "without-model" is enabled.')
 
-    sprint(Styler.stylize(
+    print_newlines(Styler.stylize(
         f"""\nDownload completed for \"{metadata.model_name}\"
             - Model ID: {metadata.model_id}
             - Version ID: {metadata.version_id}

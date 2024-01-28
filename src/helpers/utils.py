@@ -44,9 +44,12 @@ def get_version():
 
 
 def sprint(*args, **kwargs):
-    encoded_args = [str(arg).encode(
-        'utf-8', 'replace') for arg in args]
-    print(*encoded_args, **kwargs)
+    try:
+        print(*args, **kwargs)
+    except:
+        encoded_args = [str(arg).encode(
+            'utf-8', 'replace') for arg in args]
+        print(*encoded_args, **kwargs)
 
 
 # Level 1 - Currently or in the future might depends on level 0
@@ -69,6 +72,11 @@ def print_exc(exc: Exception, *args, **kwargs):
     else:
         sprint(Styler.stylize(str(exc), color='exception'), *args,
                file=sys.stderr, **kwargs)
+
+
+def print_newlines(string: str, **kwargs):
+    for el in string.split('\n'):
+        sprint(el, **kwargs)
 
 
 def safe_run(callback: Callable[..., any], *values: any) -> dict:
