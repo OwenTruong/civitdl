@@ -100,6 +100,9 @@ class Styler(Enum):
     def stylize(cls, string: str, color: str = None, bg_color: str = None, styles: List[str] = None):
         res = ''
 
+        if not isinstance(string, str):
+            raise Exception(f'String provided to stylize is not a string')
+
         if styles:
             for style in styles:
                 style_attr = _Style.get_attribute(style)
@@ -127,4 +130,4 @@ class Styler(Enum):
 
         res += string
         res += cls.RESET.value
-        return res
+        return str(res)

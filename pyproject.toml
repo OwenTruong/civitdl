@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "civitdl"
-version = "2.0.9"
+version = "2.0.11"
 authors = [ 
    { name = "Owen Truong" } 
 ]
@@ -15,7 +15,7 @@ requires-python = ">=3.7"
 license = {file = "License"}
 keywords = ["civitai", "batch download"]
 classifiers = [
-   "Programming Language :: Python :: 3.7",
+   "Programming Language :: Python :: 3.8",
    "License :: OSI Approved :: MIT License",
    "Operating System :: OS Independent"
 ]

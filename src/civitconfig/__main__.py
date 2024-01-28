@@ -6,7 +6,7 @@ from operator import itemgetter
 
 from helpers.styler import Styler
 from helpers.exceptions import UnexpectedException
-from helpers.utils import set_verbose, run_verbose, print_verbose, print_exc, DefaultOptions
+from helpers.utils import set_verbose, run_verbose, print_verbose, print_exc, DefaultOptions, sprint
 from civitconfig.args.argparser import get_args
 from civitconfig.data.configmanager import ConfigManager
 
@@ -62,7 +62,7 @@ def main():
                 'Unknown subcommand not caught by argparse')
 
     except Exception as e:
-        print('---------')
+        sprint('---------')
         run_verbose(traceback.print_exc)
         print_exc(e)
-        print('---------')
+        sprint('---------')

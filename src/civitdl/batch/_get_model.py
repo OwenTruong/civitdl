@@ -1,5 +1,6 @@
 from json import dumps
 import shutil
+import sys
 import requests
 import os
 import re
@@ -8,7 +9,7 @@ from math import ceil
 
 from helpers.styler import Styler
 from helpers.sourcemanager import Id
-from helpers.utils import BatchOptions, delete_file_if_exists, write_to_file, write_to_files, print_verbose, concurrent_request
+from helpers.utils import BatchOptions, delete_file_if_exists, print_newlines, sprint, write_to_file, write_to_files, print_verbose, concurrent_request
 from helpers.sorter.utils import SorterData
 from helpers.exceptions import InputException, ResourcesException, UnexpectedException, APIException
 from helpers.validation import Validation
@@ -86,13 +87,13 @@ class Metadata:
                 if isinstance(file['hashes'], dict):
                     hashes = file['hashes']
                 else:
-                    print(Styler.stylize(
+                    sprint(Styler.stylize(
                         'Hashes found in metadata is not a dictionary! There is an error with the API!', color='error'))
                 break
         if hashes is {}:
-            print(Styler.stylize('Hash not found in metadata.', color='warning'))
+            sprint(Styler.stylize('Hash not found in metadata.', color='warning'))
         elif "SHA256" not in hashes:
-            print(Styler.stylize('SHA256 hash not found.', color='warning'))
+            sprint(Styler.stylize('SHA256 hash not found.', color='warning'))
         return hashes
 
     def __get_model_metadata(self):
@@ -135,7 +136,7 @@ def _download_images(dirpath: str, image_basenames: List[str], image_urls: List[
     print_verbose('Finished requesting images...')
 
     if (len(image_content_chunks_list) == 0):
-        print(Styler.stylize('No images to download...', color='warning'))
+        sprint(Styler.stylize('No images to download...', color='warning'))
     else:
         write_to_files(dirpath, image_basenames, image_content_chunks_list, mode='wb',
                        use_pb=True, total=len(image_basenames), desc='Images')
@@ -204,7 +205,7 @@ def _get_filename_and_model_res(input_str: str, metadata: Metadata, batchOptions
     filename = None
 
     if content_disposition == None:
-        print(Styler.stylize(
+        sprint(Styler.stylize(
             f'Downloaded model from CivitAI has no content disposition header available.', color='warning'))
         filename = f'{metadata.model_name}--{version_file["name"]}'
     else:
@@ -233,7 +234,7 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
 
     metadata = Metadata(id, batchOptions)
 
-    print(Styler.stylize(
+    print_newlines(Styler.stylize(
         f"""Now downloading \"{metadata.model_name}\"...
             - Model ID: {metadata.model_id}
             - Version ID: {metadata.version_id}\n""",
@@ -289,9 +290,9 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
             cached_model_path = hash_manager.get_local_model_path()
 
         if hash_manager and cached_model_path and cached_model_path != model_path:
-            print(Styler.stylize(f"""Model already existed at the following path:
+            print_newlines(Styler.stylize(f"""Model already existed at the following path:
                 - Path: {cached_model_path}""", color='info'))
-            print(Styler.stylize(f"Copying to new path...", color='info'))
+            sprint(Styler.stylize(f"Copying to new path...", color='info'))
             shutil.copy(cached_model_path, model_path)
         else:
             content_chunks = model_res.iter_content(
@@ -305,12 +306,12 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
             hash_manager.set_local_model_cache(
                 model_path, metadata.version_hashes)
     else:
-        print(Styler.stylize(
+        sprint(Styler.stylize(
             'Program configured to disable download for model.', color='info'))
         print_verbose(
             'Program configured to disable download for model, because option "without-model" is enabled.')
 
-    print(Styler.stylize(
+    print_newlines(Styler.stylize(
         f"""\nDownload completed for \"{metadata.model_name}\"
             - Model ID: {metadata.model_id}
             - Version ID: {metadata.version_id}
@@ -320,4 +321,4 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
             - Images Directory Path: {sorter_data.image_dir_path}
             - Images Prompt/Metadata Directory Path: {sorter_data.prompt_dir_path}\n""", color='success'))
 
-    print('---------------------------\n')
+    sprint('---------------------------\n')

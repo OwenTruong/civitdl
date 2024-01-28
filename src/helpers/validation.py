@@ -11,8 +11,7 @@ class Validation:
     def __validate_arg_name(arg_name):
         if not isinstance(arg_name, str):
             raise UnexpectedException(
-                f'Name/title of validator is not a string (arg_name: {arg_name})'
-            )
+                f'Name/title of validator is not a string (arg_name: {arg_name})')
 
         if len(arg_name) == 0:
             raise UnexpectedException(
@@ -40,32 +39,27 @@ class Validation:
         cls.__validate_range(min_len, max_len)
         if min_len is not None and min_len < 0:
             raise UnexpectedException(
-                f'Minimum length provided with value "{value}" is below 0 (min_len: {min_len}).'
-            )
+                f'Minimum length provided with value "{value}" is below 0 (min_len: {min_len}).')
         if max_len is not None and max_len < 0:
             raise UnexpectedException(
-                f'Maximum length provided with value "{value}" is below 0 (max_len: {max_len}).'
-            )
+                f'Maximum length provided with value "{value}" is below 0 (max_len: {max_len}).')
 
         if not isinstance(whitelist, Iterable):
             raise UnexpectedException(
                 f'Whitelist provided with value "{value}" is not a list (whitelist: {whitelist}).')
         if not all(isinstance(item, str) for item in whitelist):
             raise UnexpectedException(
-                f'Whitelist provided with value "{value}" contains non-string elements (whitelist: {whitelist}).'
-            )
+                f'Whitelist provided with value "{value}" contains non-string elements (whitelist: {whitelist}).')
 
         if not isinstance(blacklist, Iterable):
             raise UnexpectedException(
                 f'Blacklist provided with value "{value}" is not a list (blacklist: {blacklist}).')
         if not all(isinstance(item, str) for item in blacklist):
             raise UnexpectedException(
-                f'Blacklist provided with value "{value}" contains non-string elements (blacklist: {blacklist}).'
-            )
+                f'Blacklist provided with value "{value}" contains non-string elements (blacklist: {blacklist}).')
         if len(whitelist) > 0 and len(blacklist) > 0:
             raise UnexpectedException(
-                f'Both whitelist and blacklist provided with value "{value}" is not empty. You can not have both whitelist and blacklist (whitelist: {whitelist}, blacklist: {blacklist}).'
-            )
+                f'Both whitelist and blacklist provided with value "{value}" is not empty. You can not have both whitelist and blacklist (whitelist: {whitelist}, blacklist: {blacklist}).')
 
         # Validate value
 
@@ -79,18 +73,15 @@ class Validation:
 
         if min_len is not None and len(value) < min_len:
             raise InputException(
-                f'Value provided for {arg_name} is below minimum length allowed (value: {value}, min_len: {min_len}).'
-            )
+                f'Value provided for {arg_name} is below minimum length allowed (value: {value}, min_len: {min_len}).')
 
         if max_len is not None and len(value) > max_len:
             raise InputException(
-                f'Value provided for {arg_name} is above maximum length allowed (value: {value}, min_len: {min_len}).'
-            )
+                f'Value provided for {arg_name} is above maximum length allowed (value: {value}, min_len: {min_len}).')
 
         if whitelist != [] and value not in whitelist:
             raise InputException(
-                f'Value provided for {arg_name} is not in whitelist (value: {value}, whitelist: {whitelist}).'
-            )
+                f'Value provided for {arg_name} is not in whitelist (value: {value}, whitelist: {whitelist}).')
 
         if blacklist != [] and value in blacklist:
             raise InputException(
@@ -184,15 +175,15 @@ class Validation:
 
         if len(value.strip()) is not len(value):
             print(Styler.stylize(
-                f'Directory name provided by {arg_name} contains leading and trailing space. Proceeding to trim the following "{value}"', color='WARNING'))
+                f'Directory name provided by {arg_name} contains leading and trailing space. Proceeding to trim the following "{value}"', color='WARNING').encode())
             value = value.trim()
 
         for el in value:
             if el in BLACKLISTED_DIR_CHARS:
                 raise InputException(
-                    f'Directory name provided by {arg_name} is invalid. It may not contain the illegal character, "{el}".',
+                    f'Directory name provided by {arg_name} is invalid. It may not contain the illegal character, "{el}".',  # nopep8
                     f'The provided directory name is "{value}".',
-                    f'The list of blacklisted characters are {BLACKLISTED_DIR_CHARS}.',
+                    f'The list of blacklisted characters are {BLACKLISTED_DIR_CHARS}.',  # nopep8
                     f'If this directory path is generated from a sorter, please report or change to a different sorter.'
                 )
 
@@ -211,11 +202,13 @@ class Validation:
 
         if len(value.strip()) is not len(value):
             print(Styler.stylize(
-                f'Directory path provided by {arg_name} contains leading and trailing space. Proceeding to trim the following "{value}"', color='WARNING'))
+                f'Directory path provided by {arg_name} contains leading and trailing space. Proceeding to trim the following "{value}"', color='WARNING')).encode()
             value = value.trim()
 
         modified_value = value.replace('/', '\\') if os.name == 'nt' else value
-        dir_names = modified_value.split(os.path.sep)
+        if os.name == 'nt' and os.path.isabs(modified_value):
+            modified_value = modified_value[2:]
+        dir_names = [s for s in modified_value.split(os.path.sep) if s != ""]
         for dir_name in dir_names:
             try:
                 cls.validate_dir_name(dir_name, arg_name)

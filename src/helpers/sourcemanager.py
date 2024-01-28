@@ -12,6 +12,7 @@ from tqdm import tqdm
 
 from helpers.styler import Styler
 from helpers.exceptions import CustomException, InputException, UnexpectedException
+from helpers.utils import print_verbose
 
 
 @dataclass
@@ -90,7 +91,6 @@ class SourceManager:
                     res.append(Id('site', [model_id], string))
             elif os.path.exists(self.__use_parent_dir_if_exist(string, parent)):
                 string = self.__use_parent_dir_if_exist(string, parent)
-                print(f'after: {string}')
                 file_str = None
 
                 with open(string, 'r', encoding='UTF-8') as file:
@@ -99,9 +99,10 @@ class SourceManager:
                     raise UnexpectedException(
                         'Unknown exception while reading batchfile path.')
                 str_li_res = self.__get_comma_list(file_str)
+                print_verbose(str_li_res)
                 res.extend(self.parse_src(str_li_res, parent=string))
             else:
                 raise InputException(
-                    f'Bad source provided: {string}', f'   Batchfile Path: {parent}' if parent else None)
+                    f'Bad source provided: {string}', f'   Parent Batchfile Path: {parent}' if parent else None)
 
         return res
