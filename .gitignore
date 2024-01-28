@@ -12,3 +12,4 @@ build
 test/models
 test/test
 **/.DS_Store
+.env

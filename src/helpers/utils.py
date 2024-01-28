@@ -84,7 +84,7 @@ def concurrent_request(req_fn, urls, max_workers=16):
 
 def get_progress_bar(total: float, desc: str):
     return tqdm(total=total, desc=desc,
-                unit='iB', unit_scale=True)
+                unit='iB', unit_scale=True, file=sys.stdout)
 
 
 def find_in_list(li, cond_fn: Callable[[any, int], bool], default=None):
