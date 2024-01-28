@@ -28,5 +28,3 @@ jobs:
         run: |
           python -m pip install -r ./test/requirements.txt
           python ./test/endtoend.py
-          echo $?
-          exit $?
