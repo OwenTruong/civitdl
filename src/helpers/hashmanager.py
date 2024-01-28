@@ -8,7 +8,7 @@ from appdirs import AppDirs
 
 from helpers.styler import Styler
 from helpers.exceptions import ResourcesException
-from helpers.utils import print_verbose
+from helpers.utils import print_verbose, sprint
 from helpers.vars.program_constants import app_dirs
 
 # TODO: Watch out for edge cases where one of the hash is empty.
@@ -82,7 +82,7 @@ class HashManager:
         hash_dict = self.__get_hash_dict()
 
         if hash_dict is None:
-            print(Styler.stylize(
+            sprint(Styler.stylize(
                 f'Cache of model with version id {self.__version_id} not found.', color='info'))
             return None
         else:

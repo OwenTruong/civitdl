@@ -43,6 +43,12 @@ def get_version():
     return importlib.metadata.version('civitdl')
 
 
+def sprint(*args, **kwargs):
+    encoded_args = [str(arg).encode(
+        'utf-8', 'replace') for arg in args]
+    print(*encoded_args, **kwargs)
+
+
 # Level 1 - Currently or in the future might depends on level 0
 
 
@@ -54,15 +60,15 @@ def run_verbose(fn, *args, **kwargs):
 def print_verbose(*args, **kwargs):
     if get_verbose():
         args = [Styler.stylize(str(arg), bg_color='info') for arg in args]
-        print(*args, **kwargs)
+        sprint(*args, **kwargs)
 
 
 def print_exc(exc: Exception, *args, **kwargs):
     if isinstance(exc, CustomException):
-        print(exc, file=sys.stderr, *args, **kwargs)
+        sprint(exc, file=sys.stderr, *args, **kwargs)
     else:
-        print(Styler.stylize(str(exc), color='exception'), *args,
-              file=sys.stderr, **kwargs)
+        sprint(Styler.stylize(str(exc), color='exception'), *args,
+               file=sys.stderr, **kwargs)
 
 
 def safe_run(callback: Callable[..., any], *values: any) -> dict:
@@ -154,7 +160,7 @@ def write_to_file(filepath: str, content_chunks: Iterable, mode: str = None, lim
     if not overwrite and os.path.exists(filepath):
         if (progress_bar):
             progress_bar.close()
-        print(Styler.stylize(
+        sprint(Styler.stylize(
             f'File already exists at "{filepath}"', color='info'))
     else:
         temp_dirpath = os.path.join(os.path.dirname(
@@ -168,8 +174,8 @@ def write_to_file(filepath: str, content_chunks: Iterable, mode: str = None, lim
             shutil.move(temp_filepath, filepath)
             shutil.rmtree(temp_dirpath)
         except Exception as e:
-            print('Existance: ', temp_dirpath, temp_filepath,
-                  os.path.exists(temp_filepath), file=sys.stderr)
+            sprint('Existance: ', temp_dirpath, temp_filepath,
+                   os.path.exists(temp_filepath), file=sys.stderr)
             if os.path.exists(temp_dirpath):
                 shutil.rmtree(temp_dirpath)
             raise e

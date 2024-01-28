@@ -175,7 +175,7 @@ class Validation:
 
         if len(value.strip()) is not len(value):
             print(Styler.stylize(
-                f'Directory name provided by {arg_name} contains leading and trailing space. Proceeding to trim the following "{value}"', color='WARNING'))
+                f'Directory name provided by {arg_name} contains leading and trailing space. Proceeding to trim the following "{value}"', color='WARNING').encode())
             value = value.trim()
 
         for el in value:
@@ -202,7 +202,7 @@ class Validation:
 
         if len(value.strip()) is not len(value):
             print(Styler.stylize(
-                f'Directory path provided by {arg_name} contains leading and trailing space. Proceeding to trim the following "{value}"', color='WARNING'))
+                f'Directory path provided by {arg_name} contains leading and trailing space. Proceeding to trim the following "{value}"', color='WARNING')).encode()
             value = value.trim()
 
         modified_value = value.replace('/', '\\') if os.name == 'nt' else value

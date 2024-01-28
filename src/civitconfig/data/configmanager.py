@@ -5,7 +5,7 @@ from appdirs import AppDirs
 
 from helpers.styler import Styler
 from helpers.exceptions import InputException, UnexpectedException
-from helpers.utils import DefaultOptions, createDirsIfNotExist, getDate, print_verbose
+from helpers.utils import DefaultOptions, createDirsIfNotExist, getDate, print_verbose, sprint
 from helpers.vars.program_constants import app_dirs
 
 from .config.config import Config, DEFAULT_CONFIG
@@ -88,19 +88,19 @@ class ConfigManager(Config):
     def deleteSorter(self, name):
         self._sorterConfig.deleteSorter(name)
         default_sorter_name = self.getDefault('sorter')
-        print(default_sorter_name, name)
+        sprint(default_sorter_name, name)
         if (default_sorter_name == name):
             self._defaultConfig.setDefault(DefaultOptions(sorter='basic'))
 
     def reset(self):
         self._setFallback()
-        print(Styler.stylize('Successfully resetted config.', color='success'))
+        sprint(Styler.stylize('Successfully resetted config.', color='success'))
 
     def download(self, dst_path):
         if os.path.isdir(dst_path):
             dst_path = os.path.join(dst_path, 'civitdl_config')
 
-        print(Styler.stylize(
+        sprint(Styler.stylize(
             f'Downloading zipped config to {dst_path}.zip', color='main'))
         shutil.make_archive(dst_path, 'zip',
                             self._config_dir_path)

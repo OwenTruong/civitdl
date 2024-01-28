@@ -28,6 +28,8 @@ testlog_filepath = os.path.join(root_dirpath, 'test', 'models', 'testlog.txt')
 config_testlog_filepath = os.path.join(
     root_dirpath, 'test', 'models', 'config_testlog.txt')
 
+test_failed = False
+
 
 ## Install Module ##
 
@@ -79,6 +81,7 @@ def civitdl_test(id, sources, options=[]):
         print(f'Civitdl General Test {id} success!')
     except Exception as e:
         print(f'Civitdl General Test {id} failed!')
+        test_failed = True
 
 
 def civitdl_error_test(id, sources, options=[]):
@@ -86,6 +89,7 @@ def civitdl_error_test(id, sources, options=[]):
         print(f'Civitdl Error Test {id}:')
         res = run_civitdl(sources, './error', options, show_error=False)
         print(f'Civitdl Error Test {id} failed!')
+        test_failed = True
     except Exception as e:
         # traceback.print_exc()
         # print(e)
@@ -99,6 +103,7 @@ def civitconfig_test(id, subcommand, options=[]):
         print(f'Civitconfig General Test {id} success!')
     except:
         print(f'Civitconfig General Test {id} failed!')
+        test_failed = True
 
 
 def civitconfig_error_test(id, subcommand, options=[]):
@@ -106,6 +111,7 @@ def civitconfig_error_test(id, subcommand, options=[]):
         print(f'Civitconfig Error Test {id}:')
         res = run_civitconfig(subcommand, options, show_error=False)
         print(f'Civitconfig Error Test {id} failed!')
+        test_failed = True
     except Exception as e:
         # traceback.print_exc()
         # print(e)
@@ -154,3 +160,6 @@ civitconfig_test(11, 'alias', ['--delete', 'test2'])
 print('Starting Cleaning')
 
 shutil.rmtree(testvenv_dirpath)
+
+if test_failed:
+    exit(1)
