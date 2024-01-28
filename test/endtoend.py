@@ -133,10 +133,10 @@ subprocess.run(['civitconfig', 'default', '--api-key', os.environ['API_KEY'], '-
 ## Tests ##
 print('Starting Tests')
 
-civitdl_test(1, ['123456'])
+civitdl_test(1, ['123456'], ['--limit-rate', '1M'])
 civitdl_test(2, ['123456', '23456'], ['--sorter', 'tags'])
 civitdl_test(3, [os.path.join(batch_data_dirpath,
-                              'batchtest1.txt')], ['--limit-rate', '1M'])
+                              'batchtest1.txt')])
 civitdl_test(4, ['123456'], ['--no-with-prompt', '--pause-time', '5'])
 
 civitconfig_test(1, 'default')
