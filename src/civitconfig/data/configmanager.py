@@ -88,8 +88,9 @@ class ConfigManager(Config):
     def deleteSorter(self, name):
         self._sorterConfig.deleteSorter(name)
         default_sorter_name = self.getDefault('sorter')
+        print(default_sorter_name, name)
         if (default_sorter_name == name):
-            self._defaultConfig.setDefault(sorter='basic')
+            self._defaultConfig.setDefault(DefaultOptions(sorter='basic'))
 
     def reset(self):
         self._setFallback()
