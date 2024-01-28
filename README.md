@@ -29,7 +29,8 @@ One thing to note is that for sfw models, currently, the program is set to only 
     - [Dependencies](#dependencies)
     - [Installing](#installing)
       - [Install using PIP](#install-using-pip)
-      - [Build from source](#build-from-source)
+      - [Build from source 1](#build-from-source-1)
+      - [Build from source 2 (if the instruction above fails with UNKNOWN package installed, else ignore this section)](#build-from-source-2-if-the-instruction-above-fails-with-unknown-package-installed-else-ignore-this-section)
     - [Quick Start](#quick-start)
       - [Configuration Program Options - civitconfig](#configuration-program-options---civitconfig)
   - [Changes in v2 from v1](#changes-in-v2-from-v1)
@@ -51,19 +52,30 @@ One thing to note is that for sfw models, currently, the program is set to only 
 
 #### Install using PIP
 ```bash
-pip3 install civitdl
+pip3 install civitdl 
+# pip install civitdl # if pip3 is not found
 ```
-- Use `pip install civitdl` if `pip3` is not found.
 
 <br/>
 
-#### Build from source
+#### Build from source 1
 ```bash
 git clone https://github.com/OwenTruong/civitdl.git # Clone the project
 cd civitdl # CD into project directory
-make install # Now program is installed globally unless you are using a virtual env
-# make install2 # Run this if make install fails
+pip3 install . # Use pip if pip3 is not found
 ```
+
+<br />
+
+#### Build from source 2 (if the instruction above fails with UNKNOWN package installed, else ignore this section)
+```bash
+# Make sure you are in project directory # use pip if pip3 is not found
+python3 -m build
+pip3 install -r ./requirements.txt
+pip3 install --upgrade dist/*.whl
+```
+<br />
+
 
 ### Quick Start
 To get started quickly, copy the command below.
@@ -121,10 +133,6 @@ source ~/.bashrc
 For Windows, this may help: https://www.computerhope.com/issues/ch000549.htm
 
 If you are building from source and the following packages are not available `setuptools, wheel, build`, please install them with `pip install setuptools wheel build`
-
-------
-
-If you are building the project and python unsuccessfully installs the program with `make install`, and displays the package's name as `UNKNOWN`, it is likely because you are trying to install the package globally. Either run `make install2` or use virtual env `python -m venv venv && source ./venv/bin/activate && make install`.
 
 ------
 
