@@ -165,3 +165,4 @@ if test_failed:
     exit(1)
 else:
     print('End to End Test Success!')
+    exit(0)
