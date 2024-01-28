@@ -206,6 +206,9 @@ class Validation:
             value = value.trim()
 
         modified_value = value.replace('/', '\\') if os.name == 'nt' else value
+        if os.name == 'nt' and os.path.isabs(modified_value):
+            print(modified_value, file=sys.stderr)
+            modified_value = modified_value[2:]
         dir_names = [s for s in modified_value.split(os.path.sep) if s != ""]
         for dir_name in dir_names:
             try:
