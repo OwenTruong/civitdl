@@ -7,13 +7,14 @@ on:
       - development
 
 jobs:
-  build:
+  endtest:
     name: End to End Testing
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ['3.8', '3.10', '3.12']
+    environment: API_KEY
 
     steps:
       - uses: actions/checkout@v4
