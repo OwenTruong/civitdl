@@ -168,7 +168,10 @@ def write_to_file(filepath: str, content_chunks: Iterable, mode: str = None, lim
             shutil.move(temp_filepath, filepath)
             shutil.rmtree(temp_dirpath)
         except Exception as e:
-            shutil.rmtree(temp_dirpath)
+            print('Existance: ', temp_dirpath, temp_filepath,
+                  os.path.exists(temp_filepath), file=sys.stderr)
+            if os.path.exists(temp_dirpath):
+                shutil.rmtree(temp_dirpath)
             raise e
         if (progress_bar):
             progress_bar.close()

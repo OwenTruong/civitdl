@@ -13,3 +13,4 @@ test/models
 test/test
 **/.DS_Store
 .env
+log.txt

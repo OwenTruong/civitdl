@@ -6,7 +6,7 @@ import argparse
 
 from helpers.styler import Styler
 from helpers.exceptions import InputException, UnexpectedException
-from helpers.argparse import PwdAction, ConfirmAction, ColoredArgParser
+from helpers.argparse import PwdAction, ConfirmAction, ColoredArgParser, BooleanOptionalAction
 from helpers.utils import get_version, print_verbose
 
 __all__ = ['get_args']
@@ -14,7 +14,7 @@ __all__ = ['get_args']
 
 def add_shared_option(par):
     par.add_argument(
-        '--verbose', action=argparse.BooleanOptionalAction, help='Prints out traceback and other useful information.')
+        '--verbose', action=BooleanOptionalAction, help='Prints out traceback and other useful information.')
     par.add_argument(
         '-v', '--version', action='version', version=f'civitdl v{get_version()}', help='Prints out the version of the program.'
     )
@@ -44,10 +44,10 @@ default_parser.add_argument('-s', '--sorter', metavar='NAME', type=str,
 default_parser.add_argument('-k', '--api-key', action=PwdAction, type=str, required=False, nargs='?',
                             help='Prompts the user for their api key to use for model downloads that require users to log in.')
 
-default_parser.add_argument('--with-prompt', action=argparse.BooleanOptionalAction,
+default_parser.add_argument('--with-prompt', action=BooleanOptionalAction,
                             help='Toggles default behavior on whether to download prompt alongside images.')
 
-default_parser.add_argument('--without-model', action=argparse.BooleanOptionalAction,
+default_parser.add_argument('--without-model', action=BooleanOptionalAction,
                             help='Toggles default behavior on whether to download model or not.')
 
 default_parser.add_argument('--limit-rate', type=str,
@@ -63,7 +63,7 @@ default_parser.add_argument('--pause-time', type=float,
                             )
 default_parser.add_argument('--cache-mode', type=str,
                             help='Set the default cache mode. Valid modes are 0 and 1 for now. 2 is not implemented yet.')
-default_parser.add_argument('--model-overwrite', action=argparse.BooleanOptionalAction,
+default_parser.add_argument('--model-overwrite', action=BooleanOptionalAction,
                             help='Set the default behavior on whether to overwrite or skip models that are already downloaded at path. model=overwrite to overwrite model. no-model-overwrite to skip model.')
 add_shared_option(default_parser)
 

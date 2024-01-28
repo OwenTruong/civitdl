@@ -3,7 +3,6 @@ import subprocess
 import os
 import shutil
 from pathlib import Path
-import pytest
 import traceback
 
 from dotenv import load_dotenv
@@ -114,18 +113,20 @@ def civitconfig_error_test(id, subcommand, options=[]):
 
 
 ## Setup ##
+print('Starting Setup')
 os.makedirs(model_dirpath, exist_ok=True)
 
 load_dotenv(os.path.join(root_dirpath, '.env'))  # for local testing
 
-if os.environ['API_KEY'] is None:
+if os.environ['API_KEY'] is None or os.environ['API_KEY'] == '':
     print('Please provide an api key before running the tests.')
     exit(1)
 
-subprocess.run(['civitconfig', 'default', '--api-key', os.environ['API_KEY']],
+subprocess.run(['civitconfig', 'default', '--api-key', os.environ['API_KEY'], '--verbose'],
                stdout=subprocess.DEVNULL)
 
 ## Tests ##
+print('Starting Tests')
 
 civitdl_test(1, ['123456'])
 civitdl_test(2, ['123456', '23456'], ['--sorter', 'tags'])
@@ -150,5 +151,6 @@ civitconfig_test(11, 'alias', ['--delete', 'test2'])
 
 
 ## Clean up ##
+print('Starting Cleaning')
 
 shutil.rmtree(testvenv_dirpath)
