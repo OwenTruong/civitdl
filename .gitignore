@@ -5,9 +5,12 @@ custom/__pycache__
 __pycache__/
 **/__pycache__
 .venv
+.testvenv
 dist
 build
 **/*.egg-info
 test/models
 test/test
 **/.DS_Store
+.env
+log.txt

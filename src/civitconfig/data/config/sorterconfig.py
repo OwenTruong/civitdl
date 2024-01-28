@@ -1,7 +1,8 @@
 import os
 import shutil
+import sys
 from helpers.exceptions import InputException, ResourcesException
-from helpers.utils import getDate, print_exc
+from helpers.utils import getDate, print_exc, sprint
 from helpers.sorter.utils import import_sort_model
 from .config import Config
 
@@ -15,8 +16,13 @@ class SorterConfig(Config):
         dst_filename = f'{getDate()}.py'
         dstpath = os.path.join(
             self._sorters_dir_path, dst_filename)
-        shutil.copy2(filepath, dstpath)
-        return dstpath
+        try:
+            shutil.copy2(filepath, dstpath)
+            return dstpath
+        except Exception as e:
+            sprint('Source: ', filepath, file=sys.stderr)
+            sprint('Destination: ', dstpath, file=sys.stderr)
+            raise e
 
     def _uncopyPyFile(self, filepath):
         if os.path.exists(filepath):

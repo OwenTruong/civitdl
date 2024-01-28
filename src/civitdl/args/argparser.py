@@ -4,7 +4,7 @@ import os
 
 
 from civitconfig.data.configmanager import ConfigManager
-from helpers.argparse import PwdAction, ColoredArgParser
+from helpers.argparse import PwdAction, ColoredArgParser, BooleanOptionalAction
 from helpers.utils import get_version
 
 
@@ -56,11 +56,11 @@ parser.add_argument('-k', '--api-key', action=PwdAction, type=str, required=Fals
                     help='Prompt user for api key to download models that require users to log in.')
 
 parser.add_argument(
-    '--with-prompt', action=argparse.BooleanOptionalAction, help='Download images with prompt.'
+    '--with-prompt', action=BooleanOptionalAction, help='Download images with prompt.'
 )
 
 parser.add_argument(
-    '--without-model', action=argparse.BooleanOptionalAction, help='Download only extra details like metadata, images and hashes.'
+    '--without-model', action=BooleanOptionalAction, help='Download only extra details like metadata, images and hashes.'
 )
 
 parser.add_argument(
@@ -80,12 +80,12 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    '--model-overwrite', action=argparse.BooleanOptionalAction, help='Determine whether to overwrite or skip model download if model is already in path. model=overwrite to overwrite model. no-model-overwrite to skip model.'
+    '--model-overwrite', action=BooleanOptionalAction, help='Determine whether to overwrite or skip model download if model is already in path. model=overwrite to overwrite model. no-model-overwrite to skip model.'
 )
 
 
 parser.add_argument(
-    '--verbose', action=argparse.BooleanOptionalAction, help='Prints out traceback and other useful information.'
+    '--verbose', action=BooleanOptionalAction, help='Prints out traceback and other useful information.'
 )
 
 parser.add_argument(

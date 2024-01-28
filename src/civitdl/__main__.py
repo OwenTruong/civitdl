@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import traceback
 from operator import itemgetter
 
@@ -7,7 +6,7 @@ from .args.argparser import get_args
 
 from helpers.exceptions import UnexpectedException
 from helpers.sourcemanager import SourceManager
-from helpers.utils import print_verbose, run_verbose, print_exc, set_verbose
+from helpers.utils import print_verbose, run_verbose, print_exc, set_verbose, sprint
 
 
 def main():
@@ -45,7 +44,7 @@ def main():
         )
 
     except Exception as e:
-        print('---------')
+        sprint('---------')
         run_verbose(traceback.print_exc)
         print_exc(e)
-        print('---------')
+        sprint('---------')

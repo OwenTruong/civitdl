@@ -8,7 +8,7 @@ from ._get_model import download_model
 
 from helpers.styler import Styler
 from helpers.sourcemanager import SourceManager
-from helpers.utils import BatchOptions, get_version, print_exc, print_verbose, run_verbose
+from helpers.utils import BatchOptions, get_version, print_exc, print_verbose, run_verbose, sprint
 
 __version__ = get_version()
 
@@ -37,18 +37,18 @@ def batch_download(source_strings: List[str], rootdir: str, batchOptions: BatchO
                 _pause(batchOptions.pause_time)
                 break
             except Exception as e:
-                print('---------')
+                sprint('---------')
                 run_verbose(traceback.print_exc)
                 print_exc(e, '\n')
-                print('---------')
+                sprint('---------')
                 _pause(batchOptions.pause_time)
                 if not isinstance(e, APIException):
                     break
                 if iter < batchOptions.retry_count:
-                    print(Styler.stylize(
+                    sprint(Styler.stylize(
                         'Retrying to download the current model...', color='info'))
                     iter += 1
                 else:
-                    print(Styler.stylize(
+                    sprint(Styler.stylize(
                         f'Max retry of {batchOptions.retry_count} reached. Skipping the current model...', color='info'))
                     break

@@ -8,7 +8,7 @@ from typing import Dict, List, Union
 from helpers.sorter import basic, tags
 from helpers.exceptions import UnexpectedException
 from helpers.styler import Styler
-from helpers.utils import getDate
+from helpers.utils import getDate, sprint
 from helpers.validation import Validation
 
 DEFAULT_CONFIG = {
@@ -96,24 +96,24 @@ class Config:
 
     def print_defaults(self):
         blacklisted_keys = ['api_key']
-        print(Styler.stylize('Default:', color='main'))
+        sprint(Styler.stylize('Default:', color='main'))
         for key, value in self.getDefault().items():
             if key in blacklisted_keys:
                 continue
             key = key.replace('_', ' ').title()
-            print(Styler.stylize(
-                f'     {key}:  { "N/A" if str(value) == "" else value }', color='main'))
+            sprint(Styler.stylize(
+                f'     {key}:  {"N/A" if str(value) == "" else value}', color='main'))
 
     def print_sorters(self):
         for i, [name, docstr, _] in enumerate(self.getSortersList()):
-            print(
+            sprint(
                 Styler.stylize(
                     f'Sorter #{i + 1}, "{name}":  {f"{docstr[:300 - 3]}..." if len(docstr) > 300 else docstr}', color='main')
             )
 
     def print_aliases(self):
         for i, [alias_name, path] in enumerate(self.getAliasesList()):
-            print(
+            sprint(
                 Styler.stylize(
                     f'Alias #{i + 1}, "{alias_name}":  {path}', color='main'
                 )

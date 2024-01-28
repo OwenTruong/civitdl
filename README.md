@@ -42,7 +42,7 @@ One thing to note is that for sfw models, currently, the program is set to only 
 ## Getting Started
 
 ### Dependencies
-* Python3
+* Python3.8 or above
 * `requirements.txt`
 
 <br/>

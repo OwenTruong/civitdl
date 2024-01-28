@@ -36,11 +36,20 @@ def set_verbose(verbose: bool):
 
 def getDate():
     now = datetime.now()
-    return now.strftime("%Y-%m-%d--%H:%M:%S-%f")
+    return now.strftime("%Y_%m_%d-%Hm_%Mm_%Ss_%f")
 
 
 def get_version():
     return importlib.metadata.version('civitdl')
+
+
+def sprint(*args, **kwargs):
+    try:
+        print(*args, **kwargs)
+    except:
+        encoded_args = [str(arg).encode(
+            'utf-8', 'replace') for arg in args]
+        print(*encoded_args, **kwargs)
 
 
 # Level 1 - Currently or in the future might depends on level 0
@@ -54,15 +63,20 @@ def run_verbose(fn, *args, **kwargs):
 def print_verbose(*args, **kwargs):
     if get_verbose():
         args = [Styler.stylize(str(arg), bg_color='info') for arg in args]
-        print(*args, **kwargs)
+        sprint(*args, **kwargs)
 
 
 def print_exc(exc: Exception, *args, **kwargs):
     if isinstance(exc, CustomException):
-        print(exc, file=sys.stderr, *args, **kwargs)
+        sprint(exc, file=sys.stderr, *args, **kwargs)
     else:
-        print(Styler.stylize(str(exc), color='exception'), *args,
-              file=sys.stderr, **kwargs)
+        sprint(Styler.stylize(str(exc), color='exception'), *args,
+               file=sys.stderr, **kwargs)
+
+
+def print_newlines(string: str, **kwargs):
+    for el in string.split('\n'):
+        sprint(el, **kwargs)
 
 
 def safe_run(callback: Callable[..., any], *values: any) -> dict:
@@ -84,7 +98,7 @@ def concurrent_request(req_fn, urls, max_workers=16):
 
 def get_progress_bar(total: float, desc: str):
     return tqdm(total=total, desc=desc,
-                unit='iB', unit_scale=True)
+                unit='iB', unit_scale=True, file=sys.stdout)
 
 
 def find_in_list(li, cond_fn: Callable[[any, int], bool], default=None):
@@ -154,7 +168,7 @@ def write_to_file(filepath: str, content_chunks: Iterable, mode: str = None, lim
     if not overwrite and os.path.exists(filepath):
         if (progress_bar):
             progress_bar.close()
-        print(Styler.stylize(
+        sprint(Styler.stylize(
             f'File already exists at "{filepath}"', color='info'))
     else:
         temp_dirpath = os.path.join(os.path.dirname(
@@ -168,7 +182,10 @@ def write_to_file(filepath: str, content_chunks: Iterable, mode: str = None, lim
             shutil.move(temp_filepath, filepath)
             shutil.rmtree(temp_dirpath)
         except Exception as e:
-            shutil.rmtree(temp_dirpath)
+            sprint('Existance: ', temp_dirpath, temp_filepath,
+                   os.path.exists(temp_filepath), file=sys.stderr)
+            if os.path.exists(temp_dirpath):
+                shutil.rmtree(temp_dirpath)
             raise e
         if (progress_bar):
             progress_bar.close()

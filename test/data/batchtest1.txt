@@ -1,4 +1,4 @@
-../test/nestedtest/batchtest2.txt,
+./nestedtest/batchtest2.txt,
 123456,
 78901,
 23456,
