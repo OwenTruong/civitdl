@@ -138,21 +138,24 @@ civitdl_test(2, ['123456', '23456'], ['--sorter', 'tags'])
 civitdl_test(3, [os.path.join(batch_data_dirpath,
                               'batchtest1.txt')])
 civitdl_test(4, ['123456'], ['--no-with-prompt', '--pause-time', '5'])
+civitdl_test(5, ['https://civitai.com/api/download/models/317633'])
 
 civitconfig_test(1, 'default')
 civitconfig_test(2, 'sorter')
 civitconfig_test(3, 'alias')
 civitconfig_test(
     4, 'default', ['--sorter', 'tags', '--limit-rate', '10M', '--without-model'])
-civitconfig_test(5, 'sorter', ['--add', 'alpha',
+civitconfig_test(
+    5, 'default', ['--sorter', 'basic', '--limit-rate', '0', '--no-without-model'])
+civitconfig_test(6, 'sorter', ['--add', 'alpha',
                  os.path.join(batch_data_dirpath, 'sort.py')])
-civitconfig_test(6, 'default', ['--sorter', 'alpha'])
-civitconfig_test(7, 'sorter', ['--delete', 'alpha'])
+civitconfig_test(7, 'default', ['--sorter', 'alpha'])
+civitconfig_test(8, 'sorter', ['--delete', 'alpha'])
 civitconfig_error_test(1, 'default', ['--sorter', 'alpha'])
-civitconfig_test(8, 'alias', ['--add', 'test', './models'])
-civitconfig_test(9, 'alias', ['--add', 'test2', 'test2/goforit'])
-civitconfig_test(10, 'alias', ['--delete', 'test'])
-civitconfig_test(11, 'alias', ['--delete', 'test2'])
+civitconfig_test(9, 'alias', ['--add', 'test', './models'])
+civitconfig_test(10, 'alias', ['--add', 'test2', 'test2/goforit'])
+civitconfig_test(11, 'alias', ['--delete', 'test'])
+civitconfig_test(12, 'alias', ['--delete', 'test2'])
 
 
 ## Clean up ##
