@@ -180,7 +180,7 @@ def _get_filename_and_model_res(input_str: str, metadata: Metadata, batchOptions
     print_verbose(f'Model Download API URL: {metadata.model_download_url}')
     res = batchOptions.session.get(metadata.model_download_url, stream=True)
 
-    if 'reason=download-auth' in res.url:
+    if 'reason=download-auth' in res.url or res.status_code == 401:
         api_key_needed = True
         if batchOptions.api_key:
             headers = {
