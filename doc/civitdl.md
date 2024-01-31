@@ -57,7 +57,7 @@
 * Batchfile contain a comma separated list of sources.
 * Examples:
     * `civitdl ./custom/batchfile.txt ~/sorted-models --sorter tags`
-* See [batchfile.txt](./custom/batchfile.txt) for example of a batchfile
+* See [batchfile.txt](/custom/batchfile.txt) for example of a batchfile
 
 <br/>
 
