@@ -10,7 +10,7 @@ try:
 except:
     None
 
-from helpers.styler import Styler
+from helpers.core.utils import Styler
 
 
 def windows_getpass(prompt=""):

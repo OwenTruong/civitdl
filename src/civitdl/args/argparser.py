@@ -5,7 +5,7 @@ import os
 
 from civitconfig.data.configmanager import ConfigManager
 from helpers.argparse import PwdAction, ColoredArgParser, BooleanOptionalAction
-from helpers.utils import get_version
+from helpers.core.utils import get_version
 
 
 def parse_sorter(sorters, sorter_str):

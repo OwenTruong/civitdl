@@ -1,12 +1,10 @@
 import os
 import shutil
 
-from appdirs import AppDirs
-
-from helpers.styler import Styler
-from helpers.exceptions import InputException, UnexpectedException
-from helpers.utils import DefaultOptions, createDirsIfNotExist, getDate, print_verbose, sprint
-from helpers.vars.program_constants import app_dirs
+from helpers.core.utils import Styler, UnexpectedException, getDate, print_verbose, sprint
+from helpers.options import DefaultOptions
+from helpers.core.iohelper import IOHelper
+from helpers.core.constants import app_dirs
 
 from .config.config import Config, DEFAULT_CONFIG
 from .config.aliasconfig import AliasConfig
@@ -40,7 +38,7 @@ class ConfigManager(Config):
         self._sorterConfig = SorterConfig(*args)
 
         # Make sure all directories exist
-        createDirsIfNotExist(args[1:])
+        IOHelper.createDirsIfNotExist(args[1:])
 
         # make sure config file exist
         if not self._configExists():

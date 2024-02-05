@@ -7,12 +7,13 @@ import re
 from typing import Callable, Dict, List, Union
 from math import ceil
 
-from helpers.styler import Styler
-from helpers.sourcemanager import Id
-from helpers.utils import BatchOptions, delete_file_if_exists, print_newlines, sprint, write_to_file, write_to_files, print_verbose, concurrent_request
+from helpers.core.utils import Styler, InputException, ResourcesException, UnexpectedException, APIException, print_newlines, sprint, print_verbose, concurrent_request
+from helpers.core.iohelper import IOHelper
+
 from helpers.sorter.utils import SorterData
-from helpers.exceptions import InputException, ResourcesException, UnexpectedException, APIException
-from helpers.validation import Validation
+
+from helpers.sourcemanager import Id
+from helpers.options import BatchOptions
 from helpers.hashmanager import HashManager
 
 
@@ -138,13 +139,13 @@ def _download_images(dirpath: str, image_basenames: List[str], image_urls: List[
     if (len(image_content_chunks_list) == 0):
         sprint(Styler.stylize('No images to download...', color='warning'))
     else:
-        write_to_files(dirpath, image_basenames, image_content_chunks_list, mode='wb',
-                       use_pb=True, total=len(image_basenames), desc='Images')
+        IOHelper.write_to_files(dirpath, image_basenames, image_content_chunks_list, mode='wb',
+                                use_pb=True, total=len(image_basenames), desc='Images')
 
 
 def _download_prompts(dirpath: str, basenames: List[str], image_dicts: List[Dict]):
     if len(image_dicts) != 0:
-        write_to_files(dirpath, basenames, [dumps(
+        IOHelper.write_to_files(dirpath, basenames, [dumps(
             image_dict, indent=2, ensure_ascii=False) for image_dict in image_dicts], encoding='UTF-8')
 
 
@@ -154,7 +155,7 @@ def _download_metadata(dirpath: str, metadata: Metadata):
     model_dict_path = os.path.join(
         dirpath, model_dict_filename)
     os.makedirs(dirpath, exist_ok=True)
-    write_to_file(model_dict_path, [dumps(
+    IOHelper.write_to_file(model_dict_path, [dumps(
         metadata.model_dict, indent=2, ensure_ascii=False)], encoding='UTF-8')
 
 
@@ -164,7 +165,7 @@ def _download_hashes(dirpath: str, filename_no_ext: str, hashes: Dict):
     data = 'hash_name, hash_id\n'
     for key, value in hashes.items():
         data += f'{key}, {value}\n'
-    write_to_file(hashes_dict_path, [data.rstrip()], encoding='UTF-8')
+    IOHelper.write_to_file(hashes_dict_path, [data.rstrip()], encoding='UTF-8')
 
 
 def _get_filename_and_model_res(input_str: str, metadata: Metadata, batchOptions: BatchOptions):
@@ -299,8 +300,8 @@ def download_model(id: Id, dst_root_path: str, batchOptions: BatchOptions):
                 ceil(batchOptions.limit_rate / 8)
                 if batchOptions.limit_rate is not None and batchOptions.limit_rate != 0
                 else 1024*1024)
-            write_to_file(model_path, content_chunks, mode='wb', limit_rate=batchOptions.limit_rate, overwrite=batchOptions.model_overwrite,
-                          use_pb=True, total=float(model_res.headers.get('content-length', 0)), desc='Model')
+            IOHelper.write_to_file(model_path, content_chunks, mode='wb', limit_rate=batchOptions.limit_rate, overwrite=batchOptions.model_overwrite,
+                                   use_pb=True, total=float(model_res.headers.get('content-length', 0)), desc='Model')
 
         if hash_manager:
             hash_manager.set_local_model_cache(
