@@ -1,9 +1,9 @@
 from typing import Callable, Dict, List, Literal, Union, Optional
 import requests
 
-from helpers.sorter.utils import import_sort_model
+from helpers.sorter.utils import SorterData, import_sort_model
 from helpers.sorter import basic, tags
-from helpers.core.utils import InputException, NotImplementedException, Validation, print_verbose, safe_run, set_verbose
+from helpers.core.utils import InputException, NotImplementedException, UnexpectedException, Validation, print_verbose, safe_run, set_verbose
 
 
 def parse_bytes(size: Union[str, int, float], name: str):
@@ -35,7 +35,7 @@ def parse_bytes(size: Union[str, int, float], name: str):
 class BatchOptions:
     sorter_name: str
     sorter: Callable[[Dict, Dict, str, str],
-                     List[str]] = basic.sort_model
+                     SorterData] = basic.sort_model
     max_images: int = 3
     api_key: Optional[str] = None
 

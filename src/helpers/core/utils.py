@@ -68,6 +68,11 @@ def print_newlines(string: str, **kwargs):
         sprint(el, **kwargs)
 
 
+def print_error(*args, **kwargs):
+    args = [Styler.stylize(str(arg), bg_color='error') for arg in args]
+    sprint(*args, **kwargs, file=sys.stderr)
+
+
 def safe_run(callback: Callable[..., any], *values: any) -> dict:
     try:
         return {"success": True, "data": callback(*values)}

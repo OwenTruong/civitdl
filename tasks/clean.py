@@ -18,6 +18,11 @@ except Exception as e:
     print(e)
 
 try:
+    shutil.rmtree('./test/models')
+except:
+    print('./test/models not found')
+
+try:
     shutil.rmtree('./dist')
 except:
     print('./dist not found')
