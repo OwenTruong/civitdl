@@ -5,7 +5,7 @@ from typing import Callable
 import concurrent.futures
 from tqdm import tqdm
 
-from ._styler.styler import Styler, CustomException, InputException, ResourcesException, UnexpectedException, APIException, NotImplementedException
+from ._ui.styler import Styler, disable_style, CustomException, InputException, ResourcesException, UnexpectedException, APIException, NotImplementedException
 from ._validation import Validation
 
 # Level 0

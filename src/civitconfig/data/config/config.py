@@ -23,7 +23,9 @@ DEFAULT_CONFIG = {
         "pause_time": 3.0,
 
         "cache_mode": '1',
-        "model_overwrite": False
+        "model_overwrite": False,
+
+        "with_color": True
     },
     "sorters": [["basic", basic.sort_model.__doc__, 'basic'], ["tags", tags.sort_model.__doc__, 'tags']],
     "aliases": [["@example", "~/.models"]]

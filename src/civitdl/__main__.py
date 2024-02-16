@@ -31,6 +31,7 @@ def main():
             cache_mode=args['cache_mode'],
             model_overwrite=args['model_overwrite'],
 
+            with_color=args['with_color'],
             verbose=args['verbose']
         )
 

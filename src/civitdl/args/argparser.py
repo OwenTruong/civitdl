@@ -83,6 +83,9 @@ parser.add_argument(
     '--model-overwrite', action=BooleanOptionalAction, help='Determine whether to overwrite or skip model download if model is already in path. model=overwrite to overwrite model. no-model-overwrite to skip model.'
 )
 
+parser.add_argument(
+    '--with-color', action=BooleanOptionalAction, help='Enable styles like colors, background colors and bold/italized texts.'
+)
 
 parser.add_argument(
     '--verbose', action=BooleanOptionalAction, help='Prints out traceback and other useful information.'
@@ -116,6 +119,8 @@ def get_args():
 
         "cache_mode": parser_result.cache_mode or config_defaults.get('cache_mode', None),
         "model_overwrite": parser_result.model_overwrite if parser_result.model_overwrite is not None else config_defaults.get('model_overwrite', None),
+
+        "with_color": parser_result.with_color if parser_result.with_color is not None else config_defaults.get('with_color', None),
 
         "verbose": False if parser_result.verbose == None else parser_result.verbose
     }

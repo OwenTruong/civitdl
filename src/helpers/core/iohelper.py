@@ -5,7 +5,7 @@ import time
 import csv
 from typing import IO, Callable, Iterable, Union
 
-from ._styler.styler import Styler, InputException, UnexpectedException
+from ._ui.styler import Styler, InputException, UnexpectedException
 from .utils import get_progress_bar, sprint
 
 

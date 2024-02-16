@@ -2,10 +2,12 @@
 
 import traceback
 
-from helpers.core.utils import UnexpectedException, set_verbose, run_verbose, print_verbose, print_exc, sprint
+from helpers.core.utils import disable_style, UnexpectedException, set_verbose, run_verbose, print_verbose, print_exc, sprint
 from helpers.options import DefaultOptions
 from civitconfig.args.argparser import get_args
 from civitconfig.data.configmanager import ConfigManager
+
+# TODO: Make verbose and no_style similar to each other
 
 
 def main():
@@ -15,6 +17,9 @@ def main():
             set_verbose(True)
         else:
             set_verbose(False)
+
+        if args['with_color'] == False:
+            disable_style()
 
         config_manager = ConfigManager()
         subcommand = args['subcommand']
@@ -32,7 +37,8 @@ def main():
                 retry_count=args['retry_count'],
                 pause_time=args['pause_time'],
                 cache_mode=args['cache_mode'],
-                model_overwrite=args['model_overwrite']
+                model_overwrite=args['model_overwrite'],
+                with_color=args['with_color']
             ))
             config_manager.print_defaults()
         elif subcommand == 'sorter':

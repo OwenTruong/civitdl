@@ -55,8 +55,14 @@ def _color_generator():
 _color_iter = _color_generator()
 _bgcolor_iter = _color_generator()
 
+_no_style = False
 
 # Public / Exports
+
+
+def disable_style():
+    global _no_style
+    _no_style = True
 
 
 class Styler(Enum):
@@ -102,6 +108,9 @@ class Styler(Enum):
 
         if not isinstance(string, str):
             raise Exception(f'String provided to stylize is not a string')
+
+        if _no_style:
+            return str(string)
 
         if styles:
             for style in styles:

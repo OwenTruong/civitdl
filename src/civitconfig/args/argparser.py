@@ -12,6 +12,9 @@ __all__ = ['get_args']
 
 def add_shared_option(par):
     par.add_argument(
+        '--with-color', action=BooleanOptionalAction, help='Enable styles like colors, background colors and bold/italized texts.'
+    )
+    par.add_argument(
         '--verbose', action=BooleanOptionalAction, help='Prints out traceback and other useful information.')
     par.add_argument(
         '-v', '--version', action='version', version=f'civitdl v{get_version()}', help='Prints out the version of the program.'

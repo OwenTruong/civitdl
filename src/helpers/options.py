@@ -3,7 +3,7 @@ import requests
 
 from helpers.sorter.utils import SorterData, import_sort_model
 from helpers.sorter import basic, tags
-from helpers.core.utils import InputException, NotImplementedException, UnexpectedException, Validation, print_verbose, safe_run, set_verbose
+from helpers.core.utils import disable_style, InputException, NotImplementedException, UnexpectedException, Validation, print_verbose, safe_run, set_verbose
 
 
 def parse_bytes(size: Union[str, int, float], name: str):
@@ -48,6 +48,7 @@ class BatchOptions:
     cache_mode: Literal['0', '1', '2'] = '1'
     model_overwrite: bool = False
 
+    with_color: bool = False
     verbose: Optional[bool] = None
 
     def __get_sorter(self, sorter: str):
@@ -64,13 +65,21 @@ class BatchOptions:
         print_verbose("Chosen Sorter Description: ", self._sorter.__doc__)
         return self._sorter
 
-    def __init__(self, retry_count, pause_time, max_images, with_prompt, without_model, api_key, verbose, sorter, limit_rate, cache_mode, model_overwrite):
+    def __init__(self, retry_count, pause_time, max_images, with_prompt, without_model, api_key, verbose, sorter, limit_rate, cache_mode, model_overwrite, with_color):
         self.session = requests.Session()
+
+        # FIXME: Move usage of with_color and verbose outside of options
+        if with_color is not None:
+            Validation.validate_bool(with_color, 'with_color')
+            self.with_color = with_color
+            if with_color == False:
+                disable_style()
 
         if verbose is not None:
             Validation.validate_bool(verbose, 'verbose')
             self.verbose = verbose
-            set_verbose(self.verbose)
+            if verbose == True:
+                set_verbose(self.verbose)
 
         if sorter is not None:
             Validation.validate_string(sorter, 'sorter')
@@ -134,7 +143,9 @@ class DefaultOptions:
     cache_mode: Optional[int] = None
     model_overwrite: Optional[bool] = None
 
-    def __init__(self, sorter=None, max_images=None, api_key=None, with_prompt=None, without_model=None, limit_rate=None, retry_count=None, pause_time=None, cache_mode=None, model_overwrite=None):
+    with_color: Optional[bool] = None
+
+    def __init__(self, sorter=None, max_images=None, api_key=None, with_prompt=None, without_model=None, limit_rate=None, retry_count=None, pause_time=None, cache_mode=None, model_overwrite=None, with_color=None):
         if sorter is not None:
             Validation.validate_string(
                 sorter, 'sorter')
@@ -188,3 +199,7 @@ class DefaultOptions:
         if model_overwrite is not None:
             Validation.validate_bool(model_overwrite, 'model_overwrite')
             self.model_overwrite = model_overwrite
+
+        if with_color is not None:
+            Validation.validate_bool(with_color, 'with_color')
+            self.with_color = with_color

@@ -1,4 +1,4 @@
-from ._styler.styler import Styler, InputException, UnexpectedException
+from ._ui.styler import Styler, InputException, UnexpectedException
 from .constants import BLACKLISTED_DIR_CHARS
 import sys
 import os
