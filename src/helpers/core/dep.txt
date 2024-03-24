@@ -1,0 +1,7 @@
+Private files may not import utils.py or public files in the same directory. 
+
+utils.py may import private files but not public files in the same directory.
+
+Public files may import utils.py and private files in the same directory.
+
+Any file may access constants.py in the same directory.

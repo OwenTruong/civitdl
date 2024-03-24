@@ -1,5 +1,5 @@
 import os
-from helpers.exceptions import InputException
+from helpers.core.utils import InputException
 from .config import Config
 
 

@@ -6,10 +6,8 @@ import shutil
 from typing import Dict, List, Union
 
 from helpers.sorter import basic, tags
-from helpers.exceptions import UnexpectedException
-from helpers.styler import Styler
-from helpers.utils import getDate, sprint
-from helpers.validation import Validation
+from helpers.core.utils import Styler, UnexpectedException, getDate, sprint
+from helpers.core._validation import Validation
 
 DEFAULT_CONFIG = {
     "version": "1",
@@ -25,7 +23,9 @@ DEFAULT_CONFIG = {
         "pause_time": 3.0,
 
         "cache_mode": '1',
-        "model_overwrite": False
+        "model_overwrite": False,
+
+        "with_color": True
     },
     "sorters": [["basic", basic.sort_model.__doc__, 'basic'], ["tags", tags.sort_model.__doc__, 'tags']],
     "aliases": [["@example", "~/.models"]]

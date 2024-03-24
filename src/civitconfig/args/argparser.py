@@ -4,15 +4,16 @@ from typing import Dict, List, Union
 
 import argparse
 
-from helpers.styler import Styler
-from helpers.exceptions import InputException, UnexpectedException
+from helpers.core.utils import get_version
 from helpers.argparse import PwdAction, ConfirmAction, ColoredArgParser, BooleanOptionalAction
-from helpers.utils import get_version, print_verbose
 
 __all__ = ['get_args']
 
 
 def add_shared_option(par):
+    par.add_argument(
+        '--with-color', action=BooleanOptionalAction, help='Enable styles like colors, background colors and bold/italized texts.'
+    )
     par.add_argument(
         '--verbose', action=BooleanOptionalAction, help='Prints out traceback and other useful information.')
     par.add_argument(
