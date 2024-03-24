@@ -110,7 +110,7 @@ class Model:
 
         if res.status_code == 403:
             sprint(Styler.stylize(
-                'Model is behind CivitAI\'s early access restriction (i.e have to wait a few days for model to be available to be downloaded over api). It is recommended to run script with option "--without-model" and to manually download the model on civitai.com.', color='warning'))
+                'Model is behind CivitAI\'s early access restriction (i.e have to wait a few days for model to be available to be downloaded).', color='warning'))
             try:
                 data = loads(res.content)
                 sprint(Styler.stylize(f'Deadline: {data["deadline"]}', color='warning'))  # nopep8
