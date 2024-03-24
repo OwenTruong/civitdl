@@ -113,8 +113,8 @@ class Model:
                 'Model is behind CivitAI\'s early access restriction (i.e have to wait a few days for model to be available to be downloaded over api). It is recommended to run script with option "--without-model" and to manually download the model on civitai.com.', color='warning'))
             try:
                 data = loads(res.content)
-                sprint(Styler.stylize(f'Deadline: {data['deadline']}', color='warning'))  # nopep8
-                sprint(Styler.stylize(f'Error Message: {data['message']}', color='warning'))  # nopep8
+                sprint(Styler.stylize(f'Deadline: {data["deadline"]}', color='warning'))  # nopep8
+                sprint(Styler.stylize(f'Error Message: {data["message"]}', color='warning'))  # nopep8
             except:
                 None
         if res.status_code != 200:
@@ -188,9 +188,6 @@ class Model:
             color='main'))
 
         # 2. Get directory and file paths
-
-        # if self.__batchOptions.without_model
-        # FIXME: the above is not possible because of extra data dependency on filename... maybe we come up with an alternative name somehow.
 
         model_res = self.__request_model(
             metadata) if not self.__batchOptions.without_model else None
