@@ -2,13 +2,11 @@ import time
 import traceback
 from typing import List
 
-from helpers.exceptions import APIException
+from ._model import Model
 
-from ._get_model import download_model
-
-from helpers.styler import Styler
+from helpers.core.utils import Styler, APIException, get_version, print_exc, print_verbose, run_verbose, sprint
 from helpers.sourcemanager import SourceManager
-from helpers.utils import BatchOptions, get_version, print_exc, print_verbose, run_verbose, sprint
+from helpers.options import BatchOptions
 
 __version__ = get_version()
 
@@ -29,11 +27,8 @@ def batch_download(source_strings: List[str], rootdir: str, batchOptions: BatchO
         iter = 0
         while True:
             try:
-                download_model(
-                    id=id,
-                    dst_root_path=rootdir,
-                    batchOptions=batchOptions
-                )
+                model = Model(id=id, dst_root_path=rootdir,
+                              batchOptions=batchOptions).download()
                 _pause(batchOptions.pause_time)
                 break
             except Exception as e:
@@ -42,8 +37,8 @@ def batch_download(source_strings: List[str], rootdir: str, batchOptions: BatchO
                 print_exc(e, '\n')
                 sprint('---------')
                 _pause(batchOptions.pause_time)
-                if not isinstance(e, APIException):
-                    break
+                # if not isinstance(e, APIException):
+                #     break
                 if iter < batchOptions.retry_count:
                     sprint(Styler.stylize(
                         'Retrying to download the current model...', color='info'))

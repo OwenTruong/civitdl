@@ -31,6 +31,12 @@ config_testlog_filepath = os.path.join(
 test_failed = False
 
 
+civitdl_test_no = 0
+civitdl_error_test_no = 0
+civitconfig_test_no = 0
+civitconfig_error_test_no = 0
+
+
 ## Install Module ##
 
 subprocess.run(
@@ -73,48 +79,58 @@ def run_civitconfig(subcommand, options=[], show_error=True):
             return result
 
 
-def civitdl_test(id, sources, options=[]):
+def civitdl_test(sources, options=[]):
+    global civitdl_test_no
+    civitdl_test_no += 1
     try:
-        print(f'Civitdl General Test {id}:')
-        res = run_civitdl(sources, f'./general/test{id}', options)
-        print(f'Civitdl General Test {id} success!')
+        print(f'Civitdl General Test {civitdl_test_no}:')
+        res = run_civitdl(sources, f'./general/test{civitdl_test_no}', options)
+        print(f'Civitdl General Test {civitdl_test_no} success!')
     except Exception as e:
-        print(f'Civitdl General Test {id} failed!')
+        print(f'Civitdl General Test {civitdl_test_no} failed!')
+        global test_failed
         test_failed = True
 
 
-def civitdl_error_test(id, sources, options=[]):
+def civitdl_error_test(sources, options=[]):
+    global civitdl_error_test_no
+    civitdl_error_test_no += 1
     try:
-        print(f'Civitdl Error Test {id}:')
+        print(f'Civitdl Error Test {civitdl_error_test_no}:')
         res = run_civitdl(sources, './error', options, show_error=False)
-        print(f'Civitdl Error Test {id} failed!')
+        print(f'Civitdl Error Test {civitdl_error_test_no} failed!')
+        global test_failed
         test_failed = True
     except Exception as e:
         # traceback.print_exc()
         # print(e)
-        print(f'Civitdl Error Test {id} success!')
+        print(f'Civitdl Error Test {civitdl_error_test_no} success!')
 
 
-def civitconfig_test(id, subcommand, options=[]):
+def civitconfig_test(subcommand, options=[]):
+    global civitconfig_test_no
+    civitconfig_test_no += 1
     try:
-        print(f'Civitconfig General Test {id}:')
+        print(f'Civitconfig General Test {civitconfig_test_no}:')
         res = run_civitconfig(subcommand, options)
-        print(f'Civitconfig General Test {id} success!')
+        print(f'Civitconfig General Test {civitconfig_test_no} success!')
     except:
-        print(f'Civitconfig General Test {id} failed!')
+        print(f'Civitconfig General Test {civitconfig_test_no} failed!')
         test_failed = True
 
 
-def civitconfig_error_test(id, subcommand, options=[]):
+def civitconfig_error_test(subcommand, options=[]):
+    global civitconfig_error_test_no
+    civitconfig_error_test_no += 1
     try:
-        print(f'Civitconfig Error Test {id}:')
+        print(f'Civitconfig Error Test {civitconfig_error_test_no}:')
         res = run_civitconfig(subcommand, options, show_error=False)
-        print(f'Civitconfig Error Test {id} failed!')
+        print(f'Civitconfig Error Test {civitconfig_error_test_no} failed!')
         test_failed = True
     except Exception as e:
         # traceback.print_exc()
         # print(e)
-        print(f'Civitconfig Error Test {id} success!')
+        print(f'Civitconfig Error Test {civitconfig_error_test_no} success!')
 
 
 ## Setup ##
@@ -133,29 +149,38 @@ subprocess.run(['civitconfig', 'default', '--api-key', os.environ['API_KEY'], '-
 ## Tests ##
 print('Starting Tests')
 
-civitdl_test(1, ['123456'], ['--limit-rate', '1M'])
-civitdl_test(2, ['123456', '23456'], ['--sorter', 'tags'])
-civitdl_test(3, [os.path.join(batch_data_dirpath,
-                              'batchtest1.txt')])
-civitdl_test(4, ['123456'], ['--no-with-prompt', '--pause-time', '5'])
-civitdl_test(5, ['https://civitai.com/api/download/models/317633'])
+civitconfig_test('default', ['--no-with-color'])
 
-civitconfig_test(1, 'default')
-civitconfig_test(2, 'sorter')
-civitconfig_test(3, 'alias')
-civitconfig_test(
-    4, 'default', ['--sorter', 'tags', '--limit-rate', '10M', '--without-model'])
-civitconfig_test(
-    5, 'default', ['--sorter', 'basic', '--limit-rate', '0', '--no-without-model'])
-civitconfig_test(6, 'sorter', ['--add', 'alpha',
+civitdl_test(['123456'], ['--limit-rate', '1M'])
+civitdl_test(['123456', '23456'], ['--sorter', 'tags'])
+civitdl_test([os.path.join(batch_data_dirpath,
+                           'batchtest1.txt')])
+civitdl_test(['123456'], ['--no-with-prompt', '--pause-time', '5'])
+civitdl_test(['https://civitai.com/api/download/models/317633'])
+civitdl_test(['123456'], ['--with-color'])
+
+civitconfig_test('default')
+civitconfig_test('sorter')
+civitconfig_test('alias')
+civitconfig_test('default', ['--sorter', 'tags',
+                 '--limit-rate', '10M', '--without-model'])
+civitconfig_test('default', ['--sorter', 'basic',
+                 '--limit-rate', '0', '--no-without-model'])
+civitconfig_test('default', ['--with-color'])
+civitconfig_test('default', ['--no-with-color'])
+
+civitconfig_test('sorter', ['--add', 'alpha',
                  os.path.join(batch_data_dirpath, 'sort.py')])
-civitconfig_test(7, 'default', ['--sorter', 'alpha'])
-civitconfig_test(8, 'sorter', ['--delete', 'alpha'])
-civitconfig_error_test(1, 'default', ['--sorter', 'alpha'])
-civitconfig_test(9, 'alias', ['--add', 'test', './models'])
-civitconfig_test(10, 'alias', ['--add', 'test2', 'test2/goforit'])
-civitconfig_test(11, 'alias', ['--delete', 'test'])
-civitconfig_test(12, 'alias', ['--delete', 'test2'])
+civitconfig_test('default', ['--sorter', 'alpha'])
+civitconfig_test('sorter', ['--delete', 'alpha'])
+civitconfig_error_test('default', ['--sorter', 'alpha'])
+civitconfig_test('alias', ['--add', 'test', './models'])
+civitconfig_test('alias', ['--add', 'test2', 'test2/goforit'])
+civitconfig_test('alias', ['--delete', 'test'])
+civitconfig_test('alias', ['--delete', 'test2'])
+
+civitdl_test(['123456'])
+civitconfig_test('default', ['--with-color'])
 
 
 ## Clean up ##

@@ -145,6 +145,13 @@
 
 <br/>
 
+`--with-color` | `--no-with-color`
+- Running with this option will enable printing to console/terminal with ANSI colors. By default, civitdl and civitconfig prints with color.
+- Use `--no-with-color` to disable printing colors to console/terminal.
+- Example: `civitdl 80848 ./loras --with-color`
+
+<br/>
+
 `--verbose`
 - Prints out traceback and other logs.
 
