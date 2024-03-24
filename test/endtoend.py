@@ -88,6 +88,7 @@ def civitdl_test(sources, options=[]):
         print(f'Civitdl General Test {civitdl_test_no} success!')
     except Exception as e:
         print(f'Civitdl General Test {civitdl_test_no} failed!')
+        global test_failed
         test_failed = True
 
 
@@ -98,6 +99,7 @@ def civitdl_error_test(sources, options=[]):
         print(f'Civitdl Error Test {civitdl_error_test_no}:')
         res = run_civitdl(sources, './error', options, show_error=False)
         print(f'Civitdl Error Test {civitdl_error_test_no} failed!')
+        global test_failed
         test_failed = True
     except Exception as e:
         # traceback.print_exc()

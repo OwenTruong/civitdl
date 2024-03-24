@@ -1,4 +1,4 @@
-from json import dumps
+from json import dumps, loads
 import shutil
 import os
 import re
@@ -74,7 +74,7 @@ class Model:
             metadata.version_id) if self.__batchOptions.cache_mode != '0' else None
         cached_filepath = hash_manager.get_local_model_path() if hash_manager else None
 
-        if cached_filepath and cached_filepath != filepath:
+        if cached_filepath and cached_filepath != os.path.abspath(filepath):
             print_newlines(Styler.stylize(f"""Model already existed at the following path:
                 - Path: {cached_filepath}""", color='info'))
             sprint(Styler.stylize(f"Copying to new path...", color='info'))
@@ -98,15 +98,25 @@ class Model:
         headers = {
             'Authorization': f'Bearer {self.__batchOptions.api_key}',
         }
-        print(metadata.model_download_url)
         res = self.__batchOptions.session.get(
             metadata.model_download_url, stream=True, headers=headers)
+
+        print_verbose(f'Status Code: {res.status_code}')
 
         if 'reason=download-auth' in res.url or res.status_code == 401:
             print_verbose('Unauthorized status', res.url,  res.status_code)
             raise InputException(
                 'Unable to download this model as it requires a valid API Key. Please head to "civitai.com", go to "Account Settings", then go to "API Keys" section, then add an api key to your account. After that, paste the key to the program or add it to civitconfig with "civitconfig default --api-key".')
 
+        if res.status_code == 403:
+            sprint(Styler.stylize(
+                'Model is behind CivitAI\'s early access restriction (i.e have to wait a few days for model to be available to be downloaded over api). It is recommended to run script with option "--without-model" and to manually download the model on civitai.com.', color='warning'))
+            try:
+                data = loads(res.content)
+                sprint(Styler.stylize(f'Deadline: {data['deadline']}', color='warning'))  # nopep8
+                sprint(Styler.stylize(f'Error Message: {data['message']}', color='warning'))  # nopep8
+            except:
+                None
         if res.status_code != 200:
             raise APIException(
                 res.status_code, f'Downloading model from CivitAI failed for model id, {metadata.model_id}, and version id, {metadata.version_id}')
@@ -179,10 +189,14 @@ class Model:
 
         # 2. Get directory and file paths
 
-        model_res = self.__request_model(metadata)
+        # if self.__batchOptions.without_model
+        # FIXME: the above is not possible because of extra data dependency on filename... maybe we come up with an alternative name somehow.
+
+        model_res = self.__request_model(
+            metadata) if not self.__batchOptions.without_model else None
 
         filenames = self.__get_filenames(
-            metadata, model_res.headers.get('Content-Disposition'))
+            metadata, model_res.headers.get('Content-Disposition') if model_res else None)
 
         sorter_data = self.__batchOptions.sorter(
             metadata.model_dict, metadata.version_dict, os.path.split(filenames['model'])[0], self.__dst_root_path)
@@ -193,10 +207,12 @@ class Model:
             sorter_data.metadata_dir_path, filenames['metadata'], metadata)
         self.__download_images(sorter_data.image_dir_path,
                                metadata.image_download_urls, filenames['images'])
-        self.__download_prompt(
-            sorter_data.prompt_dir_path, filenames['prompts'], metadata.image_dicts)
-        self.__download_model(sorter_data.model_dir_path,
-                              filenames['model'], model_res, metadata)
+        if self.__batchOptions.with_prompt:  # FIXME: I don't like how one of them is with_prompt, and the other is without_model
+            self.__download_prompt(
+                sorter_data.prompt_dir_path, filenames['prompts'], metadata.image_dicts)
+        if not self.__batchOptions.without_model:
+            self.__download_model(sorter_data.model_dir_path,
+                                  filenames['model'], model_res, metadata)
         self.__download_hash(sorter_data.model_dir_path,
                              filenames['hash'], metadata.version_hashes)
 
@@ -204,11 +220,11 @@ class Model:
             f"""\nDownload completed for \"{metadata.model_name}\"
                 - Model ID: {metadata.model_id}
                 - Version ID: {metadata.version_id}
-                - Model Directory Path: {sorter_data.model_dir_path}
+                - Model Directory Path: {sorter_data.model_dir_path if not self.__batchOptions.without_model else 'N/A'}
                 - Hashes Directory Path: {sorter_data.model_dir_path}
                 - Metadata Directory Path: {sorter_data.metadata_dir_path}
                 - Images Directory Path: {sorter_data.image_dir_path}
-                - Images Metadata Directory Path: {sorter_data.prompt_dir_path}\n""", color='success'))
+                - Images Metadata Directory Path: {sorter_data.prompt_dir_path if self.__batchOptions.with_prompt else 'N/A'}\n""", color='success'))
         sprint('---------------------------\n')
 
         return self
