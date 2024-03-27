@@ -99,7 +99,7 @@ To set the default attribute for disabling `with-prompt`:
 <br>
 
 ### Other possible defaults to set
-- There are options like `--with-prompt`, `--limit-rate`, `--retry-count` and `--pause-time` that you can set defaults for!
+- There are options like `--nsfw-mode`, `--with-prompt`, `--limit-rate`, `--retry-count` and `--pause-time` that you can set defaults for!
 - See `civitconfig default --help` for more info.
 - See [civitdl doc](./civitdl.md#options) on what each option do.
 
