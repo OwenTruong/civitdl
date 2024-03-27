@@ -14,6 +14,7 @@ DEFAULT_CONFIG = {
     "default": {
         "sorter": "basic",
         "max_images": 3,
+        "nsfw_mode": "2",
         "api_key": "",
 
         "with_prompt": True,

@@ -52,6 +52,10 @@ parser.add_argument('-s', '--sorter', type=str,
 parser.add_argument('-i', '--max-images', metavar='INT', type=int,
                     help='Specify max images to download for each model.')
 
+parser.add_argument(
+    '--nsfw-mode', metavar='MODE', type=str, help='Specify the nsfw mode when downloading images. Setting to 0 means the program will always download sfw. Setting to 1 means the program will only download sfw + nsfw images if the model itself is nsfw. Setting to 2 means the program will always download both sfw and nsfw.'
+)
+
 parser.add_argument('-k', '--api-key', action=PwdAction, type=str, required=False, nargs='?',
                     help='Prompt user for api key to download models that require users to log in.')
 
@@ -109,6 +113,7 @@ def get_args():
 
         "sorter": parse_sorter(sorters, parser_result.sorter or config_defaults.get('sorter', None)),
         "max_images": parser_result.max_images or config_defaults.get('max_images', None),
+        "nsfw_mode": parser_result.nsfw_mode or config_defaults.get('nsfw_mode', None),
         "api_key": parser_result.api_key or config_defaults.get('api_key', None),
 
         "with_prompt": parser_result.with_prompt if parser_result.with_prompt is not None else config_defaults.get('with_prompt', None),

@@ -30,6 +30,7 @@ def main():
             config_manager.setDefault(DefaultOptions(
                 sorter=args['sorter'],
                 max_images=args['max_images'],
+                nsfw_mode=args['nsfw_mode'],
                 api_key=args['api_key'],
                 with_prompt=args['with_prompt'],
                 without_model=args['without_model'],

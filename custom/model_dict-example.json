@@ -2,19 +2,23 @@
   "id": 7984,
   "name": "Figma Anime Figures",
   "description": "<p><strong>Note</strong>: I did not train these LoRA models myself. Original source: <a target=\"_blank\" rel=\"ugc\" href=\"https://huggingface.co/stma/lora-dump\">https://huggingface.co/stma/lora-dump</a></p><h2><strong>Recommended settings</strong></h2><p><strong>Quick start</strong></p><ul><li><p>Model: <a target=\"_blank\" rel=\"ugc\" href=\"https://civitai.com/models/4437/abyssorangemix2-sfw\">AbyssOrangeMix2</a></p></li><li><p>LoRA weight: 0.6 (UNet: 0.6, TEnc: 0.25)</p></li><li><p><code>[realistic], [3d], (3dcg), ((octane render)), [fisheye]</code> in positive prompt for realism</p></li><li><p><code>simple background, grey background</code> in negative prompt</p></li><li><p>CLIP skip: 2</p></li><li><p>Sampler: DPM++ SDE Karras (Euler a recommended for other models)</p></li><li><p><a target=\"_blank\" rel=\"ugc\" href=\"https://huggingface.co/datasets/gsdf/EasyNegative\">EasyNegative </a>in negative prompt</p></li></ul><p><strong>Usable</strong></p><ul><li><p>LoRA weight range: 0.2 - 1.15 (UNet: 0.35 - 1.15 TEnc: 0.2 - 1.0)</p></li></ul><p>UNet is required for the style. UNet over 0.65 will look like an anime figure product. Too high UNet weight will melt details.</p><p>Lower TEnc weight will improve generalization. High TEnc will affect composition to look more like an anime figure product photo. Too high will fry the details.</p><p>Start with lower weight and increase as necessary. Requires more weight when mixed with TI embeddings and other LoRAs.</p><h2><strong>Figma</strong></h2><p>Trained on 5,746 images scraped from GoodSmile's international catalogue, including the discontinued products. All images were tagged with <code>figma</code> first and the product name with <code>figma</code> stripped out second, so an image from a product named \"figma Hatsune Miku\" would be tagged <code>figma, hatsune miku</code>. All other tags came from the WD1.4 tagger. <code>3d</code> and <code>realistic</code> tags seem to work well with it.</p><p>The alpha16 version is better at generalizing, while the 7e-5 version is better at capturing the figure-with-transparent-stand look.</p><h2><strong>Example images</strong></h2><h3>Model</h3><ul><li><p><a target=\"_blank\" rel=\"ugc\" href=\"https://huggingface.co/gsdf/Counterfeit-V2.5\">Counterfeit-V2.5 </a>(TODO: update example images to <a target=\"_blank\" rel=\"ugc\" href=\"https://civitai.com/models/4437/abyssorangemix2-sfw\">AbyssOrangeMix2</a>)</p></li></ul><h3>Textual inversion</h3><ul><li><p><a target=\"_blank\" rel=\"ugc\" href=\"https://civitai.com/models/4972/roxy-migurdia-ti\">Roxy Migurdia</a> (character) <code>roxy-migurdia</code></p></li><li><p><a target=\"_blank\" rel=\"ugc\" href=\"https://civitai.com/models/5537/megumin-ti\">Megumin</a> (character) <code>megumin_1000</code></p></li><li><p><a target=\"_blank\" rel=\"ugc\" href=\"https://civitai.com/models/3036/charturner-character-turnaround-helper\">Char Turner </a>(composition) <code>chartuner</code></p></li><li><p><a target=\"_blank\" rel=\"ugc\" href=\"https://huggingface.co/datasets/gsdf/EasyNegative\">EasyNegative </a><code>EasyNegative</code></p></li><li><p><a target=\"_blank\" rel=\"ugc\" href=\"https://huggingface.co/datasets/Nerfgun3/bad_prompt\">Bad Prompt </a><code>bad_prompt</code></p></li></ul><h3>Additional LoRA</h3><ul><li><p><a target=\"_blank\" rel=\"ugc\" href=\"https://civitai.com/models/4831/yelan-lora-collection-of-trauters\">Yelan</a> (charater) <code>yelan \\(genshin impact\\)</code></p></li><li><p><a target=\"_blank\" rel=\"ugc\" href=\"https://civitai.com/models/5126/torino-aqua-style-lora\">Torino Aqua</a> (style) <code>torino aqua</code></p></li></ul>",
-  "type": "LORA",
   "poi": false,
-  "nsfw": false,
   "allowNoCredit": true,
-  "allowCommercialUse": "None",
+  "allowCommercialUse": [],
   "allowDerivatives": true,
   "allowDifferentLicense": false,
+  "type": "LORA",
+  "nsfw": false,
+  "nsfwLevel": 3,
   "stats": {
-    "downloadCount": 22736,
-    "favoriteCount": 4867,
+    "downloadCount": 26527,
+    "favoriteCount": 0,
+    "thumbsUpCount": 5387,
+    "thumbsDownCount": 0,
     "commentCount": 12,
-    "ratingCount": 37,
-    "rating": 4.86
+    "ratingCount": 0,
+    "rating": 0,
+    "tippedAmountCount": 0
   },
   "creator": {
     "username": "robowaifudev",
@@ -24,46 +28,44 @@
   "modelVersions": [
     {
       "id": 9413,
-      "modelId": 7984,
       "name": "figma",
-      "createdAt": "2023-02-11T07:55:58.459Z",
-      "updatedAt": "2023-02-11T13:05:43.327Z",
-      "trainedWords": ["figma"],
-      "trainingStatus": null,
-      "trainingDetails": null,
+      "index": 0,
+      "status": "Published",
+      "modelId": 7984,
       "baseModel": "SD 1.5",
-      "baseModelType": "Standard",
-      "earlyAccessTimeFrame": 0,
+      "createdAt": "2023-02-11T07:55:58.459",
+      "nsfwLevel": 3,
       "description": "<p>This version works better for artistic effect but is less good at details and less compatible with other LoRAs.</p>",
-      "vaeId": null,
+      "publishedAt": "2023-02-11T07:55:58.459",
+      "availability": "Public",
+      "trainedWords": ["figma"],
+      "baseModelType": "Standard",
       "stats": {
-        "downloadCount": 21798,
-        "ratingCount": 32,
-        "rating": 4.84
+        "downloadCount": 25426,
+        "ratingCount": 1902,
+        "rating": 5,
+        "thumbsUpCount": 1937,
+        "thumbsDownCount": 0
       },
       "files": [
         {
           "id": 9128,
-          "url": "https://5ac0637cfd0766c97916cefa3764fbdf.r2.cloudflarestorage.com/civitai-prod-settled/97343/model/figma.Buq9.safetensors",
           "sizeKB": 151494.275390625,
           "name": "figma.safetensors",
           "type": "Model",
-          "metadata": {
-            "fp": "fp16",
-            "size": "full",
-            "format": "SafeTensor"
-          },
           "pickleScanResult": "Success",
           "pickleScanMessage": "No Pickle imports",
           "virusScanResult": "Success",
           "virusScanMessage": null,
           "scannedAt": "2023-02-11T08:01:10.521Z",
+          "metadata": { "format": "SafeTensor", "size": "full", "fp": "fp16" },
           "hashes": {
             "AutoV1": "0F2E3571",
             "AutoV2": "6F6D687FE0",
             "SHA256": "6F6D687FE041FCDC0FE55B9CD90AE7634DC50EBC9DA849DC869B232A8DF60F9D",
             "CRC32": "4DF210A6",
-            "BLAKE3": "243A3408E98185303BA787ECBAD232FDD39F5B40EA3CC3D1AADB96F609D9B53D"
+            "BLAKE3": "243A3408E98185303BA787ECBAD232FDD39F5B40EA3CC3D1AADB96F609D9B53D",
+            "AutoV3": "DC746A5A4DA9"
           },
           "downloadUrl": "https://civitai.com/api/download/models/9413",
           "primary": true
@@ -72,1483 +74,110 @@
       "images": [
         {
           "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/ed907efe-71df-4bfb-f7da-fc97420a8a00/width=450/90635.jpeg",
-          "nsfw": "None",
+          "nsfwLevel": 1,
           "width": 512,
           "height": 768,
           "hash": "UWGSrw.Snm$*THozsoM{~C$*xaozU_MxSfkB",
-          "type": "image",
-          "metadata": {
-            "hash": "UWGSrw.Snm$*THozsoM{~C$*xaozU_MxSfkB",
-            "width": 512,
-            "height": 768
-          },
-          "meta": {
-            "Size": "344x512",
-            "seed": 3792106495,
-            "Model": "abyssorangemix2NSFW_abyssorangemix2NSFW-fp16",
-            "steps": 24,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, from_above, fisheye:1.2), photo of a highly detailed (figma) of (hastune miku:1.2), 1girl, solo, [realistic], rendered in blender",
-            "sampler": "DPM++ SDE Karras",
-            "cfgScale": 7,
-            "Clip skip": "2",
-            "resources": [
-              {
-                "hash": "b74108046b",
-                "name": "abyssorangemix2NSFW_abyssorangemix2NSFW-fp16",
-                "type": "model"
-              },
-              {
-                "hash": "dc746a5a4da9",
-                "name": "figma",
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "b74108046b",
-            "Hires steps": "24",
-            "Hires resize": "512x768",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma(dc746a5a4da9)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "EasyNegative, bad-prompt, worst quality, bad quality, simple background, lineart, flat colors, lowres",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.85",
-            "AddNet Weight B 1": "0.85",
-            "Denoising strength": "0.8"
-          }
+          "type": "image"
         },
         {
           "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/1541e722-b857-4892-6960-13bba4c9a800/width=450/90636.jpeg",
-          "nsfw": "None",
+          "nsfwLevel": 2,
           "width": 512,
           "height": 768,
           "hash": "UNH-[Qs.~pD*%MR+x]xuIpx]IVWBt7-pIURj",
-          "type": "image",
-          "metadata": {
-            "hash": "UNH-[Qs.~pD*%MR+x]xuIpx]IVWBt7-pIURj",
-            "width": 512,
-            "height": 768
-          },
-          "meta": {
-            "Size": "344x512",
-            "seed": 769997578,
-            "Model": "abyssorangemix2NSFW_abyssorangemix2NSFW-fp16",
-            "steps": 24,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, fisheye:1.2), photo of a highly detailed (figma) of (roxy-migurdia:1.2), 1girl, solo, [realistic], rendered in blender",
-            "sampler": "DPM++ SDE Karras",
-            "cfgScale": 7,
-            "Clip skip": "2",
-            "resources": [
-              {
-                "hash": "b74108046b",
-                "name": "abyssorangemix2NSFW_abyssorangemix2NSFW-fp16",
-                "type": "model"
-              },
-              {
-                "hash": "dc746a5a4da9",
-                "name": "figma",
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "b74108046b",
-            "Hires steps": "24",
-            "Hires resize": "512x768",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma(dc746a5a4da9)",
-            "Hires upscaler": "Latent",
-            "Variation seed": "3583636355",
-            "negativePrompt": "EasyNegative, worst quality, bad quality, simple background, grey background, gradient background, lineart, flat colors, lowres",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.85",
-            "AddNet Weight B 1": "0.85",
-            "Denoising strength": "0.8",
-            "Variation seed strength": "0.1"
-          }
+          "type": "image"
         },
         {
           "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/83a32549-85bb-4757-b46f-71ea6a59ff00/width=450/90943.jpeg",
-          "nsfw": "None",
+          "nsfwLevel": 1,
           "width": 512,
           "height": 856,
           "hash": "USI#Je~n?Y-oxZxtads+4=XAWXR%-qwdIVD+",
-          "type": "image",
-          "metadata": {
-            "hash": "USI#Je~n?Y-oxZxtads+4=XAWXR%-qwdIVD+",
-            "width": 512,
-            "height": 856
-          },
-          "meta": {
-            "Size": "512x856",
-            "seed": 634872815,
-            "Model": "abyssorangemix2NSFW_abyssorangemix2NSFW-fp16",
-            "steps": 24,
-            "prompt": "(masterpiece, best quality, upper_body, absurdres:1.2), [fisheye], foreshortening, photo of a highly detailed (figma:1.2) of (yelan \\(genshin impact\\), green_eyes, blue_dress:1.3), doll_joints, 1girl, solo, (flowers:1.1), outdoors, [[realistic, 3d, 3dcg, rendered in blender, subsurface scattering]]",
-            "sampler": "Euler a",
-            "cfgScale": 7,
-            "Clip skip": "2",
-            "Mask blur": "4",
-            "resources": [
-              {
-                "hash": "b74108046b",
-                "name": "abyssorangemix2NSFW_abyssorangemix2NSFW-fp16",
-                "type": "model"
-              }
-            ],
-            "Model hash": "b74108046b",
-            "negativePrompt": "(EasyNegative:1.2), hands, worst quality, bad quality, (simple background, grey background, gradient background, indoors:1.2), letterbox, lineart, flat colors, lowres",
-            "Denoising strength": "0.75"
-          }
+          "type": "image"
         },
         {
           "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/e19d7c34-42a9-4d2b-3300-34926e44ca00/width=450/90710.jpeg",
-          "nsfw": "None",
+          "nsfwLevel": 1,
           "width": 512,
           "height": 768,
           "hash": "UOI#GW0K.7%f_NIUX8tR~XIn%2s;%Ms,Rlt7",
-          "type": "image",
-          "metadata": {
-            "hash": "UOI#GW0K.7%f_NIUX8tR~XIn%2s;%Ms,Rlt7",
-            "width": 512,
-            "height": 768
-          },
-          "meta": {
-            "Size": "344x512",
-            "seed": 2732514167,
-            "Model": "abyssorangemix2NSFW_abyssorangemix2NSFW-fp16",
-            "steps": 24,
-            "prompt": "(masterpiece, best quality, safe, absurdres, foreshortening, fisheye:1.2), photo of a highly detailed (figma:1.2) of (megumin_1000, cape:1.3), doll_joints, 1girl, solo, (flowers:1.2), outdoors, [realistic, 3d, 3dcg, physically based rendering, rendered in blender, subsurface scattering]",
-            "sampler": "DPM++ SDE Karras",
-            "cfgScale": 7,
-            "Clip skip": "2",
-            "resources": [
-              {
-                "hash": "b74108046b",
-                "name": "abyssorangemix2NSFW_abyssorangemix2NSFW-fp16",
-                "type": "model"
-              },
-              {
-                "hash": "dc746a5a4da9",
-                "name": "figma",
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "b74108046b",
-            "Hires steps": "24",
-            "Hires resize": "512x768",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma(dc746a5a4da9)",
-            "Hires upscaler": "Latent",
-            "Variation seed": "1167535062",
-            "negativePrompt": "(EasyNegative:1.2), worst quality, bad quality, (simple background, grey background, gradient background, indoors:1.2), letterbox, lineart, flat colors, lowres",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.85",
-            "AddNet Weight B 1": "0.45",
-            "Denoising strength": "0.8",
-            "Variation seed strength": "0.99"
-          }
+          "type": "image"
         },
         {
           "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/5902f97c-ab43-4f06-45c3-cb4f20868000/width=450/90491.jpeg",
-          "nsfw": "None",
+          "nsfwLevel": 1,
           "width": 560,
           "height": 896,
           "hash": "UHDl$i9aIon$~pRjs,R*s.j?-pWX^+kCM|t6",
-          "type": "image",
-          "metadata": {
-            "hash": "UHDl$i9aIon$~pRjs,R*s.j?-pWX^+kCM|t6",
-            "width": 560,
-            "height": 896
-          },
-          "meta": {
-            "Size": "320x512",
-            "seed": 1684030406,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 21,
-            "prompt": "(masterpiece, best quality, absurdres:1.2), photo of a highly detailed (figma) of (roxy-migurdia:1.2), 1girl, solo, [realistic], rendered in blender",
-            "sampler": "Euler a",
-            "cfgScale": 5.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "hash": "dc746a5a4da9",
-                "name": "figma",
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "Hires steps": "34",
-            "Hires upscale": "1.75",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma(dc746a5a4da9)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "EasyNegative, bad-prompt, worst quality, bad quality, simple background, lineart, flat colors, lowres",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "1",
-            "AddNet Weight B 1": "1",
-            "Denoising strength": "0.8"
-          }
+          "type": "image"
         },
         {
           "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/1e48dde6-a171-4f67-f959-3ad5ebf50700/width=450/90485.jpeg",
-          "nsfw": "None",
+          "nsfwLevel": 2,
           "width": 560,
           "height": 896,
           "hash": "U6G9T_DO2b~q00s98wx]m7.8{e9azUo~?HR*",
-          "type": "image",
-          "metadata": {
-            "hash": "U6G9T_DO2b~q00s98wx]m7.8{e9azUo~?HR*",
-            "width": 560,
-            "height": 896
-          },
-          "meta": {
-            "Size": "320x512",
-            "seed": 257613507,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 21,
-            "prompt": "(masterpiece, best quality, absurdres:1.2), photo of a highly detailed (figma) of (hastune miku:1.2), 1girl, solo, [realistic], rendered in blender",
-            "sampler": "Euler a",
-            "cfgScale": 5.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "hash": "dc746a5a4da9",
-                "name": "figma",
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "Hires steps": "34",
-            "Hires upscale": "1.75",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma(dc746a5a4da9)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "EasyNegative, bad-prompt, worst quality, bad quality, simple background, lineart, flat colors, lowres",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.8",
-            "AddNet Weight B 1": "0.8",
-            "Denoising strength": "0.8"
-          }
+          "type": "image"
         },
         {
           "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/2393c09a-c9e1-447e-0b3d-b4f93a64a600/width=450/90492.jpeg",
-          "nsfw": "None",
+          "nsfwLevel": 1,
           "width": 512,
           "height": 768,
           "hash": "UAGbP2Rj9uwK00~pR*n$.Ssm$%OD_2s9nitl",
-          "type": "image",
-          "metadata": {
-            "hash": "UAGbP2Rj9uwK00~pR*n$.Ssm$%OD_2s9nitl",
-            "width": 512,
-            "height": 768
-          },
-          "meta": {
-            "Size": "512x768",
-            "seed": 3279387427,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 28,
-            "prompt": "(masterpiece, best quality, absurdres:1.2), (figma), (megumin, megumin_1000:1.2), 1girl, solo, [[realistic]]",
-            "sampler": "DPM++ SDE Karras",
-            "cfgScale": 7,
-            "Clip skip": "2",
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "hash": "dc746a5a4da9",
-                "name": "figma",
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma(dc746a5a4da9)",
-            "negativePrompt": "EasyNegative, worst quality, bad quality, simple background, lineart, flat colors, lowres",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "1",
-            "AddNet Weight B 1": "1"
-          }
+          "type": "image"
         },
         {
           "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/7c9e1e51-3470-43a6-6092-c6c01b18cb00/width=450/90490.jpeg",
-          "nsfw": "None",
+          "nsfwLevel": 2,
           "width": 560,
           "height": 896,
           "hash": "UNE.-34nnhxu?w9Fjuoz~WITt7ofM}M{WDay",
-          "type": "image",
-          "metadata": {
-            "hash": "UNE.-34nnhxu?w9Fjuoz~WITt7ofM}M{WDay",
-            "width": 560,
-            "height": 896
-          },
-          "meta": {
-            "Size": "320x512",
-            "seed": 2193779791,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 16,
-            "prompt": "(masterpiece, best quality, absurdres:1.2), a highly detailed (figma:1.1), (hatsune miku:1.1), 1girl, solo, [[realistic]], extremely detailed background",
-            "sampler": "Euler a",
-            "cfgScale": 5.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "hash": "dc746a5a4da9",
-                "name": "figma",
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "Hires steps": "34",
-            "Hires upscale": "1.75",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma(dc746a5a4da9)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "[[EasyNegative]], worst quality, bad quality, simple background, gradient background, lineart, flat colors, lowres, extra limb",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.6",
-            "AddNet Weight B 1": "0.15",
-            "Denoising strength": "0.8"
-          }
+          "type": "image"
         },
         {
           "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/bde6bcbd-9b18-4562-6c29-c594e2188300/width=450/90489.jpeg",
-          "nsfw": "None",
+          "nsfwLevel": 1,
           "width": 560,
           "height": 896,
           "hash": "UMGR|^%NRNWY~VxZNFRlnMV?NMkD-:xaR:oz",
-          "type": "image",
-          "metadata": {
-            "hash": "UMGR|^%NRNWY~VxZNFRlnMV?NMkD-:xaR:oz",
-            "width": 560,
-            "height": 896
-          },
-          "meta": {
-            "Size": "320x512",
-            "seed": 743664278,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 21,
-            "prompt": "(masterpiece, best quality, absurdres:1.2), a photo of a highly detailed (figma:1.1), [roxy-migurdia], doll joints, flowers, 1girl, solo, [realistic], rendered in blender",
-            "sampler": "Euler a",
-            "cfgScale": 5.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "hash": "dc746a5a4da9",
-                "name": "figma",
-                "type": "lora",
-                "weight": null
-              },
-              {
-                "hash": "6cb124e7e18c",
-                "name": "torinoAquaStyleLora_v1",
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "Hires steps": "34",
-            "Hires upscale": "1.75",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma(dc746a5a4da9)",
-            "AddNet Model 2": "torinoAquaStyleLora_v1(6cb124e7e18c)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "EasyNegative, bad-prompt, worst quality, bad quality, simple background, lineart, flat colors, lowres",
-            "AddNet Module 1": "LoRA",
-            "AddNet Module 2": "LoRA",
-            "AddNet Weight A 1": "1.1",
-            "AddNet Weight A 2": "0.4",
-            "AddNet Weight B 1": "1.1",
-            "AddNet Weight B 2": "0.4",
-            "Denoising strength": "0.8"
-          }
+          "type": "image"
         },
         {
           "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/1c4fb76f-076d-476d-bce1-7c7d1f6efa00/width=450/90488.jpeg",
-          "nsfw": "Soft",
+          "nsfwLevel": 2,
           "width": 560,
           "height": 896,
           "hash": "U8GIDh00.6${0i~U%L%2~8I[IV%L00_N01R+",
-          "type": "image",
-          "metadata": {
-            "hash": "U8GIDh00.6${0i~U%L%2~8I[IV%L00_N01R+",
-            "width": 560,
-            "height": 896
-          },
-          "meta": {
-            "Size": "320x512",
-            "seed": 805561811,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 16,
-            "prompt": "(masterpiece, best quality, absurdres:1.2), a highly detailed full body (figma:1.1), (yelan \\(genshin impact\\):1.1), green_eyes, bare shoulders, black hair, blue_hair, two-toned hair, multicolored hair, (blue_dress, pelvic curtain, clothing cutout), asymmetrical gloves, 1girl, solo, [[realistic]], extremely detailed background",
-            "sampler": "Euler a",
-            "cfgScale": 6.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "hash": "dc746a5a4da9",
-                "name": "figma",
-                "type": "lora",
-                "weight": null
-              },
-              {
-                "hash": "ced8af0dd791",
-                "name": "yelanLoraCollectionOf_yelanHard",
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "Hires steps": "34",
-            "Hires upscale": "1.75",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma(dc746a5a4da9)",
-            "AddNet Model 2": "yelanLoraCollectionOf_yelanHard(ced8af0dd791)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "[[EasyNegative]], worst quality, bad quality, simple background, gradient background, grey background, lineart, flat colors, lowres, extra limb",
-            "AddNet Module 1": "LoRA",
-            "AddNet Module 2": "LoRA",
-            "AddNet Weight A 1": "0.6",
-            "AddNet Weight A 2": "0.65",
-            "AddNet Weight B 1": "0.4",
-            "AddNet Weight B 2": "1.15",
-            "Denoising strength": "0.7"
-          }
+          "type": "image"
+        },
+        {
+          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/dfb97732-8b7e-420e-ded6-c5cde64e3500/width=450/90487.jpeg",
+          "nsfwLevel": 2,
+          "width": 512,
+          "height": 768,
+          "hash": "UNJ7wG0KnN?a00x]xuM|?GD%S3xu_N4:WAoI",
+          "type": "image"
+        },
+        {
+          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/3b88afe7-df31-4768-5dd4-3c930c687500/width=450/90486.jpeg",
+          "nsfwLevel": 2,
+          "width": 768,
+          "height": 512,
+          "hash": "UBGlYQE2DiXS00WBjEWYbcjEkWoz~Bs:S2oL",
+          "type": "image"
+        },
+        {
+          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/74b4c889-ce8e-442c-3faf-ebbdc8b1a300/width=450/91076.jpeg",
+          "nsfwLevel": 1,
+          "width": 512,
+          "height": 856,
+          "hash": "UBINT]9b00f$02xu4:of01Rj~WRk4mtR%ge.",
+          "type": "image"
         }
       ],
       "downloadUrl": "https://civitai.com/api/download/models/9413"
-    },
-    {
-      "id": 9414,
-      "modelId": 7984,
-      "name": "figma [alpha16]",
-      "createdAt": "2023-02-11T07:55:58.459Z",
-      "updatedAt": "2023-02-11T13:05:43.327Z",
-      "trainedWords": ["figma"],
-      "trainingStatus": null,
-      "trainingDetails": null,
-      "baseModel": "SD 1.5",
-      "baseModelType": "Standard",
-      "earlyAccessTimeFrame": 0,
-      "description": "<p>The alpha16 version has a stronger anime figure look and is better at generalizing and has better details.</p>",
-      "vaeId": null,
-      "stats": {
-        "downloadCount": 523,
-        "ratingCount": 4,
-        "rating": 5
-      },
-      "files": [
-        {
-          "id": 9129,
-          "url": "https://5ac0637cfd0766c97916cefa3764fbdf.r2.cloudflarestorage.com/civitai-prod-settled/97343/model/figma205balpha165D.jct3.safetensors",
-          "sizeKB": 151388.5537109375,
-          "name": "figma [alpha16].safetensors",
-          "type": "Model",
-          "metadata": {
-            "fp": "fp16",
-            "size": "full",
-            "format": "SafeTensor"
-          },
-          "pickleScanResult": "Success",
-          "pickleScanMessage": "No Pickle imports",
-          "virusScanResult": "Success",
-          "virusScanMessage": null,
-          "scannedAt": "2023-02-11T08:01:01.933Z",
-          "hashes": {
-            "AutoV1": "249E12EF",
-            "AutoV2": "74CA2D92AD",
-            "SHA256": "74CA2D92AD92185085A73B58128AB1BFEF4FBC5316DF6194D609E6B261913613",
-            "CRC32": "15B167D8",
-            "BLAKE3": "170580F5CE602AC0ABEE20920001949AD270090882D119004D02D0E31C223445"
-          },
-          "downloadUrl": "https://civitai.com/api/download/models/9414",
-          "primary": true
-        }
-      ],
-      "images": [
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/c135c971-2600-4467-0fa8-ddad86b2e900/width=450/90745.jpeg",
-          "nsfw": "None",
-          "width": 512,
-          "height": 768,
-          "hash": "UFFOAZR*0z~BNaNGM_SOD*0eNFxG~C?HR+%1",
-          "type": "image",
-          "metadata": {
-            "hash": "UFFOAZR*0z~BNaNGM_SOD*0eNFxG~C?HR+%1",
-            "width": 512,
-            "height": 768
-          },
-          "meta": {
-            "Size": "344x512",
-            "seed": 173912014,
-            "Model": "abyssorangemix2SFW_abyssorangemix2Sfw",
-            "steps": 24,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, fisheye:1.2), photo of a highly detailed (figma:1.2) of (megumin_1000, witch_hat, cape, long_sleeves, bandaged_leg, asymmetrical_legwear:1.3), doll_joints, 1girl, solo, (flowers:1.2), outdoors, [[realistic, 3d, 3dcg, physically based rendering, rendered in blender, subsurface scattering]]",
-            "sampler": "DPM++ SDE Karras",
-            "cfgScale": 7,
-            "Clip skip": "2",
-            "resources": [
-              {
-                "hash": "b644d850c9",
-                "name": "abyssorangemix2SFW_abyssorangemix2Sfw",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "b644d850c9",
-            "Hires steps": "24",
-            "Hires resize": "512x768",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [alpha16](0307b2d8c1a7)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "(EasyNegative:1.2), worst quality, bad quality, (simple background, grey background, gradient background, indoors:1.2), letterbox, lineart, flat colors, lowres, bandaged_arm",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.65",
-            "AddNet Weight B 1": "0.25",
-            "Denoising strength": "0.8"
-          }
-        },
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/8b5b2952-8a22-41a5-0ee1-255559a4de00/width=450/90744.jpeg",
-          "nsfw": "None",
-          "width": 512,
-          "height": 856,
-          "hash": "UBE{nX4TK+ibYR%#xbRODiTzIVS$?c00IpX9",
-          "type": "image",
-          "metadata": {
-            "hash": "UBE{nX4TK+ibYR%#xbRODiTzIVS$?c00IpX9",
-            "width": 512,
-            "height": 856
-          },
-          "meta": {
-            "Size": "344x512",
-            "seed": 4194468973,
-            "Model": "abyssorangemix2SFW_abyssorangemix2Sfw",
-            "steps": 24,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, fisheye:1.2), photo of a highly detailed (figma:1.2) of (roxy-migurdia:1.3), doll_joints, 1girl, solo, (flowers:1.2), outdoors, [[realistic, 3d, 3dcg, physically based rendering, rendered in blender, subsurface scattering]]",
-            "sampler": "DPM++ SDE Karras",
-            "cfgScale": 6.5,
-            "Clip skip": "2",
-            "resources": [
-              {
-                "hash": "b644d850c9",
-                "name": "abyssorangemix2SFW_abyssorangemix2Sfw",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "b644d850c9",
-            "Hires steps": "24",
-            "Hires resize": "512x856",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [alpha16](0307b2d8c1a7)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "(EasyNegative:1.2), worst quality, bad quality, (simple background, grey background, gradient background, indoors:1.2), letterbox, lineart, flat colors, lowres, bandaged_arm",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.85",
-            "AddNet Weight B 1": "0.25",
-            "Denoising strength": "0.9"
-          }
-        },
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/1beaaebc-4528-4495-38b9-1aff8d39b400/width=450/90501.jpeg",
-          "nsfw": "Soft",
-          "width": 560,
-          "height": 896,
-          "hash": "UHIXERIV~9xED%~VVsNG_1E2I;j[%MIpt6WB",
-          "type": "image",
-          "metadata": {
-            "hash": "UHIXERIV~9xED%~VVsNG_1E2I;j[%MIpt6WB",
-            "width": 560,
-            "height": 896
-          },
-          "meta": {
-            "Size": "320x512",
-            "seed": 4088656223,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 21,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, from_above, fisheye:1.2), a highly detailed full body (figma:1.1), (yelan \\(genshin impact\\):1.1), green_eyes, bare shoulders, black hair, blue_hair, two-toned hair, multicolored hair, (blue_dress, pelvic curtain, clothing cutout), 1girl, solo, [[realistic]], extremely detailed background",
-            "sampler": "Euler a",
-            "cfgScale": 6.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              },
-              {
-                "hash": "ced8af0dd791",
-                "name": "yelanLoraCollectionOf_yelanHard",
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "Hires steps": "21",
-            "Hires upscale": "1.75",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [alpha16](0307b2d8c1a7)",
-            "AddNet Model 2": "yelanLoraCollectionOf_yelanHard(ced8af0dd791)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "[[EasyNegative]], worst quality, simple background, grey background, gradient background",
-            "AddNet Module 1": "LoRA",
-            "AddNet Module 2": "LoRA",
-            "AddNet Weight A 1": "0.6",
-            "AddNet Weight A 2": "0.6",
-            "AddNet Weight B 1": "0.2",
-            "AddNet Weight B 2": "0.75",
-            "Denoising strength": "0.9"
-          }
-        },
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/99560e2b-35e7-4818-5484-63d32a867100/width=450/90500.jpeg",
-          "nsfw": "None",
-          "width": 560,
-          "height": 896,
-          "hash": "UQHK^J~Wx]e.tm%gxuWC-oxts:WCt7RjRjRj",
-          "type": "image",
-          "metadata": {
-            "hash": "UQHK^J~Wx]e.tm%gxuWC-oxts:WCt7RjRjRj",
-            "width": 560,
-            "height": 896
-          },
-          "meta": {
-            "Size": "320x512",
-            "seed": 1813768461,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 21,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, from_above, fisheye:1.2), a highly detailed full body (figma:1.1), (megumin, megumin_1000, cape, cloak, red_eyes, belt, long_sleeves, fingerless_gloves:1.2), (witch_hat, asymmetrical_legwear, bandaged_leg, bandages:1.4), 1girl, solo, [[realistic]], extremely detailed background",
-            "sampler": "Euler a",
-            "cfgScale": 6.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "Hires steps": "33",
-            "Hires upscale": "1.75",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [alpha16](0307b2d8c1a7)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "[[EasyNegative]], worst quality, alternative_costume, simple background, grey background, gradient background, bandaged_arm",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.75",
-            "AddNet Weight B 1": "0.25",
-            "Denoising strength": "0.9"
-          }
-        },
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/f80226df-22fe-433f-bc3a-f0aa9f83e700/width=450/90499.jpeg",
-          "nsfw": "None",
-          "width": 560,
-          "height": 896,
-          "hash": "UHG*~B~A-gjWb0t7s+t68^tSNIxuxG%2kDM{",
-          "type": "image",
-          "metadata": {
-            "hash": "UHG*~B~A-gjWb0t7s+t68^tSNIxuxG%2kDM{",
-            "width": 560,
-            "height": 896
-          },
-          "meta": {
-            "Size": "320x512",
-            "seed": 1240340736,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 21,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, from_above, fisheye:1.2), a highly detailed full body (figma:1.1), (roxy-migurdia, roxy migurdia:1.2), 1girl, solo, [[realistic]], extremely detailed background",
-            "sampler": "Euler a",
-            "cfgScale": 6.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "Hires steps": "33",
-            "Hires upscale": "1.75",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [alpha16](0307b2d8c1a7)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "[[EasyNegative]], worst quality, alternative_costume, simple background, grey background, gradient background",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.75",
-            "AddNet Weight B 1": "0.25",
-            "Denoising strength": "0.9"
-          }
-        },
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/c83b82fa-b84e-456b-f83e-2cb70dc7b600/width=450/90498.jpeg",
-          "nsfw": "Soft",
-          "width": 560,
-          "height": 896,
-          "hash": "U7EW2k4;yXxu00?aivo~MbMyQ-IU~BS#t7$%",
-          "type": "image",
-          "metadata": {
-            "hash": "U7EW2k4;yXxu00?aivo~MbMyQ-IU~BS#t7$%",
-            "width": 560,
-            "height": 896
-          },
-          "meta": {
-            "Size": "320x512",
-            "seed": 516313914,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 21,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, from_above, fisheye:1.2), a highly detailed full body (figma:1.1), (yelan \\(genshin impact\\):1.1), green_eyes, bare shoulders, black hair, blue_hair, two-toned hair, multicolored hair, (blue_dress, pelvic curtain, clothing cutout), 1girl, solo, [[realistic]], extremely detailed background",
-            "sampler": "Euler a",
-            "cfgScale": 6.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              },
-              {
-                "hash": "ced8af0dd791",
-                "name": "yelanLoraCollectionOf_yelanHard",
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "Hires steps": "21",
-            "Hires upscale": "1.75",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [alpha16](0307b2d8c1a7)",
-            "AddNet Model 2": "yelanLoraCollectionOf_yelanHard(ced8af0dd791)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "[[EasyNegative]], worst quality, simple background, grey background, gradient background",
-            "AddNet Module 1": "LoRA",
-            "AddNet Module 2": "LoRA",
-            "AddNet Weight A 1": "0.6",
-            "AddNet Weight A 2": "0.6",
-            "AddNet Weight B 1": "0.2",
-            "AddNet Weight B 2": "0.75",
-            "Denoising strength": "0.9"
-          }
-        },
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/0ded5210-13ab-4402-1dd8-287f08ad6200/width=450/90497.jpeg",
-          "nsfw": "None",
-          "width": 560,
-          "height": 896,
-          "hash": "UEHw4D0z~AENdB]-xuxE~Cb^xas:^Re.ogba",
-          "type": "image",
-          "metadata": {
-            "hash": "UEHw4D0z~AENdB]-xuxE~Cb^xas:^Re.ogba",
-            "width": 560,
-            "height": 896
-          },
-          "meta": {
-            "Size": "320x512",
-            "seed": 4288688445,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 21,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, from_above, fisheye:1.2), a highly detailed full body (figma:1.1), (megumin, cape, cloak, red_eyes, belt, long_sleeves, fingerless_gloves:1.2), (witch_hat, asymmetrical_legwear, bandaged_leg, bandages:1.4), 1girl, solo, [[realistic]], extremely detailed background",
-            "sampler": "Euler a",
-            "cfgScale": 6.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "Hires steps": "33",
-            "Hires upscale": "1.75",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [alpha16](0307b2d8c1a7)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "[[EasyNegative]], worst quality, alternative_costume, simple background, grey background, gradient background",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.75",
-            "AddNet Weight B 1": "0.25",
-            "Denoising strength": "0.9"
-          }
-        },
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/f97a8542-0099-475a-9367-abeeaab4e200/width=450/90496.jpeg",
-          "nsfw": "None",
-          "width": 560,
-          "height": 896,
-          "hash": "UMF}.r~C-TxY-;%2xY%24nkWt7%2WqofbwR*",
-          "type": "image",
-          "metadata": {
-            "hash": "UMF}.r~C-TxY-;%2xY%24nkWt7%2WqofbwR*",
-            "width": 560,
-            "height": 896
-          },
-          "meta": {
-            "Size": "320x512",
-            "seed": 1240340735,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 21,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, from_above, fisheye:1.2), a highly detailed full body (figma:1.1), (roxy-migurdia, roxy migurdia:1.2), 1girl, solo, [[realistic]], extremely detailed background",
-            "sampler": "Euler a",
-            "cfgScale": 6.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "Hires steps": "33",
-            "Hires upscale": "1.75",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [alpha16](0307b2d8c1a7)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "[[EasyNegative]], worst quality, alternative_costume, simple background, grey background, gradient background",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.75",
-            "AddNet Weight B 1": "0.25",
-            "Denoising strength": "0.9"
-          }
-        },
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/d096e8be-8baf-4f25-f475-f047969e9600/width=450/90495.jpeg",
-          "nsfw": "None",
-          "width": 560,
-          "height": 896,
-          "hash": "UJHB0l01=YtR_ND*wIof~C9ZRksoK5Ri9u%1",
-          "type": "image",
-          "metadata": {
-            "hash": "UJHB0l01=YtR_ND*wIof~C9ZRksoK5Ri9u%1",
-            "width": 560,
-            "height": 896
-          },
-          "meta": {
-            "Size": "320x512",
-            "seed": 3556677786,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 21,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, from_above, fisheye:1.2), a highly detailed full body (figma:1.1), (hatsune miku:1.2), 1girl, solo, [[realistic]], extremely detailed background",
-            "sampler": "Euler a",
-            "cfgScale": 6.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "Hires steps": "33",
-            "Hires upscale": "1.75",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [alpha16](0307b2d8c1a7)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "[[EasyNegative]], worst quality, alternative_costume, simple background, grey background, gradient background",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.75",
-            "AddNet Weight B 1": "0.25",
-            "Denoising strength": "0.9"
-          }
-        },
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/358e4360-90ed-45da-910d-3172986d1900/width=450/90494.jpeg",
-          "nsfw": "None",
-          "width": 560,
-          "height": 896,
-          "hash": "UAHxTtrXGu*000j]R*bHAttR#RR5IVt6f+Rj",
-          "type": "image",
-          "metadata": {
-            "hash": "UAHxTtrXGu*000j]R*bHAttR#RR5IVt6f+Rj",
-            "width": 560,
-            "height": 896
-          },
-          "meta": {
-            "Size": "320x512",
-            "seed": 2250476405,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 21,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, from_above, fisheye:1.2), a highly detailed full body (figma:1.1), (hakurei reimu:1.2), 1girl, solo, [[realistic]], extremely detailed background",
-            "sampler": "Euler a",
-            "cfgScale": 6.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "Hires steps": "33",
-            "Hires upscale": "1.75",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [alpha16](0307b2d8c1a7)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "[[EasyNegative]], worst quality, alternative_costume, simple background, grey background, gradient background",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.75",
-            "AddNet Weight B 1": "0.25",
-            "Denoising strength": "0.9"
-          }
-        }
-      ],
-      "downloadUrl": "https://civitai.com/api/download/models/9414"
-    },
-    {
-      "id": 9415,
-      "modelId": 7984,
-      "name": "figma [7e-5]",
-      "createdAt": "2023-02-11T07:55:58.459Z",
-      "updatedAt": "2023-02-11T13:05:43.327Z",
-      "trainedWords": ["figma"],
-      "trainingStatus": null,
-      "trainingDetails": null,
-      "baseModel": "SD 1.5",
-      "baseModelType": "Standard",
-      "earlyAccessTimeFrame": 0,
-      "description": "<p>The 7e-5 version is better at capturing the figure-with-transparent-stand look and has more variety in backgrounds but they look plastic.</p>",
-      "vaeId": null,
-      "stats": {
-        "downloadCount": 415,
-        "ratingCount": 1,
-        "rating": 5
-      },
-      "files": [
-        {
-          "id": 9130,
-          "url": "https://5ac0637cfd0766c97916cefa3764fbdf.r2.cloudflarestorage.com/civitai-prod-settled/97343/model/figma205b7e55D.FPec.safetensors",
-          "sizeKB": 151431.6650390625,
-          "name": "figma [7e-5].safetensors",
-          "type": "Model",
-          "metadata": {
-            "fp": "fp16",
-            "size": "full",
-            "format": "SafeTensor"
-          },
-          "pickleScanResult": "Success",
-          "pickleScanMessage": "No Pickle imports",
-          "virusScanResult": "Success",
-          "virusScanMessage": null,
-          "scannedAt": "2023-02-11T08:00:57.553Z",
-          "hashes": {
-            "AutoV1": "61E8AA0F",
-            "AutoV2": "B16BFAB3A6",
-            "SHA256": "B16BFAB3A6049098E2CB606A925D37E552F460F0064427CDFC147DD84EA25231",
-            "CRC32": "380FAEC8",
-            "BLAKE3": "90D0CD89B7B23DC54E0D86E360A642555ACC08E73D29F635A9B588D8E8852334"
-          },
-          "downloadUrl": "https://civitai.com/api/download/models/9415",
-          "primary": true
-        }
-      ],
-      "images": [
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/10afaf60-e3a3-4edb-f7c5-70c68a89f600/width=450/90796.jpeg",
-          "nsfw": "None",
-          "width": 512,
-          "height": 856,
-          "hash": "UCF=%X~D.T0#1Q.7XA%3Y+-V4:Na9]krV_-V",
-          "type": "image",
-          "metadata": {
-            "hash": "UCF=%X~D.T0#1Q.7XA%3Y+-V4:Na9]krV_-V",
-            "width": 512,
-            "height": 856
-          },
-          "meta": {
-            "Size": "344x512",
-            "seed": 2769391734,
-            "Model": "abyssorangemix2SFW_abyssorangemix2Sfw",
-            "steps": 24,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, fisheye:1.2), photo of a highly detailed (figma:1.2) of (alice margatroid:1.3), doll_joints, 1girl, solo, (flowers:1.2), outdoors, [[realistic, 3d, 3dcg, physically based rendering, rendered in blender, subsurface scattering]]",
-            "sampler": "DPM++ SDE Karras",
-            "cfgScale": 6.5,
-            "Clip skip": "2",
-            "resources": [
-              {
-                "hash": "b644d850c9",
-                "name": "abyssorangemix2SFW_abyssorangemix2Sfw",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "b644d850c9",
-            "Hires steps": "24",
-            "Hires resize": "512x856",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [7e-5](88b55a4041a7)",
-            "Hires upscaler": "Latent",
-            "Variation seed": "1991092479",
-            "negativePrompt": "(EasyNegative:1.2), bad-hands, missing_digit, worst quality, bad quality, (simple background, grey background, gradient background, indoors:1.2), letterbox, lineart, flat colors, lowres",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.85",
-            "AddNet Weight B 1": "0.25",
-            "Denoising strength": "0.9",
-            "Variation seed strength": "0.08"
-          }
-        },
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/5eb5ed3a-44a5-435a-1b61-f0f3317e4c00/width=450/90795.jpeg",
-          "nsfw": "None",
-          "width": 512,
-          "height": 856,
-          "hash": "UPGIZED*D$xvNv%LRPWX~pM|M{t7I=WCIVbH",
-          "type": "image",
-          "metadata": {
-            "hash": "UPGIZED*D$xvNv%LRPWX~pM|M{t7I=WCIVbH",
-            "width": 512,
-            "height": 856
-          },
-          "meta": {
-            "Size": "344x512",
-            "seed": 2987767209,
-            "Model": "abyssorangemix2SFW_abyssorangemix2Sfw",
-            "steps": 24,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, fisheye:1.2), photo of a highly detailed (figma:1.2) of (roxy-migurdia:1.3), doll_joints, 1girl, solo, (flowers:1.2), outdoors, [[realistic, 3d, 3dcg, physically based rendering, rendered in blender, subsurface scattering]]",
-            "sampler": "DPM++ SDE Karras",
-            "cfgScale": 6.5,
-            "Clip skip": "2",
-            "resources": [
-              {
-                "hash": "b644d850c9",
-                "name": "abyssorangemix2SFW_abyssorangemix2Sfw",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "b644d850c9",
-            "Hires steps": "24",
-            "Hires resize": "512x856",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [7e-5](88b55a4041a7)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "(EasyNegative:1.2), worst quality, bad quality, (simple background, grey background, gradient background, indoors:1.2), letterbox, lineart, flat colors, lowres, bandaged_arm",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.85",
-            "AddNet Weight B 1": "0.25",
-            "Denoising strength": "0.9"
-          }
-        },
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/a93ce27f-048d-4bd4-a8fe-e415ed9e9400/width=450/90794.jpeg",
-          "nsfw": "Soft",
-          "width": 512,
-          "height": 856,
-          "hash": "UFG+dopK~otRF~XA9E_3AJ9ZMwE1x_IUr;nO",
-          "type": "image",
-          "metadata": {
-            "hash": "UFG+dopK~otRF~XA9E_3AJ9ZMwE1x_IUr;nO",
-            "width": 512,
-            "height": 856
-          },
-          "meta": {
-            "Size": "344x512",
-            "seed": 2365293943,
-            "Model": "abyssorangemix2SFW_abyssorangemix2Sfw",
-            "steps": 24,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, fisheye:1.2), photo of a highly detailed (figma:1.2) of (yelan \\(genshin impact\\):1.3), doll_joints, 1girl, solo, (flowers:1.2), outdoors, [[realistic, 3d, 3dcg, physically based rendering, rendered in blender, subsurface scattering]]",
-            "sampler": "DPM++ SDE Karras",
-            "cfgScale": 6.5,
-            "Clip skip": "2",
-            "resources": [
-              {
-                "hash": "b644d850c9",
-                "name": "abyssorangemix2SFW_abyssorangemix2Sfw",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              },
-              {
-                "hash": "ced8af0dd791",
-                "name": "yelanLoraCollectionOf_yelanHard",
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "b644d850c9",
-            "Hires steps": "24",
-            "Hires resize": "512x856",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [7e-5](88b55a4041a7)",
-            "AddNet Model 2": "yelanLoraCollectionOf_yelanHard(ced8af0dd791)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "(EasyNegative:1.2), bad-hands, missing_digit, worst quality, bad quality, (simple background, grey background, gradient background, indoors:1.2), letterbox, lineart, flat colors, lowres",
-            "AddNet Module 1": "LoRA",
-            "AddNet Module 2": "LoRA",
-            "AddNet Weight A 1": "0.85",
-            "AddNet Weight A 2": "0.65",
-            "AddNet Weight B 1": "0.25",
-            "AddNet Weight B 2": "0.35",
-            "Denoising strength": "0.9"
-          }
-        },
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/61ee6a2f-9410-469e-a9bb-ed60d6a50000/width=450/90512.jpeg",
-          "nsfw": "None",
-          "width": 512,
-          "height": 768,
-          "hash": "UCHU5+D*4.M{_NELxZRj-nIoeox]a$%2E2Sh",
-          "type": "image",
-          "metadata": {
-            "hash": "UCHU5+D*4.M{_NELxZRj-nIoeox]a$%2E2Sh",
-            "width": 512,
-            "height": 768
-          },
-          "meta": {
-            "Size": "512x768",
-            "seed": 1151564709,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 33,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, from_above, fisheye:1.2), a highly detailed (figma:1.1), (hakurei reimu, skirt, shrine maiden:1.4), 1girl, solo, [[realistic]], extremely detailed background",
-            "sampler": "Euler a",
-            "cfgScale": 6.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [7e-5](88b55a4041a7)",
-            "negativePrompt": "[[EasyNegative]], worst quality, alternative_costume, simple background, grey background, gradient background, letterbox shorts",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.65",
-            "AddNet Weight B 1": "0.25"
-          }
-        },
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/b605ce64-ce9e-4bea-98a6-c61302aa1500/width=450/90511.jpeg",
-          "nsfw": "None",
-          "width": 512,
-          "height": 768,
-          "hash": "UFE_:NE1]~S~~B-UV?xZ}mNb-pM|xDE2g3xF",
-          "type": "image",
-          "metadata": {
-            "hash": "UFE_:NE1]~S~~B-UV?xZ}mNb-pM|xDE2g3xF",
-            "width": 512,
-            "height": 768
-          },
-          "meta": {
-            "Size": "512x768",
-            "seed": 1066424706,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 33,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, from_above, fisheye:1.2), a highly detailed (figma:1.1), (hatsune miku:1.2), 1girl, solo, [[realistic]], extremely detailed background",
-            "sampler": "Euler a",
-            "cfgScale": 6.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [7e-5](88b55a4041a7)",
-            "negativePrompt": "[[EasyNegative]], worst quality, alternative_costume, simple background, grey background, gradient background, letterbox",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.7",
-            "AddNet Weight B 1": "0.45"
-          }
-        },
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/71f9971c-2716-474b-06f6-249c3afc8600/width=450/90510.jpeg",
-          "nsfw": "None",
-          "width": 512,
-          "height": 768,
-          "hash": "U6F6B?8_NTEL%W-qk8-p?p~o^+ITVs~oE2WU",
-          "type": "image",
-          "metadata": {
-            "hash": "U6F6B?8_NTEL%W-qk8-p?p~o^+ITVs~oE2WU",
-            "width": 512,
-            "height": 768
-          },
-          "meta": {
-            "Size": "512x768",
-            "seed": 2508997639,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 33,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, from_above, fisheye:1.2), a highly detailed (figma:1.1), (roxy-migurdia:1.2), 1girl, solo, [[realistic]], extremely detailed background",
-            "sampler": "Euler a",
-            "cfgScale": 6.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [7e-5](88b55a4041a7)",
-            "negativePrompt": "[[EasyNegative]], bad-hands, worst quality, alternative_costume, simple background, grey background, gradient background, letterbox",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.75",
-            "AddNet Weight B 1": "0.45"
-          }
-        },
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/aa34df2f-a5b0-461e-8543-83f7c1fa9800/width=450/90509.jpeg",
-          "nsfw": "None",
-          "width": 512,
-          "height": 768,
-          "hash": "UBE{FL0Kl9niE84:?aah~no#$yxv00o#M_t8",
-          "type": "image",
-          "metadata": {
-            "hash": "UBE{FL0Kl9niE84:?aah~no#$yxv00o#M_t8",
-            "width": 512,
-            "height": 768
-          },
-          "meta": {
-            "Size": "512x768",
-            "seed": 2265773582,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 33,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, from_above, fisheye:1.2), a highly detailed (figma:1.1), (megumin_1000, megumin:1.2), 1girl, solo, [[realistic]], extremely detailed background",
-            "sampler": "Euler a",
-            "cfgScale": 6.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [7e-5](88b55a4041a7)",
-            "negativePrompt": "[[EasyNegative]], bad-hands, worst quality, alternative_costume, simple background, grey background, gradient background, letterbox",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.75",
-            "AddNet Weight B 1": "0.45"
-          }
-        },
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/4430a59c-0695-49c5-4684-3a72cb189500/width=450/90508.jpeg",
-          "nsfw": "Soft",
-          "width": 512,
-          "height": 768,
-          "hash": "UEHLuX9F_N~qMx%NIUj?Iot7MxIUIVV?oeRj",
-          "type": "image",
-          "metadata": {
-            "hash": "UEHLuX9F_N~qMx%NIUj?Iot7MxIUIVV?oeRj",
-            "width": 512,
-            "height": 768
-          },
-          "meta": {
-            "Size": "320x512",
-            "seed": 3727613088,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 33,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, from_above, fisheye:1.2), a highly detailed (figma:1.1), (yelan \\(genshin impact\\):1.2), 1girl, solo, [[realistic]], extremely detailed background",
-            "sampler": "Euler a",
-            "cfgScale": 6.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              },
-              {
-                "hash": "ced8af0dd791",
-                "name": "yelanLoraCollectionOf_yelanHard",
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "Hires steps": "33",
-            "Hires resize": "512x768",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [7e-5](88b55a4041a7)",
-            "AddNet Model 2": "yelanLoraCollectionOf_yelanHard(ced8af0dd791)",
-            "Hires upscaler": "Latent",
-            "negativePrompt": "[[EasyNegative]], worst quality, letterbox",
-            "AddNet Module 1": "LoRA",
-            "AddNet Module 2": "LoRA",
-            "AddNet Weight A 1": "0.85",
-            "AddNet Weight A 2": "0.65",
-            "AddNet Weight B 1": "0.65",
-            "AddNet Weight B 2": "0.6",
-            "Denoising strength": "0.9"
-          }
-        },
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/bb3ce54d-9700-4551-8887-d223076bb400/width=450/90507.jpeg",
-          "nsfw": "None",
-          "width": 512,
-          "height": 768,
-          "hash": "U7HK;7005Q~C?^8{D%%#*J00I9.SVaSvIoxb",
-          "type": "image",
-          "metadata": {
-            "hash": "U7HK;7005Q~C?^8{D%%#*J00I9.SVaSvIoxb",
-            "width": 512,
-            "height": 768
-          },
-          "meta": {
-            "Size": "512x768",
-            "seed": 2581983780,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 33,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, from_above, fisheye:1.2), a highly detailed (figma:1.1), (hakurei reimu, skirt, shrine maiden:1.4), 1girl, solo, [[realistic]], extremely detailed background",
-            "sampler": "Euler a",
-            "cfgScale": 6.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [7e-5](88b55a4041a7)",
-            "negativePrompt": "[[EasyNegative]], worst quality, alternative_costume, simple background, grey background, gradient background, letterbox shorts",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.75",
-            "AddNet Weight B 1": "0.35"
-          }
-        },
-        {
-          "url": "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/e57d426e-afc7-4c99-e4f0-5c4f5eaf1800/width=450/90506.jpeg",
-          "nsfw": "None",
-          "width": 512,
-          "height": 768,
-          "hash": "ULGb9j^*rpt7tkxGi^RkwHn$oMkC~B?atloz",
-          "type": "image",
-          "metadata": {
-            "hash": "ULGb9j^*rpt7tkxGi^RkwHn$oMkC~B?atloz",
-            "width": 512,
-            "height": 768
-          },
-          "meta": {
-            "Size": "512x768",
-            "seed": 7916675,
-            "Model": "Counterfeit-V2.5_fp16",
-            "steps": 33,
-            "prompt": "(masterpiece, best quality, absurdres, foreshortening, from_above, fisheye:1.2), a highly detailed (figma:1.1), (hatsune miku:1.2), 1girl, solo, [[realistic]], extremely detailed background",
-            "sampler": "Euler a",
-            "cfgScale": 6.5,
-            "resources": [
-              {
-                "hash": "71e703a0fc",
-                "name": "Counterfeit-V2.5_fp16",
-                "type": "model"
-              },
-              {
-                "type": "lora",
-                "weight": null
-              }
-            ],
-            "Model hash": "71e703a0fc",
-            "AddNet Enabled": "True",
-            "AddNet Model 1": "figma [7e-5](88b55a4041a7)",
-            "negativePrompt": "[[EasyNegative]], worst quality, alternative_costume, simple background, grey background, gradient background, letterbox",
-            "AddNet Module 1": "LoRA",
-            "AddNet Weight A 1": "0.65",
-            "AddNet Weight B 1": "0.25"
-          }
-        }
-      ],
-      "downloadUrl": "https://civitai.com/api/download/models/9415"
     }
   ]
 }

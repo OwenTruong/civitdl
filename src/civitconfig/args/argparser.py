@@ -39,6 +39,9 @@ default_parser = subparsers.add_parser(
 default_parser.add_argument('-i', '--max-images', metavar='INT', type=int,
                             help='Set the default max number of images to download per model.')
 
+default_parser.add_argument('--nsfw-mode', type=str,
+                            help='Set the default nsfw mode when downloading images. Setting to 0 means the program will always download sfw. Setting to 1 means the program will only download sfw + nsfw images if the model itself is nsfw. Setting to 2 means the program will always download both sfw and nsfw.')
+
 default_parser.add_argument('-s', '--sorter', metavar='NAME', type=str,
                             help='Set the default sorter given name of sorter (filepath not accepted).')
 

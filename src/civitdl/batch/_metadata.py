@@ -17,6 +17,7 @@ class Metadata:
     version_dict = None
 
     nsfw = False
+    nsfwLevel = None
     image_dicts = None
     image_download_urls = None
     model_download_url = None
@@ -54,10 +55,21 @@ class Metadata:
         self.model_name = self.model_dict['name']
 
         self.nsfw = self.model_dict['nsfw']
-        self.image_dicts = [
-            image_dict for image_dict in self.version_dict['images']
-            if self.nsfw or image_dict['nsfw'] == 'None'
-        ][0:self.__batchOptions.max_images]
+        self.nsfwLevel = self.model_dict['nsfwLevel']
+
+        print_verbose(f'nsfwLevel of model: {self.nsfwLevel}')
+        print_verbose(f'Configurated nsfw mode: {self.__batchOptions.nsfw_mode}')  # nopep8
+
+        self.image_dicts = []
+        for image_dict in self.version_dict['images']:
+            if image_dict['nsfwLevel'] <= 3:
+                self.image_dicts.append(image_dict)
+            elif (self.__batchOptions.nsfw_mode == '1' and (self.nsfw or image_dict['nsfwLevel'] <= self.nsfwLevel)) or self.__batchOptions.nsfw_mode == '2':
+                self.image_dicts.append(image_dict)
+        self.image_dicts = self.image_dicts[0:self.__batchOptions.max_images]
+
+        print_verbose(f'nsfwLevel of images to download: {[image_dict["nsfwLevel"] for image_dict in self.image_dicts]}')  # nopep8
+
         self.image_download_urls = [image_dict['url']
                                     for image_dict in self.image_dicts]
 
@@ -88,16 +100,19 @@ class Metadata:
     def __get_model_metadata(self):
         """Returns json object if request succeeds, else print error and returns None"""
         metadata_url = f'https://civitai.com/api/v1/models/{self.model_id}'
-        return self.__get_metadata(metadata_url)
+        metadata = self.__get_metadata(metadata_url)
+        return metadata
 
     def __get_version_metadata(self):
         metadata_url = f'https://civitai.com/api/v1/model-versions/{self.version_id}'  # nopep8 # Linux issue
-        return self.__get_metadata(metadata_url)
+        metadata = self.__get_metadata(metadata_url)
+        return metadata
 
     def __get_metadata(self, url: str):
         print_verbose('Requesting model metadata.')
         print_verbose(f'Metadata API Request URL: {url}')
         meta_res = self.__batchOptions.session.get(url, stream=True)
+
         print_verbose('Finished requesting model metadata.')
         if meta_res.status_code != 200:
             raise APIException(

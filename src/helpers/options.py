@@ -37,6 +37,7 @@ class BatchOptions:
     sorter: Callable[[Dict, Dict, str, str],
                      SorterData] = basic.sort_model
     max_images: int = 3
+    nsfw_mode: Literal['0', '1', '2'] = '1'
     api_key: Optional[str] = None
 
     with_prompt: bool = True
@@ -65,7 +66,7 @@ class BatchOptions:
         print_verbose("Chosen Sorter Description: ", self._sorter.__doc__)
         return self._sorter
 
-    def __init__(self, retry_count, pause_time, max_images, with_prompt, without_model, api_key, verbose, sorter, limit_rate, cache_mode, model_overwrite, with_color):
+    def __init__(self, retry_count, pause_time, max_images, nsfw_mode, with_prompt, without_model, api_key, verbose, sorter, limit_rate, cache_mode, model_overwrite, with_color):
         self.session = requests.Session()
 
         # FIXME: Move usage of with_color and verbose outside of options
@@ -89,6 +90,11 @@ class BatchOptions:
         if max_images is not None:
             Validation.validate_integer(max_images, 'max_images', min_value=0)
             self.max_images = max_images
+
+        if nsfw_mode is not None:
+            Validation.validate_string(
+                nsfw_mode, 'nsfw_mode', whitelist=['0', '1', '2'])
+            self.nsfw_mode = nsfw_mode
 
         if api_key is not None and api_key != '':
             Validation.validate_string(api_key, 'api_key')
@@ -132,6 +138,7 @@ class BatchOptions:
 class DefaultOptions:
     sorter: Optional[str] = None
     max_images: Optional[int] = None
+    nsfw_mode: Optional[int] = None
     api_key: Optional[str] = None
 
     with_prompt: Optional[bool] = None
@@ -145,7 +152,7 @@ class DefaultOptions:
 
     with_color: Optional[bool] = None
 
-    def __init__(self, sorter=None, max_images=None, api_key=None, with_prompt=None, without_model=None, limit_rate=None, retry_count=None, pause_time=None, cache_mode=None, model_overwrite=None, with_color=None):
+    def __init__(self, sorter=None, max_images=None, nsfw_mode=None, api_key=None, with_prompt=None, without_model=None, limit_rate=None, retry_count=None, pause_time=None, cache_mode=None, model_overwrite=None, with_color=None):
         if sorter is not None:
             Validation.validate_string(
                 sorter, 'sorter')
@@ -157,6 +164,12 @@ class DefaultOptions:
                 max_images, 'max_images', min_value=0
             )
             self.max_images = max_images
+
+        if nsfw_mode is not None:
+            Validation.validate_string(
+                nsfw_mode, 'nsfw_mode', whitelist=['0', '1', '2']
+            )
+            self.nsfw_mode = nsfw_mode
 
         if api_key is not None:
             Validation.validate_string(api_key, 'api_key')
