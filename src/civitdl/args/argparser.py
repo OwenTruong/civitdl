@@ -53,7 +53,7 @@ parser.add_argument('-i', '--max-images', metavar='INT', type=int,
                     help='Specify max images to download for each model.')
 
 parser.add_argument(
-    '--nsfw-mode', metavar='MODE', type=str, help='Specify the nsfw mode when downloading images. Setting to 0 means the program will always download sfw. Setting to 1 means the program will only download sfw + nsfw images if the model itself is nsfw. Setting to 2 means the program will always download both sfw and nsfw.'
+    '--nsfw-mode', metavar='MODE', type=str, help='Specify the nsfw mode when downloading images. Setting to 0 means the program will only download sfw. Setting to 1 means the program will download sfw, and nsfw images depending on the nsfw rating of the model. Setting to 2 means the program will download both sfw and nsfw.'
 )
 
 parser.add_argument('-k', '--api-key', action=PwdAction, type=str, required=False, nargs='?',
