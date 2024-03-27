@@ -68,7 +68,7 @@ class Metadata:
                 self.image_dicts.append(image_dict)
         self.image_dicts = self.image_dicts[0:self.__batchOptions.max_images]
 
-        print_verbose(f'nsfwLevel of images to download: {[image_dict['nsfwLevel'] for image_dict in self.image_dicts]}')  # nopep8
+        print_verbose(f'nsfwLevel of images to download: {[image_dict["nsfwLevel"] for image_dict in self.image_dicts]}')  # nopep8
 
         self.image_download_urls = [image_dict['url']
                                     for image_dict in self.image_dicts]
