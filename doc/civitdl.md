@@ -81,7 +81,7 @@
 <br/>
 
 `--nsfw-mode <0 | 1 | 2>` 
-- Specify the nsfw mode when downloading images. Setting to 0 means the program will always download sfw. Setting to 1 means the program will only download sfw + nsfw images if the model itself is nsfw. Setting to 2 means the program will always download both sfw and nsfw. The default mode is 1.
+- Specify the nsfw mode when downloading images. Setting to 0 means the program will only download sfw. Setting to 1 means the program will download sfw, and nsfw images depending on the nsfw rating of the model. Setting to 2 means the program will download both sfw and nsfw. The default mode is 1.
 - Example: `civitdl 80848 ./loras --nsfw-mode 2`
 
 <br/>
