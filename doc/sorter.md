@@ -127,7 +127,7 @@ stable-diffusion-webui/
 2. Create a function named exactly `sort_model`
    1. There should be four parameter:
       1. `(model_dict: Dict, version_dict: Dict, filename: str, root_path: str)`
-   2. The return type should be a class imported from civitai as shown below. The parameters for the class are the following.
+   2. The return type should be a class imported from civitdl as shown below. The parameters for the class are the following.
       1. Model Parent Directory Path string
       2. Metadata Parent Directory Path string
       3. Images Parent Directory Path string

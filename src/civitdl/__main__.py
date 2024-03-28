@@ -15,7 +15,9 @@ def main():
         else:
             set_verbose(False)
 
-        print_verbose('Arguments: ', str(args))
+        tempargs = args.copy()
+        tempargs.pop('api_key')
+        print_verbose('Arguments: ', str(tempargs))
 
         batchOptions = BatchOptions(
             sorter=args['sorter'],
