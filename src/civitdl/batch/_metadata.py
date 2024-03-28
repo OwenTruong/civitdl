@@ -1,3 +1,4 @@
+from typing import Dict, List
 from helpers.core.utils import Styler, InputException, ResourcesException, UnexpectedException, APIException, sprint, print_verbose
 
 from helpers.sourcemanager import Id
@@ -5,22 +6,22 @@ from helpers.options import BatchOptions
 
 
 class Metadata:
-    __batchOptions = None
-    __id = None
+    __batchOptions: BatchOptions  # not optional
+    __id: Id  # not optional
 
-    model_name = None
-    model_id = None
-    version_id = None
-    version_hashes = None
+    version_id: int  # not  optional
+    model_dict: Dict  # not optional
+    version_dict: Dict  # not optional
+    model_download_url: str  # not optional
 
-    model_dict = None
-    version_dict = None
+    model_id: int = 0
+    model_name: str = 'unknown'
+    version_hashes: Dict = {}
 
-    nsfw = False
-    nsfwLevel = None
-    image_dicts = None
-    image_download_urls = None
-    model_download_url = None
+    nsfw: bool = False
+    nsfwLevel: int = 3
+    image_dicts: List[Dict] = []
+    image_download_urls: List[str] = []
 
     def __init__(self, id: Id, batchOptions: BatchOptions):
         self.__id = id
@@ -52,6 +53,10 @@ class Metadata:
             raise InputException(
                 f'Incorrect format sent ({ids}, {type}): "{self.__id.original}"')
 
+        self.model_download_url = self.version_dict['downloadUrl']
+
+        # optional
+
         self.model_name = self.model_dict['name']
 
         self.nsfw = self.model_dict['nsfw']
@@ -72,8 +77,6 @@ class Metadata:
 
         self.image_download_urls = [image_dict['url']
                                     for image_dict in self.image_dicts]
-
-        self.model_download_url = self.version_dict['downloadUrl']
 
         self.version_hashes = self.__get_version_hashes(
             self.version_dict, self.model_download_url)
