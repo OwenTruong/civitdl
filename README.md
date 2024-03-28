@@ -82,8 +82,13 @@ To get started quickly, copy the command below.
 ``` bash
 civitdl 123456 ./models
 ```
-- Replace `123456` your model of choice (it can be a civitai.com url or model id).
+- Replace `123456` with your model of choice (it can be a civitai.com url or model id).
 - Replace `./models` with the directory you wish to download the model to.
+
+Example with url:
+```bash
+civitdl https://civitai.com/models/123456 ./models
+```
 
 <br/>
 
