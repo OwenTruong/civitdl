@@ -151,8 +151,10 @@ print('Starting Tests')
 
 civitconfig_test('default', ['--no-with-color'])
 
-civitdl_test(['123456'], ['--limit-rate', '1M'])
-civitdl_test(['123456', '23456'], ['--sorter', 'tags'])
+civitdl_test(['123456'], ['--limit-rate', '1M',
+             '--max-images', '20', '--nsfw-mode', '0'])
+civitdl_test(['123456', '23456'], ['--sorter', 'tags',
+             '--max-images', '20', '--nsfw-mode', '1'])
 civitdl_test([os.path.join(batch_data_dirpath,
                            'batchtest1.txt')])
 civitdl_test(['123456'], ['--no-with-prompt', '--pause-time', '5'])
