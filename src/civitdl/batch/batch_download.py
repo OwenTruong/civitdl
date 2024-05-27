@@ -1,3 +1,4 @@
+import os
 import time
 import traceback
 from typing import List
@@ -23,7 +24,6 @@ def batch_download(source_strings: List[str], rootdir: str, batchOptions: BatchO
     source_manager = SourceManager()
 
     for id in source_manager.parse_src(source_strings):
-
         iter = 0
         while True:
             try:

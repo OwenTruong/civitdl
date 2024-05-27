@@ -116,6 +116,7 @@ def civitconfig_test(subcommand, options=[]):
         print(f'Civitconfig General Test {civitconfig_test_no} success!')
     except:
         print(f'Civitconfig General Test {civitconfig_test_no} failed!')
+        global test_failed
         test_failed = True
 
 

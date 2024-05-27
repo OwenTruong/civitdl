@@ -214,6 +214,8 @@ class Model:
         sorter_data = self.__batchOptions.sorter(
             metadata.model_dict, metadata.version_dict, os.path.split(filenames['model'])[0], self.__dst_root_path)
 
+        # print(sorter_data.metadata_dir_path)
+
         # 3. Download model and etc.
 
         self.__download_metadata(
