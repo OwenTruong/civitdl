@@ -1,37 +1,42 @@
 from dataclasses import dataclass
 import os
 import re
-from typing import List, Literal, Union
+from typing import List, Literal, Union, Optional
 
 from helpers.core.utils import print_verbose, InputException, UnexpectedException
 
+# modify id class to use getters and setters so that I can control how the data is being accessed
+# modify id class to not use type.
+
+
+class Id:
+    """
+    Id class may only be used externally for type hint and type checking
+    """
+    original: str
+    model_id: Optional[str]
+    version_id: Optional[str]
+
+    def __init__(self):
+        if type(self) == Id:
+            raise UnexpectedException(f"only subclass of Id may be instantiated")  # nopep8
+
 
 @dataclass
-class Id:
-    type: Literal['id', 'site', 'api']
-    data: List[str]
+class _Id(Id):
     original: str
-
-    def __init__(self, type, data: List[str], original: str):
-        if type != 'id' and type != 'site' and type != 'api':
-            raise UnexpectedException(
-                f'Unknown type provided for Id class: {type}')
-
-        self.type = type
-        self.data = data
-        self.original = original
+    model_id: Optional[str] = None
+    version_id: Optional[str] = None
 
     def __post_init__(self):
-        if self.type != 'id' and self.type != 'site' and self.type != 'api':
-            raise UnexpectedException(
-                f'Unknown type provided for Id class: {self.type}')
-        for el in self.data:
-            if not isinstance(el, str):
-                raise UnexpectedException(
-                    f'Wrong data type for {el} in {self.data}')
-
         if not isinstance(self.original, str):
             raise UnexpectedException(f'Wrong data type for {self.original}')
+
+        if self.model_id and not self.model_id.isdigit():
+            raise UnexpectedException(f'Model id passed for {self.original} is not a valid model id. The model id passed: {self.model_id}')  # nopep8
+
+        if self.version_id and not self.version_id.isdigit():
+            raise UnexpectedException(f'Model id passed for {self.original} is not a valid model id. The version id passed: {self.version_id}')  # nopep8
 
 
 class SourceManager:
@@ -45,13 +50,14 @@ class SourceManager:
     def __use_parent_dir_if_exist(self, src: str, parent: Union[str, None]) -> str:
         return os.path.normpath(os.path.join(os.path.dirname(parent), src)) if parent else src
 
-    def parse_src(self, str_li: List[str], parent: Union[str, None] = None) -> List[Id]:
-        res: List[Id] = []
+    def parse_src(self, str_li: List[str], parent: Union[str, None] = None) -> List[_Id]:
+        res: List[_Id] = []
         for string in str_li:
             string = string.strip()
 
             if string.isdigit() and abs(int(string)) == int(string):
-                res.append(Id('id', [string], string))
+                model_id = string
+                res.append(_Id(original=string, model_id=model_id))
             elif len(self.__get_comma_list(string)) > 1:
                 arg_str_li = self.__get_comma_list(string)
                 res.extend(self.parse_src(arg_str_li))
@@ -63,7 +69,7 @@ class SourceManager:
                         (f' in {parent}: ' if parent else ': ') + string
                     raise InputException(err)
                 version_id = version_id.group(0)
-                res.append(Id('api', [version_id], string))
+                res.append(_Id(original=string, version_id=version_id))
             elif 'civitai.com/models' in string:
                 model_id = re.search(r'(?<=models\/)\d+', string)
                 version_id = re.search(r'(?<=modelVersionId=)\d+', string)
@@ -77,9 +83,9 @@ class SourceManager:
                 if version_id:
                     version_id = version_id.group(0)
                     res.append(
-                        Id('site', [model_id, version_id], string))
+                        _Id(original=string, model_id=model_id, version_id=version_id))
                 else:
-                    res.append(Id('site', [model_id], string))
+                    res.append(_Id(original=string, model_id=model_id))
             elif os.path.exists(self.__use_parent_dir_if_exist(string, parent)):
                 string = self.__use_parent_dir_if_exist(string, parent)
                 file_str = None

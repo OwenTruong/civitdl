@@ -156,18 +156,23 @@ class CustomException(Exception):
 
 
 class InputException(CustomException):
+    """Exception when user provided input is invalid"""
     def __init__(self, *messages):
         super().__init__('Bad Inputs', *messages)
 
 
 class ResourcesException(CustomException):
+    """Exception when resources requested is not available"""
     def __init__(self, *messages):
         super().__init__('Resources Not Found', *messages)
 
 
 class APIException(CustomException):
+    """Exception when API request fails"""
+    status_code: int
     def __init__(self, status_code, *messages):
         super().__init__(f'API Status Code {status_code}', *messages)
+        self.status_code = status_code
 
 
 class NotImplementedException(CustomException):
