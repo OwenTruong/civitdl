@@ -124,10 +124,7 @@ class BatchOptions:
 
         if cache_mode is not None:
             Validation.validate_string(
-                cache_mode, 'cache_mode', whitelist=['0', '1', '2'])
-            if cache_mode == '2':
-                raise NotImplementedException(
-                    'cache mode of 2 has not been implemented yet')
+                cache_mode, 'cache_mode', whitelist=['0', '1'])
             self.cache_mode = cache_mode
 
         if model_overwrite is not None:
@@ -202,11 +199,8 @@ class DefaultOptions:
 
         if cache_mode is not None:
             Validation.validate_string(
-                cache_mode, 'cache_mode', whitelist=['0', '1', '2']
+                cache_mode, 'cache_mode', whitelist=['0', '1']
             )
-            if cache_mode == '2':
-                raise NotImplementedException(
-                    'cache mode of 2 has not been implemented yet')
             self.cache_mode = cache_mode
 
         if model_overwrite is not None:

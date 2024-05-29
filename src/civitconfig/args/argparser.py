@@ -66,7 +66,7 @@ default_parser.add_argument('--pause-time', type=float,
                             help='Set the default number of seconds to pause between each model\'s download'
                             )
 default_parser.add_argument('--cache-mode', type=str,
-                            help='Set the default cache mode. Valid modes are 0 and 1 for now. 2 is not implemented yet.')
+                            help='Set the default cache mode. Valid modes are 0 and 1. 0 to not use cache. 1 to use cache and copy existant models based on file path. Please refer to documentation for more detail.')
 default_parser.add_argument('--model-overwrite', action=BooleanOptionalAction,
                             help='Set the default behavior on whether to overwrite or skip models that are already downloaded at path. model=overwrite to overwrite model. no-model-overwrite to skip model.')
 add_shared_option(default_parser)

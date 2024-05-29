@@ -12,7 +12,7 @@ from helpers.core.iohelper import IOHelper
 
 from helpers.sourcemanager import Id
 from helpers.options import BatchOptions
-from helpers.hashmanager import HashManager
+from helpers.cachemanager import CacheManager
 
 from ._metadata import Metadata
 
@@ -68,9 +68,14 @@ class Model:
     def __download_model(self, dirpath, filename: str, model_res: requests.Response, version_id: str, version_hashes: Dict):
         os.makedirs(dirpath, exist_ok=True)
         filepath = os.path.join(dirpath, filename)
-        hash_manager = HashManager(
+
+        # Check if filepath already exist
+
+        # Check cache if filepath exist before
+
+        cache_manager = CacheManager(
             version_id) if self.__batchOptions.cache_mode != '0' else None
-        cached_filepath = hash_manager.get_local_model_path() if hash_manager else None
+        cached_filepath = cache_manager.get_local_model_path() if cache_manager else None
 
         if cached_filepath and cached_filepath != os.path.abspath(filepath):
             print_newlines(Styler.stylize(f"""Model already existed at the following path:
@@ -84,8 +89,8 @@ class Model:
                 else 1024*1024)
             IOHelper.write_to_file(filepath, content_chunks, mode='wb', limit_rate=self.__batchOptions.limit_rate,
                                    overwrite=self.__batchOptions.model_overwrite, use_pb=True, total=float(model_res.headers.get('content-length', 0)), desc='Model')
-        if hash_manager:
-            hash_manager.set_local_model_cache(
+        if cache_manager:
+            cache_manager.set_local_model_cache(
                 filepath, version_hashes)
 
     def __request_model(self, model_id: str, version_id: str, model_download_url: str):
