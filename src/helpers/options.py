@@ -46,7 +46,9 @@ class BatchOptions:
     retry_count: int = 3
     pause_time: int = 3
 
-    cache_mode: Literal['0', '1', '2'] = '1'
+    cache_mode: Literal['0', '1'] = '1'
+    strict_mode: Literal['0', '1'] = '1'
+
     model_overwrite: bool = False
 
     with_color: bool = False
@@ -66,7 +68,7 @@ class BatchOptions:
         print_verbose("Chosen Sorter Description: ", self._sorter.__doc__)
         return self._sorter
 
-    def __init__(self, retry_count, pause_time, max_images, nsfw_mode, with_prompt, without_model, api_key, verbose, sorter, limit_rate, cache_mode, model_overwrite, with_color):
+    def __init__(self, retry_count, pause_time, max_images, nsfw_mode, with_prompt, without_model, api_key, verbose, sorter, limit_rate, cache_mode, strict_mode, model_overwrite, with_color):
         self.session = requests.Session()
 
         # FIXME: Move usage of with_color and verbose outside of options
@@ -124,11 +126,14 @@ class BatchOptions:
 
         if cache_mode is not None:
             Validation.validate_string(
-                cache_mode, 'cache_mode', whitelist=['0', '1', '2'])
-            if cache_mode == '2':
-                raise NotImplementedException(
-                    'cache mode of 2 has not been implemented yet')
+                cache_mode, 'cache_mode', whitelist=['0', '1'])
             self.cache_mode = cache_mode
+
+        if strict_mode is not None:
+            Validation.validate_string(
+                strict_mode, 'strict_mode', whitelist=['0', '1']
+            )
+            self.strict_mode = strict_mode
 
         if model_overwrite is not None:
             Validation.validate_bool(model_overwrite, 'model_overwrite')
@@ -147,12 +152,13 @@ class DefaultOptions:
     retry_count: Optional[int] = None
     pause_time: Optional[int] = None
 
-    cache_mode: Optional[int] = None
+    cache_mode: Optional[str] = None
+    strict_mode: Optional[str] = None
     model_overwrite: Optional[bool] = None
 
     with_color: Optional[bool] = None
 
-    def __init__(self, sorter=None, max_images=None, nsfw_mode=None, api_key=None, with_prompt=None, without_model=None, limit_rate=None, retry_count=None, pause_time=None, cache_mode=None, model_overwrite=None, with_color=None):
+    def __init__(self, sorter=None, max_images=None, nsfw_mode=None, api_key=None, with_prompt=None, without_model=None, limit_rate=None, retry_count=None, pause_time=None, cache_mode=None, strict_mode=None, model_overwrite=None, with_color=None):
         if sorter is not None:
             Validation.validate_string(
                 sorter, 'sorter')
@@ -202,12 +208,15 @@ class DefaultOptions:
 
         if cache_mode is not None:
             Validation.validate_string(
-                cache_mode, 'cache_mode', whitelist=['0', '1', '2']
+                cache_mode, 'cache_mode', whitelist=['0', '1']
             )
-            if cache_mode == '2':
-                raise NotImplementedException(
-                    'cache mode of 2 has not been implemented yet')
             self.cache_mode = cache_mode
+
+        if strict_mode is not None:
+            Validation.validate_string(
+                strict_mode, 'strict_mode', whitelist=['0', '1']
+            )
+            self.strict_mode = strict_mode
 
         if model_overwrite is not None:
             Validation.validate_bool(model_overwrite, 'model_overwrite')

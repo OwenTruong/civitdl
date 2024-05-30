@@ -24,6 +24,7 @@ DEFAULT_CONFIG = {
         "pause_time": 3.0,
 
         "cache_mode": '1',
+        "strict_mode": '1',
         "model_overwrite": False,
 
         "with_color": True

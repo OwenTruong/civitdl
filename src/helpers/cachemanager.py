@@ -11,7 +11,7 @@ from helpers.core.constants import app_dirs
 # { '123456': { 'model_filepath': 'path', 'SHA256': 'hash1', 'BLAKE3': 'hash2' } }
 
 
-class HashManager:
+class CacheManager:
     __CACHE_COLUMNS = ['volume_id', 'model_filepath', 'SHA256', 'BLAKE3']
     __version_id: str
     __filepath: str

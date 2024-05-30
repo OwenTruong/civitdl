@@ -33,7 +33,7 @@ class _MetadataFetcher:
             raise UnexpectedException(
                 f'No model and version id found for "{id.original}"')
 
-        return (metadata, (metadata[0]['id'], metadata[1]['id']))
+        return (metadata, (str(metadata[0]['id']), str(metadata[1]['id'])))
 
     def __get_model_version_metadata(self, model_id: str, version_id: Optional[str] = None):
         model_dict = self.__get_model_metadata(model_id)
@@ -109,8 +109,8 @@ class Metadata:
 
     model_dict: Dict
     version_dict: Dict
-    model_id: int
-    version_id: int
+    model_id: str
+    version_id: str
     model_download_url: str
 
     model_name: str = 'unknown'

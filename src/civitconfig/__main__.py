@@ -38,6 +38,7 @@ def main():
                 retry_count=args['retry_count'],
                 pause_time=args['pause_time'],
                 cache_mode=args['cache_mode'],
+                strict_mode=args['strict_mode'],
                 model_overwrite=args['model_overwrite'],
                 with_color=args['with_color']
             ))
