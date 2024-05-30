@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "civitdl"
-version = "2.1.0.dev2"
+version = "2.1.0.dev3"
 authors = [ 
    { name = "Owen Truong" } 
 ]
@@ -31,3 +31,4 @@ Repository = "https://github.com/OwenTruong/civitdl"
 [project.scripts]
 civitdl = "civitdl.__main__:main"
 civitconfig = "civitconfig.__main__:main"
+civitmisc = "civitmisc.__main__:main"

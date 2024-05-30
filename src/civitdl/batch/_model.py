@@ -12,7 +12,7 @@ from helpers.core.iohelper import IOHelper
 
 from helpers.sourcemanager import Id
 from helpers.options import BatchOptions
-from helpers.cachemanager import CacheManager
+from helpers.cache import Cache
 
 from ._metadata import Metadata
 
@@ -72,9 +72,9 @@ class Model:
         sha256_hash = version_hashes.get('SHA256', None)
         try:
             if self.__batchOptions.cache_mode == '1':
-                cache_manager = CacheManager(
+                cache = Cache(
                     version_id)
-                cached_filepath = cache_manager.get_local_model_path()
+                cached_filepath = cache.get_local_model_path()
         except:
             sprint(Styler.stylize('Unable to access cache.', color='warning'))
 
@@ -87,8 +87,8 @@ class Model:
                                    use_pb=True, total=float(model_res.headers.get('content-length', 0)), desc='Model')
 
         def cache_model_info():
-            if self.__batchOptions.cache_mode == '1' and cache_manager:
-                cache_manager.set_local_model_cache(
+            if self.__batchOptions.cache_mode == '1' and cache:
+                cache.set_local_model_cache(
                     filepath, version_hashes)
 
         if (self.__batchOptions.strict_mode == '1' and not sha256_hash):

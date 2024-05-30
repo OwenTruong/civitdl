@@ -15,6 +15,7 @@ Uses CLI to batch download Stable Diffusion models, metadata (including descript
 - [API Key Page](/doc/api_key.md)
 - [Civitconfig / Configuration Page](/doc/civitconfig.md)
 - [Civitdl Page](/doc/civitdl.md)
+- [Civitmisc Page](/doc/civitmisc.md)
 - [Sorter Page](/doc/sorter.md)
 
 <br/>
