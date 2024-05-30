@@ -31,3 +31,4 @@ Repository = "https://github.com/OwenTruong/civitdl"
 [project.scripts]
 civitdl = "civitdl.__main__:main"
 civitconfig = "civitconfig.__main__:main"
+civitmisc = "civitmisc.__main__:main"

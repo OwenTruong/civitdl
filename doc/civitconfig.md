@@ -10,6 +10,7 @@
 - [API Key Page](/doc/api_key.md)
 - [Civitconfig / Configuration Page](/doc/civitconfig.md)
 - [Civitdl Page](/doc/civitdl.md)
+- [Civitmisc Page](/doc/civitmisc.md)
 - [Sorter Page](/doc/sorter.md)
 
 <br/>
@@ -175,5 +176,3 @@ To set the default attribute for disabling `with-prompt`:
 - Shorthand: `civitconfig settings -d /path/to/zipped-config.zip`
 - Longhand: `civitconfig settings --download /path/to/zipped-config.zip`
 - Run to download your configuration as a zip file.
-
-
