@@ -16,7 +16,7 @@ license = {file = "License"}
 keywords = ["civitai", "batch download"]
 classifiers = [
    "Programming Language :: Python :: 3.8",
-   "License :: OSI Approved :: MIT License",
+   "License :: OSI Approved :: Apache Software License",
    "Operating System :: OS Independent"
 ]
 dynamic = ["dependencies"]
