@@ -141,7 +141,7 @@
 <br/>
 
 `--strict-mode <0 | 1>`
-- If program knows model file already exist locally, `strict-mode` checks if the local model file's hash matches the hash from the server (i.e. program will check the integrity of the local models against the hash supplied by CivitAI API).
+- If program knows model file already exist locally, `strict-mode` checks if the local model file's hash matches the hash from the server (i.e. program will check the integrity of the local models against the hash supplied by CivitAI API). The default is `1`
 - Strict modes:
   - `0` - Integrity check disabled
     - Program will not compute and check hashes when `--cache-mode=1` or `--model-overwrite` are set.
