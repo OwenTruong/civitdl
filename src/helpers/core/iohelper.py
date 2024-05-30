@@ -3,10 +3,11 @@ import shutil
 import sys
 import time
 import csv
+import hashlib
 from typing import IO, Callable, Iterable, Union
 
 from ._ui.styler import Styler, InputException, UnexpectedException
-from .utils import get_progress_bar, sprint
+from .utils import get_progress_bar, print_verbose, sprint
 
 
 class IOHelper:
@@ -62,6 +63,22 @@ class IOHelper:
                     csv_dict[row[0]] = row[1]
 
         return csv_dict
+
+    @staticmethod
+    def compare_hash(filepath: str, hash: str):
+        hasher = hashlib.sha256()
+        chunk_size = 2**20
+
+        with open(filepath, 'rb') as file:
+            while True:
+                chunk = file.read(chunk_size)
+                if not chunk:
+                    break
+                hasher.update(chunk)
+
+        digest = hasher.hexdigest().upper()
+        print_verbose(f'Computed SHA256: "{digest}", Expected SHA256: "{hash}"')  # nopep8
+        return digest == hash
 
     # Level 1 #
     @classmethod

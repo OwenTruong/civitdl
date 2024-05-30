@@ -83,6 +83,9 @@ parser.add_argument(
     '--cache-mode', metavar='MODE', type=str, help='Specify the cache mode. 0 to not use cache. 1 to use cache and copy existant models based on file path. See documentation on github for more info.'
 )
 
+parser.add_argument('--strict-mode', metavar='MODE', type=str,
+                    help='Specify the strict mode. Valid modes are 0 and 1. 0 to disable integrity check. 1 to enable maximum integrity check. In scenarios where the user have previously downloaded the model and the program recognizes the repeated download, strict-mode of 1 adds a further integrity check with SHA256 hash against the local model file.')
+
 parser.add_argument(
     '--model-overwrite', action=BooleanOptionalAction, help='Determine whether to overwrite or skip model download if model is already in path. model=overwrite to overwrite model. no-model-overwrite to skip model.'
 )
@@ -123,6 +126,7 @@ def get_args():
         "pause_time": parser_result.pause_time or config_defaults.get('pause_time', None),
 
         "cache_mode": parser_result.cache_mode or config_defaults.get('cache_mode', None),
+        "strict_mode": parser_result.strict_mode or config_defaults.get('strict_mode', None),
         "model_overwrite": parser_result.model_overwrite if parser_result.model_overwrite is not None else config_defaults.get('model_overwrite', None),
 
         "with_color": parser_result.with_color if parser_result.with_color is not None else config_defaults.get('with_color', None),

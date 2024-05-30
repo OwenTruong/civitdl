@@ -66,32 +66,84 @@ class Model:
             filepath, [data.rstrip()], encoding='UTF-8')
 
     def __download_model(self, dirpath, filename: str, model_res: requests.Response, version_id: str, version_hashes: Dict):
+        # FIXME: um, refactor later on
         os.makedirs(dirpath, exist_ok=True)
         filepath = os.path.join(dirpath, filename)
+        sha256_hash = version_hashes.get('SHA256', None)
+        try:
+            if self.__batchOptions.cache_mode == '1':
+                cache_manager = CacheManager(
+                    version_id)
+                cached_filepath = cache_manager.get_local_model_path()
+        except:
+            sprint(Styler.stylize('Unable to access cache.', color='warning'))
 
-        # Check if filepath already exist
-
-        # Check cache if filepath exist before
-
-        cache_manager = CacheManager(
-            version_id) if self.__batchOptions.cache_mode != '0' else None
-        cached_filepath = cache_manager.get_local_model_path() if cache_manager else None
-
-        if cached_filepath and cached_filepath != os.path.abspath(filepath):
-            print_newlines(Styler.stylize(f"""Model already existed at the following path:
-                - Path: {cached_filepath}""", color='info'))
-            sprint(Styler.stylize(f"Copying to new path...", color='info'))
-            shutil.copy(cached_filepath, filepath)
-        else:
+        def download_new_model():
             content_chunks = model_res.iter_content(
                 ceil(self.__batchOptions.limit_rate / 8)
                 if self.__batchOptions.limit_rate is not None and self.__batchOptions.limit_rate != 0
                 else 1024*1024)
             IOHelper.write_to_file(filepath, content_chunks, mode='wb', limit_rate=self.__batchOptions.limit_rate,
-                                   overwrite=self.__batchOptions.model_overwrite, use_pb=True, total=float(model_res.headers.get('content-length', 0)), desc='Model')
-        if cache_manager:
-            cache_manager.set_local_model_cache(
-                filepath, version_hashes)
+                                   use_pb=True, total=float(model_res.headers.get('content-length', 0)), desc='Model')
+
+        def cache_model_info():
+            if self.__batchOptions.cache_mode == '1' and cache_manager:
+                cache_manager.set_local_model_cache(
+                    filepath, version_hashes)
+
+        if (self.__batchOptions.strict_mode == '1' and not sha256_hash):
+            sprint(
+                Styler.stylize(
+                    f'(Strict Mode) Error with fetching SHA256 hash from CivitAI. Proceeding to download model from CivitAI.', color='warning')
+            )
+            download_new_model()
+            cache_model_info()
+            return
+
+        # Check if filepath already exist
+        if not self.__batchOptions.model_overwrite and os.path.exists(filepath):
+            if (
+                self.__batchOptions.strict_mode == '1' and not IOHelper.compare_hash(
+                    filepath, sha256_hash)
+            ):
+                sprint(
+                    Styler.stylize(
+                        f'(Strict Mode) Model file already exist at destination file path, but file does not match the hash from CivitAI.', color='warning'
+                    )
+                )
+                # I want to check cache before giving up and downloading new model.
+            else:
+                print_newlines(Styler.stylize(f"""Model file already existed at the destination path:
+                    - Path: {filepath}""", color='info'))
+                cache_model_info()
+                return
+
+        # Check cache if file exist
+        if self.__batchOptions.cache_mode == '1' and cached_filepath:
+            if not os.path.exists(cached_filepath):
+                sprint(
+                    Styler.stylize(f'Model file does not exist at cached file path.', color='warning'))
+                download_new_model()
+                cache_model_info()
+                return
+            elif self.__batchOptions.strict_mode == '1' and not IOHelper.compare_hash(cached_filepath, sha256_hash):
+                sprint(
+                    Styler.stylize(
+                        f'(Strict Mode) Cached file path of model does not match the hash from CivitAI. Proceeding to download model from CivitAI.', color='warning'
+                    ))
+                download_new_model()
+                cache_model_info()
+                return
+            else:
+                print_newlines(Styler.stylize(f"""Model file already existed at the following path:
+                    - Path: {cached_filepath}""", color='info'))
+                sprint(Styler.stylize(f"Copying to new path...", color='info'))
+                shutil.copy(cached_filepath, filepath)
+                cache_model_info()
+                return
+
+        download_new_model()
+        cache_model_info()
 
     def __request_model(self, model_id: str, version_id: str, model_download_url: str):
         # Request model

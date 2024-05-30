@@ -32,6 +32,7 @@ def main():
             pause_time=args['pause_time'],
 
             cache_mode=args['cache_mode'],
+            strict_mode=args['strict_mode'],
             model_overwrite=args['model_overwrite'],
 
             with_color=args['with_color'],
