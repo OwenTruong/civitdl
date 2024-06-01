@@ -17,7 +17,10 @@ def parse_sorter(sorters, sorter_str):
 
 
 def parse_rootdir(aliases, path):
-    dirs = path.split(os.path.sep)
+    if os.name == 'nt':
+        dirs = path.replace('/', '\\').split(os.path.sep)
+    else:
+        dirs = path.split(os.path.sep)
 
     for alias in aliases:
         if alias[0] == dirs[0]:
