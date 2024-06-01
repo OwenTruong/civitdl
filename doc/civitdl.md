@@ -9,6 +9,7 @@
 - [API Key Page](/doc/api_key.md)
 - [Civitconfig / Configuration Page](/doc/civitconfig.md)
 - [Civitdl Page](/doc/civitdl.md)
+- [Civitmisc Page](/doc/civitmisc.md)
 - [Sorter Page](/doc/sorter.md)
 
 <br/>
@@ -116,7 +117,7 @@
 <br/>
 
 `--retry-count <number>`
-- Specifies the number of times to retry downloading the same model if it fails. Default is 3.
+- Specifies the number of times to retry downloading the same model if it fails. The default is 3.
 - Example: `civitdl 80848 ./loras --retry-count 10`
 
 <br/>
@@ -127,20 +128,26 @@
 
 <br/>
 
-`--cache-mode <0 | 1 | 2>`
+`--cache-mode <0 | 1>`
 - Specifies the cache mode for each model. The default is `1`.
 - Cache modes:
-  - `0` - no cache mode
+  - `0` - Cache mode disabled
     -  Program will not add the current model's file path and hashes to cache.
     -  Program will not use stored cache to check if current model has already been downloaded before.
-  - `1` - lax mode
+  - `1` - Cache mode enabled
     - Program will add the current model's file path and hashes to cache.
     - Program will check cache if the current model has been downloaded before.
       - If so, program will attemp to copy the model locally given path to the local model.
-  - `2` - strict mode
-    - Does what `1` does, but also validate the local model by creating SHA256 and BLAKE3 hashes for the previously downloaded model to make sure that the file path given by the cache is actually the correct model (and to make sure it has not been corrupted).
-    - Warning that this will be slower than `1` because hashes will be computed for each check.
-    - `NOT IMPLEMENTED YET`
+
+<br/>
+
+`--strict-mode <0 | 1>`
+- If program knows model file already exist locally, `strict-mode` checks if the local model file's hash matches the hash from the server (i.e. program will check the integrity of the local models against the hash supplied by CivitAI API). The default is `1`
+- Strict modes:
+  - `0` - Integrity check disabled
+    - Program will not compute and check hashes when `--cache-mode=1` or `--model-overwrite` are set.
+  - `1` - Maximum integrity check enabled
+    - Program will compute and check SHA256 hash of an entire model file when `--cache-model=1` or `--model-overwrite` are set. 
 
 <br/>
 

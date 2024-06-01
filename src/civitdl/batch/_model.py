@@ -2,7 +2,7 @@ from json import dumps, loads
 import shutil
 import os
 import re
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 from math import ceil
 
 import requests
@@ -12,18 +12,16 @@ from helpers.core.iohelper import IOHelper
 
 from helpers.sourcemanager import Id
 from helpers.options import BatchOptions
-from helpers.hashmanager import HashManager
+from helpers.cache import Cache
 
 from ._metadata import Metadata
 
 
 class Model:
-    __id: Id
     __dst_root_path: str
     __batchOptions: BatchOptions
 
-    def __init__(self, id: Id, dst_root_path: str, batchOptions: BatchOptions):
-        self.__id = id
+    def __init__(self, dst_root_path: str, batchOptions: BatchOptions):
         self.__dst_root_path = dst_root_path
         self.__batchOptions = batchOptions
 
@@ -52,11 +50,11 @@ class Model:
             IOHelper.write_to_files(dirpath, filenames, [dumps(
                 image_dict, indent=2, ensure_ascii=False) for image_dict in prompts], encoding='UTF-8')
 
-    def __download_metadata(self, dirpath: str, filename: str, metadata: Metadata):
+    def __download_metadata(self, dirpath: str, filename: str, model_dict: Dict):
         os.makedirs(dirpath, exist_ok=True)
         filepath = os.path.join(dirpath, filename)
         IOHelper.write_to_file(filepath, [dumps(
-            metadata.model_dict, indent=2, ensure_ascii=False)], encoding='UTF-8')
+            model_dict, indent=2, ensure_ascii=False)], encoding='UTF-8')
 
     def __download_hash(self, dirpath: str, filename: str, hashes: Dict):
         os.makedirs(dirpath, exist_ok=True)
@@ -67,39 +65,96 @@ class Model:
         IOHelper.write_to_file(
             filepath, [data.rstrip()], encoding='UTF-8')
 
-    def __download_model(self, dirpath, filename: str, model_res: requests.Response, metadata: Metadata):
+    def __download_model(self, dirpath, filename: str, model_res: requests.Response, version_id: str, version_hashes: Dict):
+        # FIXME: um, refactor later on
         os.makedirs(dirpath, exist_ok=True)
         filepath = os.path.join(dirpath, filename)
-        hash_manager = HashManager(
-            metadata.version_id) if self.__batchOptions.cache_mode != '0' else None
-        cached_filepath = hash_manager.get_local_model_path() if hash_manager else None
+        sha256_hash = version_hashes.get('SHA256', None)
+        try:
+            if self.__batchOptions.cache_mode == '1':
+                cache = Cache(
+                    version_id)
+                cached_filepath = cache.get_local_model_path()
+        except:
+            sprint(Styler.stylize('Unable to access cache.', color='warning'))
 
-        if cached_filepath and cached_filepath != os.path.abspath(filepath):
-            print_newlines(Styler.stylize(f"""Model already existed at the following path:
-                - Path: {cached_filepath}""", color='info'))
-            sprint(Styler.stylize(f"Copying to new path...", color='info'))
-            shutil.copy(cached_filepath, filepath)
-        else:
+        def download_new_model():
             content_chunks = model_res.iter_content(
                 ceil(self.__batchOptions.limit_rate / 8)
                 if self.__batchOptions.limit_rate is not None and self.__batchOptions.limit_rate != 0
                 else 1024*1024)
             IOHelper.write_to_file(filepath, content_chunks, mode='wb', limit_rate=self.__batchOptions.limit_rate,
-                                   overwrite=self.__batchOptions.model_overwrite, use_pb=True, total=float(model_res.headers.get('content-length', 0)), desc='Model')
-        if hash_manager:
-            hash_manager.set_local_model_cache(
-                filepath, metadata.version_hashes)
+                                   use_pb=True, total=float(model_res.headers.get('content-length', 0)), desc='Model')
 
-    def __request_model(self, metadata: Metadata):
+        def cache_model_info():
+            if self.__batchOptions.cache_mode == '1' and cache:
+                cache.set_local_model_cache(
+                    filepath, version_hashes)
+
+        if (self.__batchOptions.strict_mode == '1' and not sha256_hash):
+            sprint(
+                Styler.stylize(
+                    f'(Strict Mode) Error with fetching SHA256 hash from CivitAI. Proceeding to download model from CivitAI.', color='warning')
+            )
+            download_new_model()
+            cache_model_info()
+            return
+
+        # Check if filepath already exist
+        if not self.__batchOptions.model_overwrite and os.path.exists(filepath):
+            if (
+                self.__batchOptions.strict_mode == '1' and not IOHelper.compare_hash(
+                    filepath, sha256_hash)
+            ):
+                sprint(
+                    Styler.stylize(
+                        f'(Strict Mode) Model file already exist at destination file path, but file does not match the hash from CivitAI.', color='warning'
+                    )
+                )
+                # I want to check cache before giving up and downloading new model.
+            else:
+                print_newlines(Styler.stylize(f"""Model file already existed at the destination path:
+                    - Path: {filepath}""", color='info'))
+                cache_model_info()
+                return
+
+        # Check cache if file exist
+        if self.__batchOptions.cache_mode == '1' and cached_filepath:
+            if not os.path.exists(cached_filepath):
+                sprint(
+                    Styler.stylize(f'Model file does not exist at cached file path.', color='warning'))
+                download_new_model()
+                cache_model_info()
+                return
+            elif self.__batchOptions.strict_mode == '1' and not IOHelper.compare_hash(cached_filepath, sha256_hash):
+                sprint(
+                    Styler.stylize(
+                        f'(Strict Mode) Cached file path of model does not match the hash from CivitAI. Proceeding to download model from CivitAI.', color='warning'
+                    ))
+                download_new_model()
+                cache_model_info()
+                return
+            else:
+                print_newlines(Styler.stylize(f"""Model file already existed at the following path:
+                    - Path: {cached_filepath}""", color='info'))
+                sprint(Styler.stylize(f"Copying to new path...", color='info'))
+                shutil.copy(cached_filepath, filepath)
+                cache_model_info()
+                return
+
+        download_new_model()
+        cache_model_info()
+
+    def __request_model(self, model_id: str, version_id: str, model_download_url: str):
         # Request model
         print_verbose('Preparing to send download model request...')
-        print_verbose(f'Model Download API URL: {metadata.model_download_url}')
+        print_verbose(f'Model Download API URL: {model_download_url}')
 
         headers = {
             'Authorization': f'Bearer {self.__batchOptions.api_key}',
         }
         res = self.__batchOptions.session.get(
-            metadata.model_download_url, stream=True, headers=headers)
+            model_download_url, stream=True, headers=headers)
 
         print_verbose(f'Status Code: {res.status_code}')
 
@@ -119,24 +174,27 @@ class Model:
                 None
         if res.status_code != 200:
             raise APIException(
-                res.status_code, f'Downloading model from CivitAI failed for model id, {metadata.model_id}, and version id, {metadata.version_id}')
+                res.status_code, f'Downloading model from CivitAI failed for model id, {model_id}, and version id, {version_id}')
 
         return res
 
-    def __get_filenames(self, metadata: Metadata, content_disposition: Union[str, None] = None):
+    def __get_filenames(self, version_files: List[Dict], version_id: str, model_id: str, model_name: Optional[str] = None, image_download_urls: List = [], content_disposition: Union[str, None] = None):
+        if model_name is None or model_name == '':
+            model_name = 'Unknown'
+
         def get_api_filename():
             version_file = None
-            for file in metadata.version_dict['files']:
+            for file in version_files:
                 file_version_id = re.search(
                     r'(?<=models\/)\d+', file['downloadUrl'])
-                if file_version_id != None and file_version_id.group(0) == metadata.version_id:
+                if file_version_id != None and file_version_id.group(0) == version_id:
                     version_file = file
             filename = None
 
             if content_disposition == None:
                 sprint(Styler.stylize(
                     f'Downloaded model from CivitAI has no content disposition header available.', color='warning'))
-                filename = f'{metadata.model_name}--{version_file["name"]}'
+                filename = f'{model_name}--{version_file["name"]}'
             else:
                 try:
                     filename = content_disposition.split(
@@ -144,30 +202,33 @@ class Model:
                 except UnicodeDecodeError as e:
                     # Alternative solution for finding filename
                     sprint(Styler.stylize(e, color='warning'))
-                    filename = f'{metadata.model_name}--{version_file["name"]}'
+                    filename = f'{model_name}--{version_file["name"]}'
 
             if filename == None:
                 raise UnexpectedException(
-                    f'Unable to retrieve filename for model with model id, {metadata.model_id}, and version id, {metadata.version_id}')
+                    f'Unable to retrieve filename for model with model id, {model_id}, and version id, {version_id}')
 
             return filename
 
         # get filename of metadata
-        metadata_filename = f'model_dict-mid_{metadata.model_id}-vid_{metadata.version_id}.json'  # nopep8
+        metadata_filename = f'model_dict-mid_{model_id}-vid_{version_id}.json'  # nopep8
+
         # get filename of images
         image_filenames = [os.path.basename(url)
-                           for url in metadata.image_download_urls]
+                           for url in image_download_urls]
+
         # get filename of prompts
         prompt_filenames = [
             f'{os.path.splitext(basename)[0]}.json' for basename in image_filenames]
+
         # get model_stem and model_ext
         model_stem, model_ext = os.path.splitext(get_api_filename())
 
         # get filename of model
-        model_filename = f'{model_stem}-mid_{metadata.model_id}-vid_{metadata.version_id}{model_ext}'  # nopep8
+        model_filename = f'{model_stem}-mid_{model_id}-vid_{version_id}{model_ext}'  # nopep8
 
         # get filename of hash
-        hash_filename = f'{model_stem}-mid_{metadata.model_id}-vid_{metadata.version_id}.csv'  # nopep8
+        hash_filename = f'{model_stem}-mid_{model_id}-vid_{version_id}.csv'  # nopep8
 
         return {
             'metadata': metadata_filename,
@@ -177,9 +238,13 @@ class Model:
             'hash': hash_filename
         }
 
-    def download(self):
+    def download(self, id):
         # 1. Get metadata
-        metadata = Metadata(self.__id, self.__batchOptions).make_api_call()
+        metadata = Metadata(
+            nsfw_mode=self.__batchOptions.nsfw_mode,
+            max_images=self.__batchOptions.max_images,
+            session=self.__batchOptions.session
+        ).make_api_call(id)
 
         print_newlines(Styler.stylize(
             f"""Now downloading \"{metadata.model_name}\"...
@@ -190,28 +255,60 @@ class Model:
         # 2. Get directory and file paths
 
         model_res = self.__request_model(
-            metadata) if not self.__batchOptions.without_model else None
+            model_id=metadata.model_id,
+            version_id=metadata.version_id,
+            model_download_url=metadata.model_download_url
+        ) if not self.__batchOptions.without_model else None
 
         filenames = self.__get_filenames(
-            metadata, model_res.headers.get('Content-Disposition') if model_res else None)
+            version_files=metadata.version_dict['files'],
+            version_id=metadata.version_id,
+            model_id=metadata.model_id,
+            model_name=metadata.model_name,
+            image_download_urls=metadata.image_download_urls,
+            content_disposition=model_res.headers.get('Content-Disposition') if model_res else None)
 
         sorter_data = self.__batchOptions.sorter(
             metadata.model_dict, metadata.version_dict, os.path.split(filenames['model'])[0], self.__dst_root_path)
 
+        # print(sorter_data.metadata_dir_path)
+
         # 3. Download model and etc.
 
         self.__download_metadata(
-            sorter_data.metadata_dir_path, filenames['metadata'], metadata)
-        self.__download_images(sorter_data.image_dir_path,
-                               metadata.image_download_urls, filenames['images'])
-        if self.__batchOptions.with_prompt:  # FIXME: I don't like how one of them is with_prompt, and the other is without_model
+            dirpath=sorter_data.metadata_dir_path,
+            filename=filenames['metadata'],
+            model_dict=metadata.model_dict
+        )
+
+        self.__download_images(
+            dirpath=sorter_data.image_dir_path,
+            urls=metadata.image_download_urls,
+            filenames=filenames['images']
+        )
+
+        # FIXME: I don't like how one of them is with_prompt, and the other is without_model
+        if self.__batchOptions.with_prompt:
             self.__download_prompt(
-                sorter_data.prompt_dir_path, filenames['prompts'], metadata.image_dicts)
+                dirpath=sorter_data.prompt_dir_path,
+                filenames=filenames['prompts'],
+                prompts=metadata.image_dicts
+            )
+
         if not self.__batchOptions.without_model:
-            self.__download_model(sorter_data.model_dir_path,
-                                  filenames['model'], model_res, metadata)
-        self.__download_hash(sorter_data.model_dir_path,
-                             filenames['hash'], metadata.version_hashes)
+            self.__download_model(
+                dirpath=sorter_data.model_dir_path,
+                filename=filenames['model'],
+                model_res=model_res,
+                version_id=metadata.version_id,
+                version_hashes=metadata.version_hashes
+            )
+
+        self.__download_hash(
+            dirpath=sorter_data.model_dir_path,
+            filename=filenames['hash'],
+            hashes=metadata.version_hashes
+        )
 
         print_newlines(Styler.stylize(
             f"""\nDownload completed for \"{metadata.model_name}\"

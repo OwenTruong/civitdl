@@ -1,3 +1,4 @@
+import os
 import time
 import traceback
 from typing import List
@@ -23,12 +24,11 @@ def batch_download(source_strings: List[str], rootdir: str, batchOptions: BatchO
     source_manager = SourceManager()
 
     for id in source_manager.parse_src(source_strings):
-
         iter = 0
         while True:
             try:
-                model = Model(id=id, dst_root_path=rootdir,
-                              batchOptions=batchOptions).download()
+                model = Model(dst_root_path=rootdir,
+                              batchOptions=batchOptions).download(id=id)
                 _pause(batchOptions.pause_time)
                 break
             except Exception as e:

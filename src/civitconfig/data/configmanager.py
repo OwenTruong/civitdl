@@ -102,3 +102,5 @@ class ConfigManager(Config):
             f'Downloading zipped config to {dst_path}.zip', color='main'))
         shutil.make_archive(dst_path, 'zip',
                             self._config_dir_path)
+
+    # def scanPath(self, dir_path):

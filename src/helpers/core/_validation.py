@@ -205,9 +205,10 @@ class Validation:
             value = value.trim()
 
         modified_value = value.replace('/', '\\') if os.name == 'nt' else value
-        if os.name == 'nt' and os.path.isabs(modified_value):
-            modified_value = modified_value[2:]
-        dir_names = [s for s in modified_value.split(os.path.sep) if s != ""]
+
+        test_value = modified_value[2:] if os.name == 'nt' and os.path.isabs(
+            modified_value) else modified_value
+        dir_names = [s for s in test_value.split(os.path.sep) if s != ""]
         for dir_name in dir_names:
             try:
                 cls.validate_dir_name(dir_name, arg_name)

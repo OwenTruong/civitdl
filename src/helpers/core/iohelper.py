@@ -3,10 +3,11 @@ import shutil
 import sys
 import time
 import csv
-from typing import IO, Callable, Iterable, Union
+import hashlib
+from typing import IO, Callable, Iterable, List, Union
 
 from ._ui.styler import Styler, InputException, UnexpectedException
-from .utils import get_progress_bar, sprint
+from .utils import get_progress_bar, print_verbose, sprint
 
 
 class IOHelper:
@@ -63,7 +64,28 @@ class IOHelper:
 
         return csv_dict
 
+    # @staticmethod
+    # def read_multiple_columns_from_csv(filepath: str):
+    #     return {}
+
+    @staticmethod
+    def compare_hash(filepath: str, hash: str):
+        hasher = hashlib.sha256()
+        chunk_size = 2**20
+
+        with open(filepath, 'rb') as file:
+            while True:
+                chunk = file.read(chunk_size)
+                if not chunk:
+                    break
+                hasher.update(chunk)
+
+        digest = hasher.hexdigest().upper()
+        print_verbose(f'Computed SHA256: "{digest}", Expected SHA256: "{hash}"')  # nopep8
+        return digest == hash
+
     # Level 1 #
+
     @classmethod
     def write_to_file(cls, filepath: str, content_chunks: Iterable, mode: str = None, limit_rate: Union[int, None] = 0, encoding: Union[str, None] = None, overwrite: bool = True, use_pb: bool = False, total: float = 0, desc: str = None):
         """Uses content_chunks to write to filepath bit by bit. If use_pb is enabled, it is recommended to set total kwarg to the length of the file to be written."""

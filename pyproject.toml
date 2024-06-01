@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "civitdl"
-version = "2.0.17"
+version = "2.1.1"
 authors = [ 
    { name = "Owen Truong" } 
 ]
@@ -16,7 +16,7 @@ license = {file = "License"}
 keywords = ["civitai", "batch download"]
 classifiers = [
    "Programming Language :: Python :: 3.8",
-   "License :: OSI Approved :: MIT License",
+   "License :: OSI Approved :: Apache Software License",
    "Operating System :: OS Independent"
 ]
 dynamic = ["dependencies"]
@@ -31,3 +31,4 @@ Repository = "https://github.com/OwenTruong/civitdl"
 [project.scripts]
 civitdl = "civitdl.__main__:main"
 civitconfig = "civitconfig.__main__:main"
+civitmisc = "civitmisc.__main__:main"
