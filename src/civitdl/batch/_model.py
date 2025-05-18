@@ -244,7 +244,8 @@ class Model:
             nsfw_mode=self.__batchOptions.nsfw_mode,
             max_images=self.__batchOptions.max_images,
             session=self.__batchOptions.session
-        ).make_api_call(id)
+        )
+        metadata.make_api_call(id)
 
         print_newlines(Styler.stylize(
             f"""Now downloading \"{metadata.model_name}\"...

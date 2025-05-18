@@ -103,27 +103,33 @@ class _MetadataFetcher:
 
 
 class Metadata:
-    __options_nsfw_mode: str
-    __options_max_images: int
-    __options_session: Session
+    # __options_nsfw_mode: str
+    # __options_max_images: int
+    # __options_session: Session
 
-    model_dict: Dict
-    version_dict: Dict
-    model_id: str
-    version_id: str
-    model_download_url: str
+    # model_dict: Dict
+    # version_dict: Dict
+    # model_id: str
+    # version_id: str
+    # model_download_url: str
 
-    model_name: str = 'unknown'
-    version_hashes: Dict = {}
+    # model_name: str
+    # version_hashes: Dict
 
-    nsfwLevel: int = -1
-    image_dicts: List[Dict] = []
-    image_download_urls: List[str] = []
+    # nsfwLevel: int
+    # image_dicts: List[Dict]
+    # image_download_urls: List[str]
 
     def __init__(self, nsfw_mode: str, max_images: int, session: Session):
         self.__options_nsfw_mode = nsfw_mode
         self.__options_max_images = max_images
         self.__options_session = session
+
+        model_name = 'unknown'
+        version_hashes = {}
+        self.nsfwLevel = -1
+        self.image_dicts = []
+        self.image_download_urls = []
 
     def make_api_call(self, id: Id):
         ((model_metadata, version_metadata), (model_id, version_id)) = _MetadataFetcher(
