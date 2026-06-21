@@ -161,7 +161,7 @@ class Model:
         if 'reason=download-auth' in res.url or res.status_code == 401:
             print_verbose('Unauthorized status', res.url,  res.status_code)
             raise InputException(
-                'Unable to download this model as it requires a valid API Key. Please head to "civitai.com", go to "Account Settings", then go to "API Keys" section, then add an api key to your account. After that, paste the key to the program or add it to civitconfig with "civitconfig default --api-key".')
+                'Unable to download this model as it requires a valid API Key. Please head to CivitAI, go to "Account Settings", then go to "API Keys" section, then add an api key to your account. After that, paste the key to the program or add it to civitconfig with "civitconfig default --api-key".')
 
         if res.status_code == 403:
             sprint(Styler.stylize(

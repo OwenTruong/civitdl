@@ -72,14 +72,17 @@ class _MetadataFetcher:
 
     def __get_model_metadata(self, model_id: str):
         """Returns json object if request succeeds, else print error and returns None"""
-        metadata_url = f'https://civitai.com/api/v1/models/{model_id}'
+        metadata_url = f'https://{self.__get_domain()}/api/v1/models/{model_id}'
         metadata = self.__get_metadata(metadata_url)
         return metadata
 
     def __get_version_metadata(self, version_id: str):
-        metadata_url = f'https://civitai.com/api/v1/model-versions/{version_id}'  # nopep8
+        metadata_url = f'https://{self.__get_domain()}/api/v1/model-versions/{version_id}'  # nopep8
         metadata = self.__get_metadata(metadata_url)
         return metadata
+
+    def __get_domain(self):
+        return 'civitai.red' if 'civitai.red' in self.__original_id else 'civitai.com'
 
     def __get_metadata(self, url: str):
         print_verbose('Requesting model metadata.')

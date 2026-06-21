@@ -61,7 +61,7 @@ class SourceManager:
             elif len(self.__get_comma_list(string)) > 1:
                 arg_str_li = self.__get_comma_list(string)
                 res.extend(self.parse_src(arg_str_li))
-            elif 'civitai.com/api' in string:
+            elif 'civitai.com/api' in string or 'civitai.red/api' in string:
                 version_id_regex = r'(?<=models\/)\d+'
                 version_id = re.search(version_id_regex, string)
                 if version_id == None:
@@ -70,7 +70,7 @@ class SourceManager:
                     raise InputException(err)
                 version_id = version_id.group(0)
                 res.append(_Id(original=string, version_id=version_id))
-            elif 'civitai.com/models' in string:
+            elif 'civitai.com/models' in string or 'civitai.red/models' in string:
                 model_id = re.search(r'(?<=models\/)\d+', string)
                 version_id = re.search(r'(?<=modelVersionId=)\d+', string)
 
